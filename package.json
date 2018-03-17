@@ -7,9 +7,14 @@
   "engines": {
     "vscode": "^1.21.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "main": "./out/extension",
-  "activationEvents": ["onView:GPM", "onCommand:gpm.addProject"],
+  "activationEvents": [
+    "onView:GPM",
+    "onCommand:gpm.addProject"
+  ],
   "contributes": {
     "views": {
       "explorer": [
@@ -54,6 +59,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
-    "fs-extra": "^5.0.0"
+    "fs-extra": "^5.0.0",
+    "which": "^1.3.0"
   }
 }
