@@ -7,41 +7,73 @@
   "engines": {
     "vscode": "^1.21.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "main": "./out/extension",
   "activationEvents": [
-    "onView:GPM",
-    "onCommand:gpm.addProject"
+    "onView:gpmExplorer",
+    "onCommand:gpm.addProject",
+    "onCommand:gpm.refreshProject"
   ],
   "contributes": {
     "views": {
       "explorer": [
         {
-          "id": "GPM",
+          "id": "gpmExplorer",
           "name": "GPM"
-        }
-      ]
-    },
-    "menus": {
-      "view/item/context": [
-        {
-          "group": "context@1",
-          "command": "gpm.openProject"
         }
       ]
     },
     "commands": [
       {
+        "command": "gpm.refreshProject",
+        "title": "refresh project",
+        "category": "gpm",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
         "command": "gpm.addProject",
-        "title": "GPM: Add Project"
+        "title": "add project",
+        "category": "gpm"
       },
       {
         "command": "gpm.openProject",
-        "title": "GPM: Open Project"
+        "title": "open project",
+        "category": "gpm"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "gpm.refreshProject",
+          "group": "navigation@1",
+          "when": "view == gpmExplorer"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "gpm.openProject",
+          "group": "context",
+          "when": "view == gpmExplorer && viewItem == project"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "gpm.refreshProject",
+          "when": "never"
+        },
+        {
+          "command": "gpm.addProject",
+          "when": "never"
+        },
+        {
+          "command": "gpm.openProject",
+          "when": "never"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

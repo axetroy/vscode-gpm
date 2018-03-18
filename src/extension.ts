@@ -9,7 +9,7 @@ const which = require("which");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   const gpmPath: boolean = which.sync("gpm");
 
   if (!gpmPath) {
@@ -17,6 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
       "Run 'npm install @axetroy/gpm -g' to install gpm."
     );
   }
+
+  const gpmExplorer = new ProjectTreeProvider(context);
 
   // open file
   vscode.commands.registerCommand("gpm.open", filepath => {
@@ -35,7 +37,17 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.executeCommand("vscode.openFolder", openPath);
   });
 
-  vscode.window.registerTreeDataProvider("GPM", new ProjectTreeProvider());
+  // refresh project
+  vscode.commands.registerCommand("gpm.refreshProject", element => {
+    gpmExplorer.refresh();
+  });
+
+  // prune project
+  vscode.commands.registerCommand("gpm.prune", element => {
+    gpmExplorer.refresh();
+  });
+
+  vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
 }
 
 // this method is called when your extension is deactivated

@@ -11,7 +11,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
   readonly onDidChangeTreeData: vscode.Event<File | undefined> = this
     ._onDidChangeTreeData.event;
 
-  constructor() {
+  constructor(public context: vscode.ExtensionContext) {
     this.onDidChangeTreeData(function(event) {});
   }
 
@@ -38,7 +38,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         if (statInfo.isFile()) {
           continue;
         }
-        children.push(new Source(file));
+        children.push(new Source(this.context, file));
       }
     } else if (element instanceof Source) {
       for (let file of files) {
@@ -51,7 +51,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
           continue;
         }
 
-        children.push(new Owner(element.filename, file));
+        children.push(new Owner(this.context, element.filename, file));
       }
     } else if (element instanceof Owner) {
       for (let file of files) {
@@ -65,7 +65,12 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         }
 
         children.push(
-          new Repo(path.basename(element.dir), element.filename, file)
+          new Repo(
+            this.context,
+            path.basename(element.dir),
+            element.filename,
+            file
+          )
         );
       }
     } else {
@@ -84,6 +89,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
       children = _dirs
         .map(dir => {
           return new File(
+            this.context,
             dir,
             element.filepath,
             1,
@@ -94,6 +100,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         .concat(
           _files.map(filename => {
             return new File(
+              this.context,
               filename,
               element.filepath,
               0,
@@ -114,6 +121,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
 class File extends vscode.TreeItem {
   public filepath: string;
   constructor(
+    public context: vscode.ExtensionContext,
     public filename: string,
     public dir: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -127,37 +135,73 @@ class File extends vscode.TreeItem {
     super(filename, collapsibleState);
     this.filepath = path.join(dir, filename);
   }
+  getIcon(icon: string) {
+    return {
+      dark: this.context.asAbsolutePath(path.join("resources", "dark", icon)),
+      light: this.context.asAbsolutePath(path.join("resources", "light", icon))
+    };
+  }
 }
 
 class Source extends File {
   constructor(
+    public context: vscode.ExtensionContext,
     public sourceName: string,
     public readonly command?: vscode.Command
   ) {
-    super(sourceName, GPM_PATH, 1, command);
-    this.iconPath = vscode.ThemeIcon.Folder;
+    super(context, sourceName, GPM_PATH, 1, command);
+    switch (sourceName) {
+      case "github.com":
+        this.iconPath = this.getIcon("github.svg");
+        break;
+      case "gitlab.com":
+        this.iconPath = this.getIcon("gitlab.svg");
+        break;
+      case "coding.net":
+        this.iconPath = this.getIcon("coding.svg");
+        break;
+      case "bitbucket.org":
+        this.iconPath = this.getIcon("bitbucket.svg");
+        break;
+      case "apache.org":
+        this.iconPath = this.getIcon("apache.svg");
+        break;
+      default:
+        this.iconPath = this.getIcon("git.svg");
+    }
+    this.contextValue = "source";
   }
 }
 
 class Owner extends File {
   constructor(
+    public context: vscode.ExtensionContext,
     public sourceName: string,
     public ownerName: string,
     public readonly command?: vscode.Command
   ) {
-    super(ownerName, path.join(GPM_PATH, sourceName), 1, command);
-    this.iconPath = vscode.ThemeIcon.Folder;
+    super(context, ownerName, path.join(GPM_PATH, sourceName), 1, command);
+    this.iconPath = this.getIcon("user.svg");
+    this.contextValue = "owner";
   }
 }
 
 class Repo extends File {
   constructor(
+    public context: vscode.ExtensionContext,
     public sourceName: string,
     public ownerName: string,
     public repoName: string,
     public readonly command?: vscode.Command
   ) {
-    super(repoName, path.join(GPM_PATH, sourceName, ownerName), 1, command);
-    this.iconPath = vscode.ThemeIcon.Folder;
+    super(
+      context,
+      repoName,
+      path.join(GPM_PATH, sourceName, ownerName),
+      1,
+      command
+    );
+    this.iconPath = this.getIcon("repo.svg");
+    this.contextValue = "project";
   }
 }
