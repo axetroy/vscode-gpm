@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@axetroy/walk@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/@axetroy/walk/-/walk-0.1.0.tgz#38b21344d8cf0c3d23ead218b2dd5e29038db64c"
+  dependencies:
+    fs-extra "^4.0.2"
+
 "@types/fs-extra@^5.0.1":
   version "5.0.1"
   resolved "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-5.0.1.tgz#cd856fbbdd6af2c11f26f8928fd8644c9e9616c9"
@@ -547,6 +553,14 @@ form-data@~2.3.1:
 from@~0:
   version "0.1.7"
   resolved "https://registry.npmjs.org/from/-/from-0.1.7.tgz#83c60afc58b9c56997007ed1a768b3ab303a44fe"
+
+fs-extra@^4.0.2:
+  version "4.0.3"
+  resolved "https://registry.npmjs.org/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^4.0.0"
+    universalify "^0.1.0"
 
 fs-extra@^5.0.0:
   version "5.0.0"

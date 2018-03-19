@@ -140,6 +140,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
+    "@axetroy/walk": "^0.1.0",
     "cross-spawn": "^6.0.5",
     "fs-extra": "^5.0.0",
     "git-url-parse": "^8.2.0",

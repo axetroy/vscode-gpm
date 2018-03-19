@@ -4,10 +4,14 @@ import * as fs from "fs-extra";
 const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const which = require("which");
+const Walker = require("@axetroy/walk");
 import { runShell, isLink } from "./utils";
 
 export class Gpm {
-  constructor(public context: vscode.ExtensionContext) {}
+  public config: vscode.WorkspaceConfiguration;
+  constructor(public context: vscode.ExtensionContext) {
+    this.config = vscode.workspace.getConfiguration("gpm");
+  }
   async add() {
     // make sure git instsalled
     try {
@@ -34,11 +38,6 @@ export class Gpm {
       return;
     }
 
-    // check project is exist or not
-    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(
-      "gpm"
-    );
-
     const randomTemp: string = path.join(
       <string>process.env.HOME,
       ".gpm",
@@ -49,7 +48,7 @@ export class Gpm {
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
     const baseDir: string = path
-      .join(config.rootPath)
+      .join(this.config.rootPath)
       .replace(/^~/, <string>process.env.HOME);
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
@@ -103,7 +102,44 @@ export class Gpm {
     // refresh explorer
     this.refresh();
   }
-  prune() {}
+  async prune() {
+    const walker = new Walker(
+      this.config.rootPath.replace(/^~/, <string>process.env.HOME)
+    );
+
+    let files = 0;
+    let directory = 0;
+
+    walker.on("file", function(filepath: string) {
+      files++;
+    });
+
+    const done: Promise<any>[] = [];
+    let removeDirCount = 0;
+
+    walker.on("directory", function(filepath: string) {
+      directory++;
+      const name = path.basename(filepath);
+      if (name === "node_modules") {
+        done.push(
+          fs
+            .remove(filepath)
+            .then(() => removeDirCount++)
+            .catch(err => Promise.resolve())
+        );
+      }
+    });
+
+    vscode.window.showInformationMessage("pruning... wait for a moment");
+
+    await walker.walk();
+
+    await Promise.all(done);
+
+    vscode.window.showInformationMessage(
+      `Find ${files} file， ${directory} directories, delete ${removeDirCount} node_modules`
+    );
+  }
   remove() {}
   refresh() {}
 }
