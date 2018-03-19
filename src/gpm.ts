@@ -12,12 +12,10 @@ export class Gpm {
     // make sure git instsalled
     try {
       const r = which.sync("git");
-      console.log(r);
       if (!r) {
         throw null;
       }
     } catch (err) {
-      console.log(err);
       vscode.window.showErrorMessage("Make sure you have install git.");
       return;
     }
@@ -25,6 +23,9 @@ export class Gpm {
     const gitProjectAddress = await vscode.window.showInputBox({
       placeHolder: "Enter git project address. support https and ssh"
     });
+
+    if (!gitProjectAddress) return;
+
     const gitInfo = gitUrlParse(gitProjectAddress);
 
     // invalid git address
