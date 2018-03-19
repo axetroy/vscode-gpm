@@ -4,7 +4,6 @@
 import * as vscode from "vscode";
 import { ProjectTreeProvider } from "./projectTree";
 import * as fs from "fs-extra";
-import * as path from "path";
 const which = require("which");
 import { Gpm } from "./gpm";
 

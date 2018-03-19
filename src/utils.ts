@@ -1,3 +1,4 @@
+import * as fs from "fs-extra";
 const spawn = require("cross-spawn");
 /**
  * 以spawn的方式运行shell命令
@@ -49,7 +50,6 @@ export async function runShell(cmd: string, options = {}): Promise<void> {
         .filter(v => !!v);
       let command = (<string>subCmd.shift()).trim();
       let argv: string[] = subCmd || [];
-      let full_command = command + " " + argv.join(" ");
       await spawnShell(command, <never>argv, options);
     }
   }
