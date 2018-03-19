@@ -63,18 +63,23 @@
         }
       },
       {
-        "command": "gpm.openProject",
-        "title": "open project",
-        "category": "gpm"
-      },
-      {
-        "command": "gpm.pruneProject",
-        "title": "prune project",
+        "command": "gpm.openInCurrentWindow",
+        "title": "open in current window",
         "category": "gpm",
         "icon": {
           "light": "resources/light/delete.svg",
           "dark": "resources/dark/delete.svg"
         }
+      },
+      {
+        "command": "gpm.openInNewWindow",
+        "title": "open in new window",
+        "category": "gpm"
+      },
+      {
+        "command": "gpm.pruneProject",
+        "title": "prune project",
+        "category": "gpm"
       }
     ],
     "menus": {
@@ -97,7 +102,12 @@
       ],
       "view/item/context": [
         {
-          "command": "gpm.openProject",
+          "command": "gpm.openInCurrentWindow",
+          "group": "context",
+          "when": "view == gpmExplorer && viewItem == project"
+        },
+        {
+          "command": "gpm.openInNewWindow",
           "group": "context",
           "when": "view == gpmExplorer && viewItem == project"
         },
@@ -113,7 +123,11 @@
           "when": "never"
         },
         {
-          "command": "gpm.openProject",
+          "command": "gpm.openInCurrentWindow",
+          "when": "never"
+        },
+        {
+          "command": "gpm.openInNewWindow",
           "when": "never"
         }
       ]

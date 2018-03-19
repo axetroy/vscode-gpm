@@ -32,10 +32,16 @@ export async function activate(context: vscode.ExtensionContext) {
       });
   });
 
-  // open project command
-  vscode.commands.registerCommand("gpm.openProject", element => {
+  // open project in current window
+  vscode.commands.registerCommand("gpm.openInCurrentWindow", element => {
     const openPath = vscode.Uri.file(element.filepath);
     vscode.commands.executeCommand("vscode.openFolder", openPath);
+  });
+
+  // open project in new window
+  vscode.commands.registerCommand("gpm.openInNewWindow", element => {
+    const openPath = vscode.Uri.file(element.filepath);
+    vscode.commands.executeCommand("vscode.openFolder", openPath, true);
   });
 
   // refresh project
@@ -48,7 +54,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // add project
   vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
-  
+
   // remove project
   vscode.commands.registerCommand("gpm.removeProject", async element => {
     try {
