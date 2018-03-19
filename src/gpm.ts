@@ -149,6 +149,7 @@ export class Gpm {
     vscode.window.showInformationMessage(
       `Find ${files} file， ${directory} directories, delete ${removeDirCount} node_modules`
     );
+    this.refresh();
   }
   remove() {}
   refresh() {}

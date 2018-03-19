@@ -7,9 +7,9 @@
   "engines": {
     "vscode": "^1.21.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
+  "icon":
+    "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/resources/icon.png",
   "main": "./out/extension",
   "activationEvents": [
     "onView:gpmExplorer",
