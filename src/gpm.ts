@@ -103,6 +103,16 @@ export class Gpm {
     this.refresh();
   }
   async prune() {
+    const action = await vscode.window.showWarningMessage(
+      "prune will remove all node_modules folder, will you continue?",
+      "Continue",
+      "Cancel"
+    );
+
+    if (action === "Cancel") {
+      return;
+    }
+
     const walker = new Walker(
       this.config.rootPath.replace(/^~/, <string>process.env.HOME)
     );
