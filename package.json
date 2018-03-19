@@ -1,7 +1,7 @@
 {
     "name": "vscode-gpm",
     "displayName": "gpm",
-    "description": "vscode extension for gpm",
+    "description": "Git Project Manager",
     "version": "0.1.0",
     "publisher": "axetroy",
     "engines": {
