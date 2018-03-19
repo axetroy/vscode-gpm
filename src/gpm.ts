@@ -57,7 +57,7 @@ export class Gpm {
         "Cancel"
       );
 
-      if (action === "Cancel") {
+      if (action !== "Overwrite") {
         return;
       }
     }
@@ -106,7 +106,7 @@ export class Gpm {
       "Cancel"
     );
 
-    if (action === "Cancel") {
+    if (action !== "Continue") {
       return;
     }
 

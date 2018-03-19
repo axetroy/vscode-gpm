@@ -116,11 +116,7 @@
             ],
             "commandPalette": [
                 {
-                    "command": "gpm.refreshProject",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.addProject",
+                    "command": "gpm.removeProject",
                     "when": "never"
                 },
                 {
