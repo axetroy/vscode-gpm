@@ -3,7 +3,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { ProjectTreeProvider } from "./projectTree";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
 const which = require("which");
 import { Gpm } from "./gpm";
@@ -28,13 +28,19 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // open file
   vscode.commands.registerCommand("gpm.open", filepath => {
-    const stat = fs.statSync(filepath);
-    if (stat.isFile()) {
-      const openPath = vscode.Uri.file(filepath);
-      vscode.workspace.openTextDocument(openPath).then(doc => {
-        vscode.window.showTextDocument(doc);
+    fs
+      .stat(filepath)
+      .then(stat => {
+        if (stat.isFile()) {
+          const openPath = vscode.Uri.file(filepath);
+          vscode.workspace.openTextDocument(openPath).then(doc => {
+            vscode.window.showTextDocument(doc);
+          });
+        }
+      })
+      .catch((err: Error) => {
+        vscode.window.showErrorMessage(err.message);
       });
-    }
   });
 
   // open project command
@@ -52,8 +58,32 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("gpm.pruneProject", () => gpm.prune());
 
   vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
-  vscode.commands.registerCommand("gpm.removeProject", element => {
-    console.log("移除项目...");
+  vscode.commands.registerCommand("gpm.removeProject", async element => {
+    try {
+      const action = await vscode.window.showInformationMessage(
+        "[Irrevocable] Are you sure to remove project?",
+        "Yes",
+        "No"
+      );
+
+      if (action !== "Yes") {
+        return;
+      }
+
+      // remove project
+      await fs.remove(element.filepath);
+
+      const projectList = await fs.readdir(element.dir);
+
+      if (!projectList || !projectList.length) {
+        await fs.remove(element.dir);
+      }
+
+      vscode.window.showInformationMessage(`Project have been remove.`);
+      gpmExplorer.refresh(); // refresh
+    } catch (err) {
+      vscode.window.showErrorMessage(err.message);
+    }
   });
 
   vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
