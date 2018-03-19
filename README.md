@@ -11,9 +11,25 @@ vscode-gpm is a extension to manage project.
 
 ## Screen shot
 
+### Add project
+
 ![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/add.gif)
+
+### Edit project
+
 ![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/edit.gif)
+
+### Open project
+
 ![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/open.gif)
+
+## Configuration
+
+```json
+{
+  "gpm.rootPath": "~/gpm"
+}
+```
 
 ## Related
 
