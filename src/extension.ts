@@ -4,24 +4,14 @@
 import * as vscode from "vscode";
 import { ProjectTreeProvider } from "./projectTree";
 import * as fs from "fs-extra";
-const which = require("which");
 import { Gpm } from "./gpm";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-  const gpmPath: boolean = which.sync("gpm");
-
-  if (!gpmPath) {
-    vscode.window.showErrorMessage(
-      "Run 'npm install @axetroy/gpm -g' to install gpm."
-    );
-  }
-
   const gpm = new Gpm(context);
-  gpm.refresh = function() {
-    gpmExplorer.refresh();
-  };
+  // overwrite refresh method
+  gpm.refresh = () => gpmExplorer.refresh();
 
   const gpmExplorer = new ProjectTreeProvider(context);
 
@@ -56,7 +46,10 @@ export async function activate(context: vscode.ExtensionContext) {
   // prune project
   vscode.commands.registerCommand("gpm.pruneProject", () => gpm.prune());
 
+  // add project
   vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
+  
+  // remove project
   vscode.commands.registerCommand("gpm.removeProject", async element => {
     try {
       const action = await vscode.window.showInformationMessage(
@@ -89,4 +82,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  // when disable extension
+}

@@ -4,25 +4,24 @@ import * as path from "path";
 import { getRootPath } from "./config";
 
 export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
-  private _onDidChangeTreeData: vscode.EventEmitter<
+  // @tslint-ignore: next-line
+  private privateOnDidChangeTreeData: vscode.EventEmitter<
     File | undefined
   > = new vscode.EventEmitter<File | undefined>();
-  readonly onDidChangeTreeData: vscode.Event<File | undefined> = this
-    ._onDidChangeTreeData.event;
+  public readonly onDidChangeTreeData: vscode.Event<File | undefined> = this
+    .privateOnDidChangeTreeData.event;
 
-  constructor(public context: vscode.ExtensionContext) {
-    this.onDidChangeTreeData(function(event) {});
+  constructor(public context: vscode.ExtensionContext) {}
+
+  public refresh(): void {
+    this.privateOnDidChangeTreeData.fire();
   }
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
-  }
-
-  getTreeItem(element: File): vscode.TreeItem {
+  public getTreeItem(element: File): vscode.TreeItem {
     return element;
   }
 
-  async getChildren(element?: File): Promise<File[]> {
+  public async getChildren(element?: File): Promise<File[]> {
     let children: File[] = [];
     const GPM_PATH = getRootPath();
 
@@ -30,7 +29,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
     const files: string[] = await fs.readdir(elementFilePath);
     // root
     if (!element) {
-      for (let file of files) {
+      for (const file of files) {
         if (/^\./.test(file)) {
           continue;
         }
@@ -42,7 +41,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         children.push(new Source(this.context, file));
       }
     } else if (element instanceof Source) {
-      for (let file of files) {
+      for (const file of files) {
         if (/^\./.test(file)) {
           continue;
         }
@@ -55,7 +54,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         children.push(new Owner(this.context, element.filename, file));
       }
     } else if (element instanceof Owner) {
-      for (let file of files) {
+      for (const file of files) {
         if (/^\./.test(file)) {
           continue;
         }
@@ -75,19 +74,19 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         );
       }
     } else {
-      const _files: string[] = [];
-      const _dirs: string[] = [];
+      const fileList: string[] = [];
+      const dirList: string[] = [];
 
-      for (let file of files) {
+      for (const file of files) {
         const stat = await fs.stat(path.join(element.filepath, file));
         if (stat.isDirectory()) {
-          _dirs.push(file);
+          dirList.push(file);
         } else {
-          _files.push(file);
+          fileList.push(file);
         }
       }
 
-      children = _dirs
+      children = dirList
         .map(dir => {
           return new File(
             this.context,
@@ -99,7 +98,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
           );
         })
         .concat(
-          _files.map(filename => {
+          fileList.map(filename => {
             return new File(
               this.context,
               filename,
@@ -136,7 +135,7 @@ class File extends vscode.TreeItem {
     super(filename, collapsibleState);
     this.filepath = path.join(dir, filename);
   }
-  getIcon(icon: string) {
+  public getIcon(icon: string) {
     return {
       dark: this.context.asAbsolutePath(path.join("resources", "dark", icon)),
       light: this.context.asAbsolutePath(path.join("resources", "light", icon))

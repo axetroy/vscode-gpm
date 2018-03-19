@@ -16,13 +16,7 @@ export async function spawnShell(
     ...{ env: process.env, cwd: process.cwd(), stdio: "inherit" },
     ...options
   });
-  return await new Promise((resolve, reject) => {
-    stream.on("data", function(data: Buffer) {
-      console.log(data + "");
-    });
-    stream.on("error", function(data: Buffer) {
-      console.error(data);
-    });
+  return new Promise((resolve, reject) => {
     stream.on("close", (code: number, signal: string) => {
       code === 0
         ? resolve()
@@ -40,17 +34,16 @@ export async function spawnShell(
 export async function runShell(cmd: string, options = {}): Promise<void> {
   const cmds: string[] = cmd.split(/\&\&/);
   while (cmds.length) {
-    let cmd: string = <string>cmds.shift();
-    const cmdArray: string[] = cmd.split(/\&/).map(v => v.trim());
+    const cmdString: string = cmds.shift() as string;
+    const cmdArray: string[] = cmdString.split(/\&/).map(v => v.trim());
     while (cmdArray.length) {
-      let __cmd = <string>cmdArray.shift();
-      const subCmd: string[] = __cmd
+      const subCmd: string[] = (cmdArray.shift() as string)
         .split(/\s+/)
         .map(v => v.trim())
         .filter(v => !!v);
-      let command = (<string>subCmd.shift()).trim();
-      let argv: string[] = subCmd || [];
-      await spawnShell(command, <never>argv, options);
+      const command = (subCmd.shift() as string).trim();
+      const argv: string[] = subCmd || [];
+      await spawnShell(command, argv, options);
     }
   }
 }

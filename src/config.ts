@@ -8,7 +8,7 @@ function getField(field: string): any {
 }
 
 function getRootPath(): string {
-  return getField("rootPath").replace(/^~/, <string>process.env.HOME);
+  return getField("rootPath").replace(/^~/, process.env.HOME as string);
 }
 
 export { getConfiguration, getField, getRootPath };

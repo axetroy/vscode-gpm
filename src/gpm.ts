@@ -10,7 +10,7 @@ import { getRootPath } from "./config";
 
 export class Gpm {
   constructor(public context: vscode.ExtensionContext) {}
-  async add() {
+  public async add() {
     // make sure git instsalled
     try {
       const r = which.sync("git");
@@ -26,7 +26,9 @@ export class Gpm {
       placeHolder: "Enter git project address. support https and ssh"
     });
 
-    if (!gitProjectAddress) return;
+    if (!gitProjectAddress) {
+      return;
+    }
 
     const gitInfo = gitUrlParse(gitProjectAddress);
 
@@ -37,7 +39,7 @@ export class Gpm {
     }
 
     const randomTemp: string = path.join(
-      <string>process.env.HOME,
+      process.env.HOME as string,
       ".gpm",
       "temp",
       uniqueString()
@@ -51,13 +53,13 @@ export class Gpm {
     const repoDir: string = path.join(ownerDir, gitInfo.name);
 
     if (await fs.pathExists(repoDir)) {
-      const action = await vscode.window.showWarningMessage(
+      const actionName = await vscode.window.showWarningMessage(
         "Do you want to overwrite the exist project?",
         "Overwrite",
         "Cancel"
       );
 
-      if (action !== "Overwrite") {
+      if (actionName !== "Overwrite") {
         return;
       }
     }
@@ -99,7 +101,7 @@ export class Gpm {
     // refresh explorer
     this.refresh();
   }
-  async prune() {
+  public async prune() {
     const action = await vscode.window.showWarningMessage(
       "prune will remove all node_modules folder, will you continue?",
       "Continue",
@@ -115,14 +117,14 @@ export class Gpm {
     let files = 0;
     let directory = 0;
 
-    walker.on("file", function(filepath: string) {
+    walker.on("file", (filepath: string) => {
       files++;
     });
 
-    const done: Promise<any>[] = [];
+    const done: Array<Promise<any>> = [];
     let removeDirCount = 0;
 
-    walker.on("directory", function(filepath: string) {
+    walker.on("directory", (filepath: string) => {
       directory++;
       const name = path.basename(filepath);
       if (name === "node_modules") {
@@ -146,6 +148,8 @@ export class Gpm {
     );
     this.refresh();
   }
-  remove() {}
-  refresh() {}
+  public refresh() {
+    // empty refresh
+    // it will overwrite in other place
+  }
 }
