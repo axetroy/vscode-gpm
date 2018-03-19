@@ -66,9 +66,6 @@ export class Gpm {
       }
     }
 
-    await fs.ensureDir(baseDir);
-    await fs.ensureDir(sourceDir);
-    await fs.ensureDir(ownerDir);
     await fs.ensureDir(randomTemp);
 
     vscode.window.showInformationMessage("cloning...");
@@ -78,6 +75,10 @@ export class Gpm {
       cwd: randomTemp
       // stdio: "inherit"
     });
+
+    await fs.ensureDir(baseDir);
+    await fs.ensureDir(sourceDir);
+    await fs.ensureDir(ownerDir);
 
     // if it's a link, then unlink first
     if (await isLink(repoDir)) {
