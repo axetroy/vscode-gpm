@@ -6,12 +6,10 @@ const uniqueString = require("unique-string");
 const which = require("which");
 const Walker = require("@axetroy/walk");
 import { runShell, isLink } from "./utils";
+import { getRootPath } from "./config";
 
 export class Gpm {
-  public config: vscode.WorkspaceConfiguration;
-  constructor(public context: vscode.ExtensionContext) {
-    this.config = vscode.workspace.getConfiguration("gpm");
-  }
+  constructor(public context: vscode.ExtensionContext) {}
   async add() {
     // make sure git instsalled
     try {
@@ -47,9 +45,7 @@ export class Gpm {
 
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
-    const baseDir: string = path
-      .join(this.config.rootPath)
-      .replace(/^~/, <string>process.env.HOME);
+    const baseDir: string = getRootPath();
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
     const repoDir: string = path.join(ownerDir, gitInfo.name);
@@ -114,9 +110,7 @@ export class Gpm {
       return;
     }
 
-    const walker = new Walker(
-      this.config.rootPath.replace(/^~/, <string>process.env.HOME)
-    );
+    const walker = new Walker(getRootPath());
 
     let files = 0;
     let directory = 0;

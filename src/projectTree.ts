@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs-extra";
 import * as path from "path";
-
-const GPM_PATH = path.join(<string>process.env.HOME, "gpm");
+import { getRootPath } from "./config";
 
 export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
   private _onDidChangeTreeData: vscode.EventEmitter<
@@ -25,6 +24,8 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
 
   async getChildren(element?: File): Promise<File[]> {
     let children: File[] = [];
+    const GPM_PATH = getRootPath();
+
     const elementFilePath: string = !element ? GPM_PATH : element.filepath;
     const files: string[] = await fs.readdir(elementFilePath);
     // root
@@ -149,7 +150,7 @@ class Source extends File {
     public sourceName: string,
     public readonly command?: vscode.Command
   ) {
-    super(context, sourceName, GPM_PATH, 1, command);
+    super(context, sourceName, getRootPath(), 1, command);
     switch (sourceName) {
       case "github.com":
         this.iconPath = this.getIcon("github.svg");
@@ -183,7 +184,7 @@ class Owner extends File {
     public ownerName: string,
     public readonly command?: vscode.Command
   ) {
-    super(context, ownerName, path.join(GPM_PATH, sourceName), 1, command);
+    super(context, ownerName, path.join(getRootPath(), sourceName), 1, command);
     this.iconPath = this.getIcon("user.svg");
     this.contextValue = "owner";
   }
@@ -200,7 +201,7 @@ class Repo extends File {
     super(
       context,
       repoName,
-      path.join(GPM_PATH, sourceName, ownerName),
+      path.join(getRootPath(), sourceName, ownerName),
       1,
       command
     );
