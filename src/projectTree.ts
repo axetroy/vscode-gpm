@@ -166,6 +166,9 @@ class Source extends File {
       case "apache.org":
         this.iconPath = this.getIcon("apache.svg");
         break;
+      case "googlesource.com":
+        this.iconPath = this.getIcon("google.svg");
+        break;
       default:
         this.iconPath = this.getIcon("git.svg");
     }
