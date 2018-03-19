@@ -7,7 +7,9 @@
   "engines": {
     "vscode": "^1.21.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "main": "./out/extension",
   "activationEvents": [
     "onView:gpmExplorer",
@@ -36,25 +38,62 @@
       {
         "command": "gpm.addProject",
         "title": "add project",
-        "category": "gpm"
+        "category": "gpm",
+        "icon": {
+          "light": "resources/light/add.svg",
+          "dark": "resources/dark/add.svg"
+        }
+      },
+      {
+        "command": "gpm.removeProject",
+        "title": "remove project",
+        "category": "gpm",
+        "icon": {
+          "light": "resources/light/delete.svg",
+          "dark": "resources/dark/delete.svg"
+        }
       },
       {
         "command": "gpm.openProject",
         "title": "open project",
         "category": "gpm"
+      },
+      {
+        "command": "gpm.pruneProject",
+        "title": "prune project",
+        "category": "gpm",
+        "icon": {
+          "light": "resources/light/delete.svg",
+          "dark": "resources/dark/delete.svg"
+        }
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "gpm.refreshProject",
+          "command": "gpm.addProject",
           "group": "navigation@1",
+          "when": "view == gpmExplorer"
+        },
+        {
+          "command": "gpm.pruneProject",
+          "group": "navigation@2",
+          "when": "view == gpmExplorer"
+        },
+        {
+          "command": "gpm.refreshProject",
+          "group": "navigation@3",
           "when": "view == gpmExplorer"
         }
       ],
       "view/item/context": [
         {
           "command": "gpm.openProject",
+          "group": "context",
+          "when": "view == gpmExplorer && viewItem == project"
+        },
+        {
+          "command": "gpm.removeProject",
           "group": "context",
           "when": "view == gpmExplorer && viewItem == project"
         }
@@ -73,6 +112,16 @@
           "when": "never"
         }
       ]
+    },
+    "configuration": {
+      "title": "GPM",
+      "properties": {
+        "gpm.rootPath": {
+          "type": "string",
+          "default": "~/gpm",
+          "description": "Git Package Root Path, default in $HOME/gpm"
+        }
+      }
     }
   },
   "scripts": {
@@ -91,7 +140,10 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
+    "cross-spawn": "^6.0.5",
     "fs-extra": "^5.0.0",
+    "git-url-parse": "^8.2.0",
+    "unique-string": "^1.0.0",
     "which": "^1.3.0"
   }
 }

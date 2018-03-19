@@ -6,6 +6,7 @@ import { ProjectTreeProvider } from "./projectTree";
 import * as fs from "fs";
 import * as path from "path";
 const which = require("which");
+import { Gpm } from "./gpm";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,6 +18,11 @@ export async function activate(context: vscode.ExtensionContext) {
       "Run 'npm install @axetroy/gpm -g' to install gpm."
     );
   }
+
+  const gpm = new Gpm(context);
+  gpm.refresh = function() {
+    gpmExplorer.refresh();
+  };
 
   const gpmExplorer = new ProjectTreeProvider(context);
 
@@ -43,8 +49,11 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // prune project
-  vscode.commands.registerCommand("gpm.prune", element => {
-    gpmExplorer.refresh();
+  vscode.commands.registerCommand("gpm.pruneProject", () => gpm.prune());
+
+  vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
+  vscode.commands.registerCommand("gpm.removeProject", element => {
+    console.log("移除项目...");
   });
 
   vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
