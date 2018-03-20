@@ -2,7 +2,7 @@
     "name": "vscode-gpm",
     "displayName": "gpm",
     "description": "Git Project Manager",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "publisher": "axetroy",
     "engines": {
         "vscode": "^1.21.0"
@@ -63,20 +63,12 @@
             {
                 "command": "gpm.removeProject",
                 "title": "remove project",
-                "category": "gpm",
-                "icon": {
-                    "light": "resources/light/delete.svg",
-                    "dark": "resources/dark/delete.svg"
-                }
+                "category": "gpm"
             },
             {
                 "command": "gpm.openInCurrentWindow",
                 "title": "open in current window",
-                "category": "gpm",
-                "icon": {
-                    "light": "resources/light/delete.svg",
-                    "dark": "resources/dark/delete.svg"
-                }
+                "category": "gpm"
             },
             {
                 "command": "gpm.openInNewWindow",
@@ -86,7 +78,11 @@
             {
                 "command": "gpm.pruneProject",
                 "title": "prune project",
-                "category": "gpm"
+                "category": "gpm",
+                "icon": {
+                    "light": "resources/light/delete.svg",
+                    "dark": "resources/dark/delete.svg"
+                }
             }
         ],
         "menus": {
