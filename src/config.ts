@@ -10,9 +10,7 @@ function getField(field: string): any {
 function getRootPath(): string {
   return getField("rootPath")
     .replace(/^~/, process.env.HOME as string)
-    .replace(/\$\w+/, (word: string) => {
-      return process.env[word.replace(/^\$/, "")];
-    });
+    .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")]);
 }
 
 export { getConfiguration, getField, getRootPath };
