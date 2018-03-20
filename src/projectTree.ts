@@ -11,29 +11,29 @@ function getIcon(context: vscode.ExtensionContext, icon: string) {
   };
 }
 
-type FileType = "file" | "folder" | "star" | "source" | "owner" | "repo";
+export type FileType = "file" | "folder" | "star" | "source" | "owner" | "repo";
 
-interface IFile extends vscode.TreeItem {
+export interface IFile extends vscode.TreeItem {
   type: FileType;
   path: string;
 }
 
-interface IStar extends IFile {
+export interface IStar extends IFile {
   type: FileType;
   star(repo: IRepo): Promise<any>;
   unstar(repo: IRepo): Promise<any>;
   list(): IRepo[];
 }
 
-interface ISource extends IFile {
+export interface ISource extends IFile {
   source: string;
 }
 
-interface IOwner extends ISource {
+export interface IOwner extends ISource {
   owner: string;
 }
 
-interface IRepo extends IOwner {
+export interface IRepo extends IOwner {
   repo: string;
 }
 

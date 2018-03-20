@@ -2,9 +2,10 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { ProjectTreeProvider, Repo } from "./projectTree";
+import * as path from "path";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
+import { ProjectTreeProvider, IRepo } from "./projectTree";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -56,7 +57,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
 
   // remove project
-  vscode.commands.registerCommand("gpm.removeProject", async element => {
+  vscode.commands.registerCommand("gpm.removeProject", async (repo: IRepo) => {
     try {
       const action = await vscode.window.showInformationMessage(
         "[Irrevocable] Are you sure to remove project?",
@@ -69,15 +70,28 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       // remove project
-      await fs.remove(element.filepath);
+      await fs.remove(repo.path);
 
-      const projectList = await fs.readdir(element.dir);
+      const ownerPath: string = path.dirname(repo.path);
+      const sourcePath: string = path.dirname(path.dirname(repo.path));
 
+      const projectList = await fs.readdir(ownerPath);
+
+      // if project is empty, remove owner folder
       if (!projectList || !projectList.length) {
-        await fs.remove(element.dir);
+        await fs.remove(ownerPath);
       }
 
-      vscode.window.showInformationMessage(`Project have been remove.`);
+      const ownerList = await fs.readdir(sourcePath);
+
+      // if owner is empty, remove source folder
+      if (!ownerList || !ownerList.length) {
+        await fs.remove(sourcePath);
+      }
+
+      vscode.window.showInformationMessage(
+        `@${repo.owner}/${repo.repo} have been removed.`
+      );
       gpmExplorer.refresh(); // refresh
     } catch (err) {
       vscode.window.showErrorMessage(err.message);
@@ -85,23 +99,15 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // star project
-  vscode.commands.registerCommand("gpm.starProject", async (repo: Repo) => {
-    try {
-      await gpmExplorer.star.star(repo);
-      await gpmExplorer.refresh();
-    } catch (err) {
-      console.error(err);
-    }
+  vscode.commands.registerCommand("gpm.starProject", async (repo: IRepo) => {
+    await gpmExplorer.star.star(repo);
+    await gpmExplorer.refresh();
   });
 
   // unstar project
-  vscode.commands.registerCommand("gpm.unstarProject", async (repo: Repo) => {
-    try {
-      await gpmExplorer.star.unstar(repo);
-      await gpmExplorer.refresh();
-    } catch (err) {
-      console.error(err);
-    }
+  vscode.commands.registerCommand("gpm.unstarProject", async (repo: IRepo) => {
+    await gpmExplorer.star.unstar(repo);
+    await gpmExplorer.refresh();
   });
 
   vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
