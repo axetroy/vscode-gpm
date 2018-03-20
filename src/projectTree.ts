@@ -26,6 +26,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
     const GPM_PATH = getRootPath();
 
     const elementFilePath: string = !element ? GPM_PATH : element.filepath;
+    await fs.ensureDir(elementFilePath);
     const files: string[] = await fs.readdir(elementFilePath);
     // root
     if (!element) {
