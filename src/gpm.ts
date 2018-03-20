@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs-extra";
+import { ChildProcess } from "child_process";
+import * as shell from "shelljs";
 const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
-const which = require("which");
 const Walker = require("@axetroy/walk");
-import { runShell, isLink } from "./utils";
+import { isLink } from "./utils";
 import { getRootPath } from "./config";
 
 export class Gpm {
@@ -13,7 +14,7 @@ export class Gpm {
   public async add() {
     // make sure git instsalled
     try {
-      const r = which.sync("git");
+      const r = shell.which("git");
       if (!r) {
         throw null;
       }
@@ -69,11 +70,62 @@ export class Gpm {
 
     vscode.window.showInformationMessage("cloning...");
 
-    // vscode.window.createOutputChannel()
-    await runShell(`git clone ${gitProjectAddress}`, {
-      cwd: randomTemp
-      // stdio: "inherit"
-    });
+    const channel = vscode.window.createOutputChannel("gpm");
+
+    try {
+      await new Promise((resolve, reject) => {
+        shell.cd(randomTemp);
+
+        const stream = shell.exec(
+          `git clone ${gitProjectAddress as string} --progress -v`,
+          {
+            async: true
+          }
+        ) as ChildProcess;
+
+        stream
+          .on("error", data => channel.append(data + ""))
+          .on("close", (code: number, signal: string) => {
+            channel.show();
+            if (code !== 0) {
+              reject(signal);
+            } else {
+              resolve();
+            }
+          });
+
+        // not support pipe to process
+        stream.stdout
+          .setEncoding("utf8")
+          .on("data", data => {
+            channel.append(data + "");
+            channel.show();
+          })
+          .on("error", data => {
+            channel.append(data + "");
+            channel.show();
+          });
+        // not support pipe to process
+        stream.stderr
+          .setEncoding("utf8")
+          .on("data", data => {
+            channel.append(data + "");
+            channel.show();
+          })
+          .on("error", data => {
+            channel.append(data + "");
+            channel.show();
+          });
+      });
+      setTimeout(() => {
+        channel.dispose();
+      }, 2000);
+    } catch (err) {
+      setTimeout(() => {
+        channel.dispose();
+      }, 2000);
+      throw err;
+    }
 
     await fs.ensureDir(baseDir);
     await fs.ensureDir(sourceDir);
@@ -101,6 +153,8 @@ export class Gpm {
 
     // refresh explorer
     this.refresh();
+
+    // run the hooks
   }
   public async prune() {
     const action = await vscode.window.showWarningMessage(
