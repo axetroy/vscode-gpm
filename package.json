@@ -44,7 +44,7 @@
         "commands": [
             {
                 "command": "gpm.refreshProject",
-                "title": "refresh project",
+                "title": "Refresh project",
                 "category": "gpm",
                 "icon": {
                     "light": "resources/light/refresh.svg",
@@ -53,7 +53,7 @@
             },
             {
                 "command": "gpm.addProject",
-                "title": "add project",
+                "title": "Add project",
                 "category": "gpm",
                 "icon": {
                     "light": "resources/light/add.svg",
@@ -61,23 +61,18 @@
                 }
             },
             {
-                "command": "gpm.removeProject",
-                "title": "remove project",
-                "category": "gpm"
-            },
-            {
                 "command": "gpm.openInCurrentWindow",
-                "title": "open in current window",
+                "title": "Open in current window",
                 "category": "gpm"
             },
             {
                 "command": "gpm.openInNewWindow",
-                "title": "open in new window",
+                "title": "Open in new window",
                 "category": "gpm"
             },
             {
                 "command": "gpm.pruneProject",
-                "title": "prune project",
+                "title": "Prune project",
                 "category": "gpm",
                 "icon": {
                     "light": "resources/light/delete.svg",
@@ -86,12 +81,17 @@
             },
             {
                 "command": "gpm.starProject",
-                "title": "star",
+                "title": "Star",
                 "category": "gpm"
             },
             {
                 "command": "gpm.unstarProject",
-                "title": "unstar",
+                "title": "Unstar",
+                "category": "gpm"
+            },
+            {
+                "command": "gpm.removeProject",
+                "title": "Remove project",
                 "category": "gpm"
             }
         ],
@@ -125,17 +125,17 @@
                     "when": "view == gpmExplorer && viewItem == project"
                 },
                 {
-                    "command": "gpm.removeProject",
-                    "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
-                },
-                {
                     "command": "gpm.starProject",
                     "group": "context",
                     "when": "view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.unstarProject",
+                    "group": "context",
+                    "when": "view == gpmExplorer && viewItem == project"
+                },
+                {
+                    "command": "gpm.removeProject",
                     "group": "context",
                     "when": "view == gpmExplorer && viewItem == project"
                 }
