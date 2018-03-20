@@ -2,34 +2,240 @@ import * as vscode from "vscode";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { getRootPath } from "./config";
+import { start } from "repl";
 
-export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
+function getIcon(context: vscode.ExtensionContext, icon: string) {
+  return {
+    dark: context.asAbsolutePath(path.join("resources", "dark", icon)),
+    light: context.asAbsolutePath(path.join("resources", "light", icon))
+  };
+}
+
+type FileType = "file" | "folder" | "star" | "source" | "owner" | "repo";
+
+interface IFile extends vscode.TreeItem {
+  type: FileType;
+  path: string;
+}
+
+interface IStar extends IFile {
+  type: FileType;
+  star(repo: IRepo): Promise<any>;
+  unstar(repo: IRepo): Promise<any>;
+  list(): IRepo[];
+}
+
+interface ISource extends IFile {
+  source: string;
+}
+
+interface IOwner extends ISource {
+  owner: string;
+}
+
+interface IRepo extends IOwner {
+  repo: string;
+}
+
+function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
+  return {
+    label: path.basename(filepath),
+    contextValue: "file",
+    collapsibleState: 0,
+    command: void 0,
+    iconPath: vscode.ThemeIcon.File,
+    // customer property
+    type: "file",
+    path: filepath
+  };
+}
+
+function createFolder(
+  context: vscode.ExtensionContext,
+  filepath: string
+): IFile {
+  return {
+    label: path.basename(filepath),
+    contextValue: "file",
+    collapsibleState: 1,
+    command: void 0,
+    iconPath: vscode.ThemeIcon.Folder,
+    // customer property
+    type: "folder",
+    path: filepath
+  };
+}
+
+function createSource(
+  context: vscode.ExtensionContext,
+  sourceName: string
+): ISource {
+  const rootPath: string = getRootPath();
+  const item: ISource = {
+    label: sourceName,
+    contextValue: "source",
+    collapsibleState: 1,
+    command: void 0,
+    iconPath: "",
+    // customer property
+    source: sourceName,
+    type: "source",
+    path: path.join(rootPath, sourceName)
+  };
+  switch (sourceName) {
+    case "github.com":
+      item.iconPath = getIcon(context, "github.svg");
+      break;
+    case "gitlab.com":
+      item.iconPath = getIcon(context, "gitlab.svg");
+      break;
+    case "coding.net":
+      item.iconPath = getIcon(context, "coding.svg");
+      break;
+    case "bitbucket.org":
+      item.iconPath = getIcon(context, "bitbucket.svg");
+      break;
+    case "apache.org":
+      item.iconPath = getIcon(context, "apache.svg");
+      break;
+    case "googlesource.com":
+      item.iconPath = getIcon(context, "google.svg");
+      break;
+    default:
+      item.iconPath = getIcon(context, "git.svg");
+  }
+  return item;
+}
+
+function createOwner(
+  context: vscode.ExtensionContext,
+  source: ISource,
+  ownerName: string
+): IOwner {
+  return {
+    label: ownerName,
+    contextValue: "owner",
+    collapsibleState: 1,
+    command: void 0,
+    iconPath: getIcon(context, "user.svg"),
+    // customer property
+    source: source.source,
+    owner: ownerName,
+    type: "owner",
+    path: path.join(source.path, ownerName)
+  };
+}
+
+function createRepo(
+  context: vscode.ExtensionContext,
+  owner: IOwner,
+  repoName: string
+): IRepo {
+  return {
+    label: repoName,
+    contextValue: "project",
+    collapsibleState: 1,
+    command: void 0,
+    iconPath: getIcon(context, "repo.svg"),
+    // customer property
+    source: owner.source,
+    owner: owner.owner,
+    repo: repoName,
+    type: "repo",
+    path: path.join(owner.path, repoName)
+  };
+}
+
+function createStar(context: vscode.ExtensionContext): IStar {
+  const storageKey: string = "@star";
+  const starList: IRepo[] = context.globalState.get(storageKey) || [];
+
+  return {
+    label: "Your star",
+    contextValue: "star",
+    collapsibleState: 2,
+    command: void 0,
+    iconPath: getIcon(context, "star.svg"),
+    tooltip: "The project you stared",
+    // customer property
+    type: "star",
+    path: "", // empty path
+    list() {
+      return starList;
+    },
+    async star(repo: IRepo) {
+      const index: number = starList.findIndex(r => {
+        return (
+          r.source === repo.source &&
+          r.owner === repo.owner &&
+          r.repo === repo.repo
+        );
+      });
+
+      if (index < 0) {
+        starList.push(repo);
+        context.globalState.update(storageKey, starList);
+      }
+    },
+    async unstar(repo: IRepo) {
+      const index: number = starList.findIndex(r => {
+        return (
+          r.source === repo.source &&
+          r.owner === repo.owner &&
+          r.repo === repo.repo
+        );
+      });
+
+      if (index >= 0) {
+        starList.splice(index, 1);
+        context.globalState.update(storageKey, starList);
+      }
+    }
+  };
+}
+
+const type = {
+  isSource: (o: any): o is ISource => o && o.type === "source",
+  isOwner: (o: any): o is IOwner => o && o.type === "owner",
+  isStar: (o: any): o is IStar => o && o.type === "star"
+};
+
+export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   // @tslint-ignore: next-line
   private privateOnDidChangeTreeData: vscode.EventEmitter<
-    File | undefined
-  > = new vscode.EventEmitter<File | undefined>();
-  public readonly onDidChangeTreeData: vscode.Event<File | undefined> = this
+    IFile | undefined
+  > = new vscode.EventEmitter<IFile | undefined>();
+  public readonly onDidChangeTreeData: vscode.Event<IFile | undefined> = this
     .privateOnDidChangeTreeData.event;
 
+  public star = createStar(this.context);
   constructor(public context: vscode.ExtensionContext) {}
 
   public refresh(): void {
     this.privateOnDidChangeTreeData.fire();
   }
 
-  public getTreeItem(element: File): vscode.TreeItem {
+  public getTreeItem(element: IFile): vscode.TreeItem {
     return element;
   }
 
-  public async getChildren(element?: File): Promise<File[]> {
-    let children: File[] = [];
-    const GPM_PATH = getRootPath();
+  public async getChildren(element?: IFile): Promise<IFile[]> {
+    if (type.isStar(element)) {
+      return element.list();
+    }
 
-    const elementFilePath: string = !element ? GPM_PATH : element.filepath;
-    await fs.ensureDir(elementFilePath);
+    let children: IFile[] = [];
+    const GPM_PATH: string = getRootPath();
+
+    const elementFilePath: string = !element ? GPM_PATH : element.path;
+
     const files: string[] = await fs.readdir(elementFilePath);
     // root
     if (!element) {
+      if (this.star.list().length) {
+        children.push(this.star);
+      }
+
       for (const file of files) {
         if (/^\./.test(file)) {
           continue;
@@ -39,47 +245,55 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
         if (statInfo.isFile()) {
           continue;
         }
-        children.push(new Source(this.context, file));
+
+        const owners = await fs.readdir(path.join(GPM_PATH, file));
+
+        // skip empty project
+        if (!owners || !owners.length) {
+          continue;
+        }
+
+        children.push(createSource(this.context, file));
       }
-    } else if (element instanceof Source) {
+    } else if (type.isSource(element)) {
       for (const file of files) {
         if (/^\./.test(file)) {
           continue;
         }
-        const statInfo = await fs.stat(path.join(element.filepath, file));
+        const statInfo = await fs.stat(path.join(element.path, file));
 
         if (statInfo.isFile()) {
           continue;
         }
 
-        children.push(new Owner(this.context, element.filename, file));
+        const repos = await fs.readdir(path.join(element.path, file));
+
+        // skip empty project
+        if (!repos || !repos.length) {
+          continue;
+        }
+
+        children.push(createOwner(this.context, element, file));
       }
-    } else if (element instanceof Owner) {
+    } else if (type.isOwner(element)) {
       for (const file of files) {
         if (/^\./.test(file)) {
           continue;
         }
-        const statInfo = await fs.stat(path.join(element.filepath, file));
+        const statInfo = await fs.stat(path.join(element.path, file));
 
         if (statInfo.isFile()) {
           continue;
         }
 
-        children.push(
-          new Repo(
-            this.context,
-            path.basename(element.dir),
-            element.filename,
-            file
-          )
-        );
+        children.push(createRepo(this.context, element, file));
       }
     } else {
       const fileList: string[] = [];
       const dirList: string[] = [];
 
       for (const file of files) {
-        const stat = await fs.stat(path.join(element.filepath, file));
+        const stat = await fs.stat(path.join((element as IFile).path, file));
         if (stat.isDirectory()) {
           dirList.push(file);
         } else {
@@ -88,124 +302,16 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<File> {
       }
 
       children = dirList
-        .map(dir => {
-          return new File(
-            this.context,
-            dir,
-            element.filepath,
-            1,
-            void 0,
-            vscode.ThemeIcon.Folder
-          );
-        })
+        .map(dir => createFolder(this.context, path.join(element.path, dir)))
         .concat(
-          fileList.map(filename => {
-            return new File(
+          fileList.map(filename =>
+            createFile(
               this.context,
-              filename,
-              element.filepath,
-              0,
-              {
-                title: "打开",
-                command: "gpm.open",
-                arguments: [path.join(element.filepath, filename)]
-              },
-              vscode.ThemeIcon.File
-            );
-          })
+              path.join((element as IFile).path, filename)
+            )
+          )
         );
     }
     return children;
-  }
-}
-
-class File extends vscode.TreeItem {
-  public filepath: string;
-  constructor(
-    public context: vscode.ExtensionContext,
-    public filename: string,
-    public dir: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly command?: vscode.Command,
-    public iconPath?:
-      | string
-      | vscode.Uri
-      | { light: string | vscode.Uri; dark: string | vscode.Uri }
-      | vscode.ThemeIcon
-  ) {
-    super(filename, collapsibleState);
-    this.filepath = path.join(dir, filename);
-  }
-  public getIcon(icon: string) {
-    return {
-      dark: this.context.asAbsolutePath(path.join("resources", "dark", icon)),
-      light: this.context.asAbsolutePath(path.join("resources", "light", icon))
-    };
-  }
-}
-
-class Source extends File {
-  constructor(
-    public context: vscode.ExtensionContext,
-    public sourceName: string,
-    public readonly command?: vscode.Command
-  ) {
-    super(context, sourceName, getRootPath(), 1, command);
-    switch (sourceName) {
-      case "github.com":
-        this.iconPath = this.getIcon("github.svg");
-        break;
-      case "gitlab.com":
-        this.iconPath = this.getIcon("gitlab.svg");
-        break;
-      case "coding.net":
-        this.iconPath = this.getIcon("coding.svg");
-        break;
-      case "bitbucket.org":
-        this.iconPath = this.getIcon("bitbucket.svg");
-        break;
-      case "apache.org":
-        this.iconPath = this.getIcon("apache.svg");
-        break;
-      case "googlesource.com":
-        this.iconPath = this.getIcon("google.svg");
-        break;
-      default:
-        this.iconPath = this.getIcon("git.svg");
-    }
-    this.contextValue = "source";
-  }
-}
-
-class Owner extends File {
-  constructor(
-    public context: vscode.ExtensionContext,
-    public sourceName: string,
-    public ownerName: string,
-    public readonly command?: vscode.Command
-  ) {
-    super(context, ownerName, path.join(getRootPath(), sourceName), 1, command);
-    this.iconPath = this.getIcon("user.svg");
-    this.contextValue = "owner";
-  }
-}
-
-class Repo extends File {
-  constructor(
-    public context: vscode.ExtensionContext,
-    public sourceName: string,
-    public ownerName: string,
-    public repoName: string,
-    public readonly command?: vscode.Command
-  ) {
-    super(
-      context,
-      repoName,
-      path.join(getRootPath(), sourceName, ownerName),
-      1,
-      command
-    );
-    this.iconPath = this.getIcon("repo.svg");
-    this.contextValue = "project";
   }
 }

@@ -2,7 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { ProjectTreeProvider } from "./projectTree";
+import { ProjectTreeProvider, Repo } from "./projectTree";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
 
@@ -81,6 +81,26 @@ export async function activate(context: vscode.ExtensionContext) {
       gpmExplorer.refresh(); // refresh
     } catch (err) {
       vscode.window.showErrorMessage(err.message);
+    }
+  });
+
+  // star project
+  vscode.commands.registerCommand("gpm.starProject", async (repo: Repo) => {
+    try {
+      await gpmExplorer.star.star(repo);
+      await gpmExplorer.refresh();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  // unstar project
+  vscode.commands.registerCommand("gpm.unstarProject", async (repo: Repo) => {
+    try {
+      await gpmExplorer.star.unstar(repo);
+      await gpmExplorer.refresh();
+    } catch (err) {
+      console.error(err);
     }
   });
 

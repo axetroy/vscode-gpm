@@ -83,6 +83,16 @@
                     "light": "resources/light/delete.svg",
                     "dark": "resources/dark/delete.svg"
                 }
+            },
+            {
+                "command": "gpm.starProject",
+                "title": "star",
+                "category": "gpm"
+            },
+            {
+                "command": "gpm.unstarProject",
+                "title": "unstar",
+                "category": "gpm"
             }
         ],
         "menus": {
@@ -118,6 +128,16 @@
                     "command": "gpm.removeProject",
                     "group": "context",
                     "when": "view == gpmExplorer && viewItem == project"
+                },
+                {
+                    "command": "gpm.starProject",
+                    "group": "context",
+                    "when": "view == gpmExplorer && viewItem == project"
+                },
+                {
+                    "command": "gpm.unstarProject",
+                    "group": "context",
+                    "when": "view == gpmExplorer && viewItem == project"
                 }
             ],
             "commandPalette": [
@@ -131,6 +151,14 @@
                 },
                 {
                     "command": "gpm.openInNewWindow",
+                    "when": "never"
+                },
+                {
+                    "command": "gpm.starProject",
+                    "when": "never"
+                },
+                {
+                    "command": "gpm.unstarProject",
                     "when": "never"
                 }
             ]
