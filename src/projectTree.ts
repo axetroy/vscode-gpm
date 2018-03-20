@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { getRootPath } from "./config";
-import { start } from "repl";
 
 function getIcon(context: vscode.ExtensionContext, icon: string) {
   return {
