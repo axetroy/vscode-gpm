@@ -55,6 +55,7 @@ export class Gpm {
     const repoDir: string = path.join(ownerDir, gitInfo.name);
 
     if (await fs.pathExists(repoDir)) {
+      // TODO: support clone with another name if it exist
       const actionName = await vscode.window.showWarningMessage(
         "Do you want to overwrite the exist project?",
         "Overwrite",
@@ -155,6 +156,7 @@ export class Gpm {
     this.refresh();
 
     // run the hooks
+    // TODO: support hooks
   }
   public async prune() {
     const action = await vscode.window.showWarningMessage(

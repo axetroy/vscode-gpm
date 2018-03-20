@@ -99,12 +99,14 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // star project
+  // TODO: support star same name project
   vscode.commands.registerCommand("gpm.starProject", async (repo: IRepo) => {
     await gpmExplorer.star.star(repo);
     await gpmExplorer.refresh();
   });
 
   // unstar project
+  // TODO: only show unstar when project was stared
   vscode.commands.registerCommand("gpm.unstarProject", async (repo: IRepo) => {
     await gpmExplorer.star.unstar(repo);
     await gpmExplorer.refresh();
