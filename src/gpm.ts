@@ -23,7 +23,8 @@ export class Gpm {
     }
 
     const gitProjectAddress = await vscode.window.showInputBox({
-      placeHolder: "Enter git project address. support https and ssh"
+      placeHolder: "e.g. https://github.com/eggjs/egg.git",
+      prompt: "Enter git project https/ssh address."
     });
 
     if (!gitProjectAddress) {
