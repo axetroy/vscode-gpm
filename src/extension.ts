@@ -11,7 +11,16 @@ import { ProjectTreeProvider, IRepo } from "./projectTree";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
+  // status bar
+  const statusBar = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right,
+    100
+  );
+
   const gpm = new Gpm(context);
+
+  gpm.statusBar = statusBar;
+
   // overwrite refresh method
   gpm.refresh = () => gpmExplorer.refresh();
 
@@ -82,6 +91,10 @@ export async function activate(context: vscode.ExtensionContext) {
     await gpmExplorer.refresh();
   });
 
+  vscode.commands.registerCommand("gpm.interruptCommand", () =>
+    gpm.interruptCommand()
+  );
+
   // clear star
   vscode.commands.registerCommand(
     "gpm.clearStarProject",
@@ -100,6 +113,7 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // tree view
   vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
 }
 

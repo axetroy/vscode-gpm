@@ -107,6 +107,11 @@
                 "command": "gpm.removeProject",
                 "title": "Remove project",
                 "category": "gpm"
+            },
+            {
+                "command": "gpm.interruptCommand",
+                "title": "Interrupt current running command",
+                "category": "gpm"
             }
         ],
         "menus": {

@@ -9,6 +9,7 @@
     "no-implicit-dependencies": false,
     "max-classes-per-file": false,
     "no-submodule-imports": false,
-    "no-console": false
+    "no-console": false,
+    "no-this-assignment": false
   }
 }

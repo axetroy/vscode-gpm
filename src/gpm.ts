@@ -28,6 +28,8 @@ interface IRc {
 }
 
 export class Gpm {
+  private currentStream: ChildProcess | void = void 0;
+  public statusBar: vscode.StatusBarItem | void = void 0;
   // cache path
   public cachePath: string = this.context.storagePath ||
     path.join(process.env.HOME as string, ".gpm", "temp");
@@ -304,6 +306,37 @@ export class Gpm {
       await vscode.window.showErrorMessage(err.message);
     }
   }
+  public async interruptCommand() {
+    if (this.currentStream) {
+      const confirm = await vscode.window.showWarningMessage(
+        "Do you want to interrupt command?",
+        "Yes",
+        "No"
+      );
+      switch (confirm) {
+        case "Yes":
+          this.currentStream.kill();
+          this.currentStream = void 0;
+          if (this.statusBar) {
+            this.statusBar.text = "";
+            this.statusBar.command = "";
+            this.statusBar.hide();
+          }
+          break;
+        default:
+          return;
+      }
+    }
+  }
+  private resetStatusBar() {
+    const statusBar = this.statusBar;
+    if (statusBar) {
+      statusBar.text = "";
+      statusBar.command = void 0;
+      statusBar.hide();
+      this.currentStream = void 0;
+    }
+  }
   public refresh() {
     // empty refresh
     // it will overwrite in other place
@@ -313,6 +346,8 @@ export class Gpm {
     command: string,
     channel?: vscode.OutputChannel
   ) {
+    const gpmEntity = this;
+    const statusBar = this.statusBar as vscode.StatusBarItem;
     return new Promise((resolve, reject) => {
       shell.cd(cwd);
 
@@ -320,19 +355,33 @@ export class Gpm {
         async: true
       }) as ChildProcess;
 
+      this.currentStream = stream;
+
       function log(message: string | Buffer | Error) {
+        statusBar.text = message + "";
+        statusBar.command = "gpm.interruptCommand"; // set command for cancel clone
+        statusBar.show();
         if (channel) {
           channel.append(message + "");
           channel.show();
         }
+
+        // if stream have been kill, then reset status bar
+        if (stream.killed) {
+          gpmEntity.resetStatusBar();
+        }
       }
 
       stream
-        .on("error", data => channel && channel.append(data + ""))
+        .on("error", data => {
+          log(data);
+          this.resetStatusBar();
+        })
         .on("close", (code: number, signal: string) => {
           if (channel) {
             channel.show();
           }
+          this.resetStatusBar();
           if (code !== 0) {
             reject(signal);
           } else {
