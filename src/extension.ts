@@ -112,6 +112,15 @@ export async function activate(context: vscode.ExtensionContext) {
     await gpmExplorer.refresh();
   });
 
+  // watch config change and refresh
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(e => {
+      if (e.affectsConfiguration("gpm.rootPath")) {
+        gpmExplorer.refresh();
+      }
+    })
+  );
+
   vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
 }
 
