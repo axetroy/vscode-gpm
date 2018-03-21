@@ -72,6 +72,9 @@ export async function activate(context: vscode.ExtensionContext) {
       // remove project
       await fs.remove(repo.path);
 
+      // unstar prject
+      gpmExplorer.star.unstar(repo);
+
       const ownerPath: string = path.dirname(repo.path);
       const sourcePath: string = path.dirname(path.dirname(repo.path));
 
@@ -113,10 +116,13 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // clear star
-  vscode.commands.registerCommand("gpm.clearStarProject", async (repo: IRepo) => {
-    await gpmExplorer.star.clear();
-    await gpmExplorer.refresh();
-  });
+  vscode.commands.registerCommand(
+    "gpm.clearStarProject",
+    async (repo: IRepo) => {
+      await gpmExplorer.star.clear();
+      await gpmExplorer.refresh();
+    }
+  );
 
   // watch config change and refresh
   context.subscriptions.push(
