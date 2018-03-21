@@ -11,6 +11,8 @@ vscode-gpm is a extension to manage project.
 * [x] Star project
 * [x] Custom hooks
 
+## [CHANGELOG](https://github.com/axetroy/vscode-gpm/blob/master/CHANGELOG.md)
+
 ## Screen shot
 
 ### Add project

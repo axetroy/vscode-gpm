@@ -1,3 +1,23 @@
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/axetroy/vscode-gpm/compare/v0.7.0...v0.8.0) (2018-03-21)
+
+
+### Bug Fixes
+
+* remove project did not unstar it ([5b2c9b7](https://github.com/axetroy/vscode-gpm/commit/5b2c9b7))
+* whatever hook run, it should going on ([81091fb](https://github.com/axetroy/vscode-gpm/commit/81091fb))
+
+
+### Features
+
+* add clear cache command ([d3914f9](https://github.com/axetroy/vscode-gpm/commit/d3914f9))
+* add config to set hook should run auto or not, default is not run hook ([bf59a95](https://github.com/axetroy/vscode-gpm/commit/bf59a95))
+* support clear your stars ([4780e7d](https://github.com/axetroy/vscode-gpm/commit/4780e7d))
+* support preremove and postremove hook ([1f84262](https://github.com/axetroy/vscode-gpm/commit/1f84262))
+* support prinf clone process in status bar, and now command is cancelable just click status bar ([e094f12](https://github.com/axetroy/vscode-gpm/commit/e094f12))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/axetroy/vscode-gpm/compare/v0.6.0...v0.7.0) (2018-03-21)
 
