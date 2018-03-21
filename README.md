@@ -54,23 +54,23 @@ Make sure the file `.gpmrc` have exist in the target project.
 
 support hooks:
 
-* [x] postadd: The hook after add project, run command in **project path**
-* [x] preRemove: The hook before remove project, run command in **project path**
-* [x] postRemove: The hooks after remove project, run command in **owner path**
+* [x] postadd: run command in **project path** after add project
+* [x] preRemove: run command in **project path** before remove project.
+* [x] postRemove: run command in **owner path** after remove project.
 
 ## Q & A
 
-Q: Did I need to install [gpm](https://github.com/gpmer/gpm.js) in global?
+Q: Should I need to install [gpm](https://github.com/gpmer/gpm.js) in global?
 
 A: No, vscode-gpm is an independent package.
 
-Q: How to interrupt `git clone` command if you got bar network
+Q: How to interrupt `git clone` command if you got bar network?
 
 A: Clone progress will print in status bar. click status bar and show an dialog to confirm interrupt it.
 
 Q: Where are the project be cloned?
 
-A: See to [Configuration](#Configuration), project will save in `gpm.rootPath`
+A: See to [Configuration](#configuration), project will save in `gpm.rootPath`
 
 ## Related
 
