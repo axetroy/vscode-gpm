@@ -4,7 +4,7 @@ vscode-gpm is a extension to manage project.
 
 ## Features
 
-* [x] Manage your projects in tree view.
+* [x] Manage your projects in tree view
 * [x] Add project
 * [x] Remove project
 * [x] Prune project
@@ -12,6 +12,12 @@ vscode-gpm is a extension to manage project.
 * [x] Custom hooks
 
 ## [CHANGELOG](https://github.com/axetroy/vscode-gpm/blob/master/CHANGELOG.md)
+
+## Support platform
+
+* [ ] Windows (Not test on windows)
+* [x] Mac OS
+* [x] Linux
 
 ## Screen shot
 
@@ -54,7 +60,7 @@ Make sure the file `.gpmrc` have exist in the target project.
 
 support hooks:
 
-* [x] postadd: run command in **project path** after add project
+* [x] postadd: run command in **project path** after add project.
 * [x] preRemove: run command in **project path** before remove project.
 * [x] postRemove: run command in **owner path** after remove project.
 

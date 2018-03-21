@@ -114,13 +114,10 @@ export class Gpm {
 
     vscode.window.showInformationMessage("cloning...");
 
-    const channel = vscode.window.createOutputChannel("gpm");
-
     try {
       await this.runShell(
         randomTemp,
-        `git clone ${gitProjectAddress as string} --progress -v`,
-        channel
+        `git clone ${gitProjectAddress as string} --progress -v`
       );
 
       await fs.ensureDir(baseDir);
@@ -142,7 +139,7 @@ export class Gpm {
         // run the hooks
         // whatever hook success or fail
         // it still going on
-        await this.runHook(repoDir, "postadd", channel);
+        await this.runHook(repoDir, "postadd");
       } catch (err) {
         console.error(err);
       }
@@ -164,17 +161,9 @@ export class Gpm {
 
       // refresh explorer
       this.refresh();
-      // dispose chanel
-      setTimeout(() => {
-        channel.dispose();
-      }, 5000);
     } catch (err) {
       // refresh explorer
       this.refresh();
-      // dispose chanel
-      setTimeout(() => {
-        channel.dispose();
-      }, 5000);
       throw err;
     }
   }
@@ -229,45 +218,36 @@ export class Gpm {
     this.refresh();
   }
   public async remove(repo: IRepo, gpmExplorer: ProjectTreeProvider) {
-    try {
-      const action = await vscode.window.showInformationMessage(
-        "[Irrevocable] Are you sure to remove project?",
-        "Yes",
-        "No"
-      );
+    const action = await vscode.window.showInformationMessage(
+      "[Irrevocable] Are you sure to remove project?",
+      "Yes",
+      "No"
+    );
 
-      if (action !== "Yes") {
-        return;
+    if (action !== "Yes") {
+      return;
+    }
+
+    try {
+      // run the hooks before remove project
+      // whatever hook success or fail
+      // it still going on
+      try {
+        await this.runHook(repo.path, "preremove");
+      } catch (err) {
+        console.error(err);
       }
 
-      const channel = vscode.window.createOutputChannel("gpm.remove");
+      // remove project
+      await fs.remove(repo.path);
 
+      // run the hooks after remove project
+      // whatever hook success or fail
+      // it still going on
       try {
-        // run the hooks before remove project
-        // whatever hook success or fail
-        // it still going on
-        try {
-          await this.runHook(repo.path, "preremove", channel);
-        } catch (err) {
-          console.error(err);
-        }
-
-        // remove project
-        await fs.remove(repo.path);
-
-        // run the hooks after remove project
-        // whatever hook success or fail
-        // it still going on
-        try {
-          await this.runHook(path.dirname(repo.path), "postremove", channel);
-        } catch (err) {
-          console.error(err);
-        }
-      } finally {
-        // close channel
-        setTimeout(() => {
-          channel.dispose();
-        }, 5000);
+        await this.runHook(path.dirname(repo.path), "postremove");
+      } catch (err) {
+        console.error(err);
       }
 
       // unstar prject
@@ -341,11 +321,7 @@ export class Gpm {
     // empty refresh
     // it will overwrite in other place
   }
-  private async runShell(
-    cwd: string,
-    command: string,
-    channel?: vscode.OutputChannel
-  ) {
+  private async runShell(cwd: string, command: string) {
     const gpmEntity = this;
     const statusBar = this.statusBar as vscode.StatusBarItem;
     return new Promise((resolve, reject) => {
@@ -361,10 +337,6 @@ export class Gpm {
         statusBar.text = message + "";
         statusBar.command = "gpm.interruptCommand"; // set command for cancel clone
         statusBar.show();
-        if (channel) {
-          channel.append(message + "");
-          channel.show();
-        }
 
         // if stream have been kill, then reset status bar
         if (stream.killed) {
@@ -378,9 +350,6 @@ export class Gpm {
           this.resetStatusBar();
         })
         .on("close", (code: number, signal: string) => {
-          if (channel) {
-            channel.show();
-          }
           this.resetStatusBar();
           if (code !== 0) {
             reject(signal);
@@ -401,11 +370,7 @@ export class Gpm {
         .on("error", data => log(data));
     });
   }
-  public async runHook(
-    cwd: string,
-    hookName: Hook,
-    channel?: vscode.OutputChannel
-  ) {
+  public async runHook(cwd: string, hookName: Hook) {
     // if user disable auto run hook
     if (!getIsAutoRunHook()) {
       return;
@@ -420,7 +385,7 @@ export class Gpm {
         const cmd = rc.hooks[hookName] || rc.hooks.postadd;
         if (cmd) {
           vscode.window.showInformationMessage("Running hook: " + cmd);
-          await this.runShell(cwd, cmd, channel);
+          await this.runShell(cwd, cmd);
         }
       }
     }
