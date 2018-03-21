@@ -137,10 +137,14 @@ export class Gpm {
       // refresh explorer
       this.refresh();
 
-      const gpmrcPath = path.join(repoDir, ".gpmrc");
-
-      // run the hooks
-      await this.runHook(repoDir, "postadd");
+      try {
+        // run the hooks
+        // whatever hook success or fail
+        // it still going on
+        await this.runHook(repoDir, "postadd", channel);
+      } catch (err) {
+        console.error(err);
+      }
 
       const action: string | void = await vscode.window.showInformationMessage(
         `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
@@ -167,9 +171,9 @@ export class Gpm {
       // refresh explorer
       this.refresh();
       // dispose chanel
-      // setTimeout(() => {
-      //   channel.dispose();
-      // }, 5000);
+      setTimeout(() => {
+        channel.dispose();
+      }, 5000);
       throw err;
     }
   }

@@ -74,13 +74,25 @@ export async function activate(context: vscode.ExtensionContext) {
 
       try {
         // run the hooks before remove project
-        await gpm.runHook(repo.path, "preremove", channel);
+        // whatever hook success or fail
+        // it still going on
+        try {
+          await gpm.runHook(repo.path, "preremove", channel);
+        } catch (err) {
+          console.error(err);
+        }
 
         // remove project
         await fs.remove(repo.path);
 
         // run the hooks after remove project
-        await gpm.runHook(path.dirname(repo.path), "postremove", channel);
+        // whatever hook success or fail
+        // it still going on
+        try {
+          await gpm.runHook(path.dirname(repo.path), "postremove", channel);
+        } catch (err) {
+          console.error(err);
+        }
       } finally {
         // close channel
         setTimeout(() => {
