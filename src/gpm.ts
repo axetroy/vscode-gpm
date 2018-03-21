@@ -11,14 +11,9 @@ import { getRootPath } from "./config";
 
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
+type PruneAction = "Continue" | "Cancel";
 
-type Hook =
-  | "add"
-  | "postadd"
-  | "preremove"
-  | "postremove"
-  | "preprune"
-  | "postprune";
+type Hook = "add" | "postadd" | "preremove" | "postremove";
 
 interface IRc {
   hooks?: {
@@ -185,8 +180,11 @@ export class Gpm {
       "Cancel"
     );
 
-    if (action !== "Continue") {
-      return;
+    switch (action as PruneAction) {
+      case "Continue":
+        break;
+      default:
+        return;
     }
 
     const walker = new Walker(getRootPath());
