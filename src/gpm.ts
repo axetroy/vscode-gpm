@@ -9,8 +9,43 @@ const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
 import { getRootPath } from "./config";
 
+type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
+type ProjectPostAddAction = "Open" | "Cancel";
+
 export class Gpm {
   constructor(public context: vscode.ExtensionContext) {}
+  private async getValidProjectName(repoPath: string): Promise<string | void> {
+    if (await fs.pathExists(repoPath)) {
+      // TODO: support clone with another name if it exist
+      const actionName = await vscode.window.showWarningMessage(
+        "Project already exists.",
+        "Overwrite",
+        "Rename",
+        "Cancel"
+      );
+
+      switch (actionName as ProjectExistAction) {
+        case "Overwrite":
+          return repoPath;
+        case "Rename":
+          const newName = await vscode.window.showInputBox({
+            prompt: "Enter a new name of project."
+          });
+
+          if (!newName) {
+            return;
+          }
+
+          return this.getValidProjectName(
+            path.join(path.dirname(repoPath), newName)
+          );
+        default:
+          return;
+      }
+    } else {
+      return repoPath;
+    }
+  }
   public async add() {
     // make sure git instsalled
     try {
@@ -52,19 +87,13 @@ export class Gpm {
     const baseDir: string = getRootPath();
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
-    const repoDir: string = path.join(ownerDir, gitInfo.name);
 
-    if (await fs.pathExists(repoDir)) {
-      // TODO: support clone with another name if it exist
-      const actionName = await vscode.window.showWarningMessage(
-        "Do you want to overwrite the exist project?",
-        "Overwrite",
-        "Cancel"
-      );
+    const repoDir = await this.getValidProjectName(
+      path.join(ownerDir, gitInfo.name)
+    );
 
-      if (actionName !== "Overwrite") {
-        return;
-      }
+    if (!repoDir) {
+      return;
     }
 
     await fs.ensureDir(randomTemp);
@@ -143,13 +172,17 @@ export class Gpm {
     // run hooks
     const action: string | void = await vscode.window.showInformationMessage(
       `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
-      "Open it",
+      "Open",
       "Cancel"
     );
 
-    if (action && action === "Open it") {
-      const openPath = vscode.Uri.file(repoDir);
-      await vscode.commands.executeCommand("vscode.openFolder", openPath);
+    switch (action as ProjectPostAddAction) {
+      case "Open":
+        const openPath = vscode.Uri.file(repoDir);
+        await vscode.commands.executeCommand("vscode.openFolder", openPath);
+        break;
+      default:
+      // do nothing
     }
 
     // refresh explorer

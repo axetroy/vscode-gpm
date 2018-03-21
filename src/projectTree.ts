@@ -42,8 +42,9 @@ function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
     contextValue: "file",
     collapsibleState: 0,
     command: {
-      title: "open",
+      title: "Open file",
       command: "gpm.open",
+      tooltip: "Open file",
       arguments: [filepath]
     },
     iconPath: vscode.ThemeIcon.File,
