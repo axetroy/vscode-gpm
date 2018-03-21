@@ -12,11 +12,17 @@ import { getRootPath } from "./config";
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
 
+interface IRc {
+  hooks?: {
+    add?: string;
+    postadd?: string;
+  };
+}
+
 export class Gpm {
   constructor(public context: vscode.ExtensionContext) {}
   private async getValidProjectName(repoPath: string): Promise<string | void> {
     if (await fs.pathExists(repoPath)) {
-      // TODO: support clone with another name if it exist
       const actionName = await vscode.window.showWarningMessage(
         "Project already exists.",
         "Overwrite",
@@ -147,49 +153,107 @@ export class Gpm {
             channel.show();
           });
       });
+
+      await fs.ensureDir(baseDir);
+      await fs.ensureDir(sourceDir);
+      await fs.ensureDir(ownerDir);
+
+      // if it's a link, then unlink first
+      if (await isLink(repoDir)) {
+        await fs.unlink(repoDir);
+      }
+      await fs.remove(repoDir);
+      await fs.move(tempDir, repoDir);
+      await fs.remove(randomTemp);
+
+      // refresh explorer
+      this.refresh();
+
+      const gpmrcPath = path.join(repoDir, ".gpmrc");
+
+      // run the hooks
+      if (await fs.pathExists(gpmrcPath)) {
+        // if .gpmrc file exist
+        const rc: IRc = await fs.readJson(gpmrcPath);
+        if (rc.hooks) {
+          const cmd = rc.hooks.add || rc.hooks.postadd;
+          if (cmd) {
+            vscode.window.showInformationMessage("Running hook: " + cmd);
+            await new Promise((resolve, reject) => {
+              shell.cd(repoDir);
+
+              const stream = shell.exec(cmd, {
+                async: true
+              }) as ChildProcess;
+
+              stream
+                .on("error", data => channel.append(data + ""))
+                .on("close", (code: number, signal: string) => {
+                  channel.show();
+                  if (code !== 0) {
+                    reject(signal);
+                  } else {
+                    resolve();
+                  }
+                });
+
+              // not support pipe to process
+              stream.stdout
+                .setEncoding("utf8")
+                .on("data", data => {
+                  channel.append(data + "");
+                  channel.show();
+                })
+                .on("error", data => {
+                  channel.append(data + "");
+                  channel.show();
+                });
+              // not support pipe to process
+              stream.stderr
+                .setEncoding("utf8")
+                .on("data", data => {
+                  channel.append(data + "");
+                  channel.show();
+                })
+                .on("error", data => {
+                  channel.append(data + "");
+                  channel.show();
+                });
+            });
+          }
+        }
+      }
+
+      const action: string | void = await vscode.window.showInformationMessage(
+        `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
+        "Open",
+        "Cancel"
+      );
+
+      switch (action as ProjectPostAddAction) {
+        case "Open":
+          const openPath = vscode.Uri.file(repoDir);
+          await vscode.commands.executeCommand("vscode.openFolder", openPath);
+          break;
+        default:
+        // do nothing
+      }
+
+      // refresh explorer
+      this.refresh();
+      // dispose chanel
       setTimeout(() => {
         channel.dispose();
-      }, 2000);
+      }, 5000);
     } catch (err) {
+      // refresh explorer
+      this.refresh();
+      // dispose chanel
       setTimeout(() => {
         channel.dispose();
-      }, 2000);
+      }, 5000);
       throw err;
     }
-
-    await fs.ensureDir(baseDir);
-    await fs.ensureDir(sourceDir);
-    await fs.ensureDir(ownerDir);
-
-    // if it's a link, then unlink first
-    if (await isLink(repoDir)) {
-      await fs.unlink(repoDir);
-    }
-    await fs.remove(repoDir);
-    await fs.move(tempDir, repoDir);
-    await fs.remove(randomTemp);
-
-    // run hooks
-    const action: string | void = await vscode.window.showInformationMessage(
-      `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
-      "Open",
-      "Cancel"
-    );
-
-    switch (action as ProjectPostAddAction) {
-      case "Open":
-        const openPath = vscode.Uri.file(repoDir);
-        await vscode.commands.executeCommand("vscode.openFolder", openPath);
-        break;
-      default:
-      // do nothing
-    }
-
-    // refresh explorer
-    this.refresh();
-
-    // run the hooks
-    // TODO: support hooks
   }
   public async prune() {
     const action = await vscode.window.showWarningMessage(
