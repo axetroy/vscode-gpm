@@ -58,6 +58,10 @@ support hooks:
 * [x] preRemove: run command in **project path** before remove project.
 * [x] postRemove: run command in **owner path** after remove project.
 
+hook is default disable. if you want enable it. see [Configuration](#configuration).
+
+**WARNING: custom hook may be dangerous. risk on your own**.
+
 ## Q & A
 
 Q: Should I need to install [gpm](https://github.com/gpmer/gpm.js) in global?
