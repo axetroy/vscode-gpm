@@ -59,7 +59,7 @@ function createFolder(
 ): IFile {
   return {
     label: path.basename(filepath),
-    contextValue: "file",
+    contextValue: "folder",
     collapsibleState: 1,
     command: void 0,
     iconPath: vscode.ThemeIcon.Folder,
