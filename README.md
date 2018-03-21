@@ -4,10 +4,12 @@ vscode-gpm is a extension to manage project.
 
 ## Features
 
-* view project in tree view
-* add project
-* remove project
-* prune project
+* [x] Manage your projects in tree view.
+* [x] Add project
+* [x] Remove project
+* [x] Prune project
+* [x] Star project
+* [x] Custom hooks
 
 ## Screen shot
 
