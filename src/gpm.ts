@@ -12,10 +12,22 @@ import { getRootPath } from "./config";
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
 
+type Hook =
+  | "add"
+  | "postadd"
+  | "preremove"
+  | "postremove"
+  | "preprune"
+  | "postprune";
+
 interface IRc {
   hooks?: {
     add?: string;
     postadd?: string;
+    preremove?: string;
+    postremove?: string;
+    preprune?: string;
+    postprune?: string;
   };
 }
 
@@ -109,50 +121,11 @@ export class Gpm {
     const channel = vscode.window.createOutputChannel("gpm");
 
     try {
-      await new Promise((resolve, reject) => {
-        shell.cd(randomTemp);
-
-        const stream = shell.exec(
-          `git clone ${gitProjectAddress as string} --progress -v`,
-          {
-            async: true
-          }
-        ) as ChildProcess;
-
-        stream
-          .on("error", data => channel.append(data + ""))
-          .on("close", (code: number, signal: string) => {
-            channel.show();
-            if (code !== 0) {
-              reject(signal);
-            } else {
-              resolve();
-            }
-          });
-
-        // not support pipe to process
-        stream.stdout
-          .setEncoding("utf8")
-          .on("data", data => {
-            channel.append(data + "");
-            channel.show();
-          })
-          .on("error", data => {
-            channel.append(data + "");
-            channel.show();
-          });
-        // not support pipe to process
-        stream.stderr
-          .setEncoding("utf8")
-          .on("data", data => {
-            channel.append(data + "");
-            channel.show();
-          })
-          .on("error", data => {
-            channel.append(data + "");
-            channel.show();
-          });
-      });
+      await this.runShell(
+        randomTemp,
+        `git clone ${gitProjectAddress as string} --progress -v`,
+        channel
+      );
 
       await fs.ensureDir(baseDir);
       await fs.ensureDir(sourceDir);
@@ -172,57 +145,7 @@ export class Gpm {
       const gpmrcPath = path.join(repoDir, ".gpmrc");
 
       // run the hooks
-      if (await fs.pathExists(gpmrcPath)) {
-        // if .gpmrc file exist
-        const rc: IRc = await fs.readJson(gpmrcPath);
-        if (rc.hooks) {
-          const cmd = rc.hooks.add || rc.hooks.postadd;
-          if (cmd) {
-            vscode.window.showInformationMessage("Running hook: " + cmd);
-            await new Promise((resolve, reject) => {
-              shell.cd(repoDir);
-
-              const stream = shell.exec(cmd, {
-                async: true
-              }) as ChildProcess;
-
-              stream
-                .on("error", data => channel.append(data + ""))
-                .on("close", (code: number, signal: string) => {
-                  channel.show();
-                  if (code !== 0) {
-                    reject(signal);
-                  } else {
-                    resolve();
-                  }
-                });
-
-              // not support pipe to process
-              stream.stdout
-                .setEncoding("utf8")
-                .on("data", data => {
-                  channel.append(data + "");
-                  channel.show();
-                })
-                .on("error", data => {
-                  channel.append(data + "");
-                  channel.show();
-                });
-              // not support pipe to process
-              stream.stderr
-                .setEncoding("utf8")
-                .on("data", data => {
-                  channel.append(data + "");
-                  channel.show();
-                })
-                .on("error", data => {
-                  channel.append(data + "");
-                  channel.show();
-                });
-            });
-          }
-        }
-      }
+      await this.runHook(repoDir, "postadd");
 
       const action: string | void = await vscode.window.showInformationMessage(
         `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
@@ -249,9 +172,9 @@ export class Gpm {
       // refresh explorer
       this.refresh();
       // dispose chanel
-      setTimeout(() => {
-        channel.dispose();
-      }, 5000);
+      // setTimeout(() => {
+      //   channel.dispose();
+      // }, 5000);
       throw err;
     }
   }
@@ -305,5 +228,68 @@ export class Gpm {
   public refresh() {
     // empty refresh
     // it will overwrite in other place
+  }
+  private async runShell(
+    cwd: string,
+    command: string,
+    channel?: vscode.OutputChannel
+  ) {
+    return new Promise((resolve, reject) => {
+      shell.cd(cwd);
+
+      const stream = shell.exec(command, {
+        async: true
+      }) as ChildProcess;
+
+      function log(message: string | Buffer | Error) {
+        if (channel) {
+          channel.append(message + "");
+          channel.show();
+        }
+      }
+
+      stream
+        .on("error", data => channel && channel.append(data + ""))
+        .on("close", (code: number, signal: string) => {
+          if (channel) {
+            channel.show();
+          }
+          if (code !== 0) {
+            reject(signal);
+          } else {
+            resolve();
+          }
+        });
+
+      // not support pipe to process
+      stream.stdout
+        .setEncoding("utf8")
+        .on("data", data => log(data))
+        .on("error", data => log(data));
+      // not support pipe to process
+      stream.stderr
+        .setEncoding("utf8")
+        .on("data", data => log(data))
+        .on("error", data => log(data));
+    });
+  }
+  public async runHook(
+    cwd: string,
+    hookName: Hook,
+    channel?: vscode.OutputChannel
+  ) {
+    const gpmrcPath = path.join(cwd, ".gpmrc");
+    // run the hooks
+    if (await fs.pathExists(gpmrcPath)) {
+      // if .gpmrc file exist
+      const rc: IRc = await fs.readJson(gpmrcPath);
+      if (rc.hooks) {
+        const cmd = rc.hooks[hookName] || rc.hooks.postadd;
+        if (cmd) {
+          vscode.window.showInformationMessage("Running hook: " + cmd);
+          await this.runShell(cwd, cmd, channel);
+        }
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs-extra";
+import * as shell from "shelljs";
 import { Gpm } from "./gpm";
 import { ProjectTreeProvider, IRepo } from "./projectTree";
 
@@ -69,8 +70,23 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      // remove project
-      await fs.remove(repo.path);
+      const channel = vscode.window.createOutputChannel("gpm.remove");
+
+      try {
+        // run the hooks before remove project
+        await gpm.runHook(repo.path, "preremove", channel);
+
+        // remove project
+        await fs.remove(repo.path);
+
+        // run the hooks after remove project
+        await gpm.runHook(path.dirname(repo.path), "postremove", channel);
+      } finally {
+        // close channel
+        setTimeout(() => {
+          channel.dispose();
+        }, 5000);
+      }
 
       // unstar prject
       gpmExplorer.star.unstar(repo);

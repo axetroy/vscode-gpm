@@ -51,9 +51,9 @@ Make sure the file `.gpmrc` have exist in the target project.
 
 support hooks:
 
-* [x] postadd: The hook after add project
-* [ ] preRemove: The hook before remove project
-* [ ] postRemove: The hooks after remove project
+* [x] postadd: The hook after add project, run command in **project path**
+* [x] preRemove: The hook before remove project, run command in **project path**
+* [x] postRemove: The hooks after remove project, run command in **owner path**
 
 ## Related
 
