@@ -33,7 +33,8 @@ vscode-gpm is a extension to manage project.
 
 ```json
 {
-  "gpm.rootPath": "~/gpm"
+  "gpm.rootPath": "$HOME/gpm",
+  "gpm.isAutoRunHook": false
 }
 ```
 
@@ -54,6 +55,20 @@ support hooks:
 * [x] postadd: The hook after add project, run command in **project path**
 * [x] preRemove: The hook before remove project, run command in **project path**
 * [x] postRemove: The hooks after remove project, run command in **owner path**
+
+## Q & A
+
+Q: Did I need to install [gpm](https://github.com/gpmer/gpm.js) in global?
+
+A: No, vscode-gpm is an independent package.
+
+Q: How to interrupt `git clone` command if you got bar network
+
+A: Clone progress will print in status bar. click status bar and show an dialog to confirm interrupt it.
+
+Q: Where are the project be cloned?
+
+A: See to [Configuration](#Configuration), project will save in `gpm.rootPath`
 
 ## Related
 
