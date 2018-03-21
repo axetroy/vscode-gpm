@@ -64,76 +64,9 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
 
   // remove project
-  vscode.commands.registerCommand("gpm.removeProject", async (repo: IRepo) => {
-    try {
-      const action = await vscode.window.showInformationMessage(
-        "[Irrevocable] Are you sure to remove project?",
-        "Yes",
-        "No"
-      );
-
-      if (action !== "Yes") {
-        return;
-      }
-
-      const channel = vscode.window.createOutputChannel("gpm.remove");
-
-      try {
-        // run the hooks before remove project
-        // whatever hook success or fail
-        // it still going on
-        try {
-          await gpm.runHook(repo.path, "preremove", channel);
-        } catch (err) {
-          console.error(err);
-        }
-
-        // remove project
-        await fs.remove(repo.path);
-
-        // run the hooks after remove project
-        // whatever hook success or fail
-        // it still going on
-        try {
-          await gpm.runHook(path.dirname(repo.path), "postremove", channel);
-        } catch (err) {
-          console.error(err);
-        }
-      } finally {
-        // close channel
-        setTimeout(() => {
-          channel.dispose();
-        }, 5000);
-      }
-
-      // unstar prject
-      gpmExplorer.star.unstar(repo);
-
-      const ownerPath: string = path.dirname(repo.path);
-      const sourcePath: string = path.dirname(path.dirname(repo.path));
-
-      const projectList = await fs.readdir(ownerPath);
-
-      // if project is empty, remove owner folder
-      if (!projectList || !projectList.length) {
-        await fs.remove(ownerPath);
-      }
-
-      const ownerList = await fs.readdir(sourcePath);
-
-      // if owner is empty, remove source folder
-      if (!ownerList || !ownerList.length) {
-        await fs.remove(sourcePath);
-      }
-
-      vscode.window.showInformationMessage(
-        `@${repo.owner}/${repo.repo} have been removed.`
-      );
-      gpmExplorer.refresh(); // refresh
-    } catch (err) {
-      vscode.window.showErrorMessage(err.message);
-    }
-  });
+  vscode.commands.registerCommand("gpm.removeProject", (repo: IRepo) =>
+    gpm.remove(repo, gpmExplorer)
+  );
 
   // star project
   // TODO: support star same name project
