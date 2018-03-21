@@ -22,6 +22,7 @@ export interface IStar extends IFile {
   star(repo: IRepo): Promise<any>;
   unstar(repo: IRepo): Promise<any>;
   list(): IRepo[];
+  clear(): void;
 }
 
 export interface ISource extends IFile {
@@ -154,11 +155,20 @@ function createStar(context: vscode.ExtensionContext): IStar {
   const storageKey: string = "@star";
   const starList: IRepo[] = context.globalState.get(storageKey) || [];
 
+  function findIndex(repo: IRepo): number {
+    return starList.findIndex(r => {
+      return (
+        r.source === repo.source &&
+        r.owner === repo.owner &&
+        r.repo === repo.repo
+      );
+    });
+  }
+
   return {
-    label: "Your star",
+    label: "Your stars",
     contextValue: "star",
     collapsibleState: 2,
-    command: void 0,
     iconPath: getIcon(context, "star.svg"),
     tooltip: "The project you stared",
     // customer property
@@ -168,32 +178,21 @@ function createStar(context: vscode.ExtensionContext): IStar {
       return starList;
     },
     async star(repo: IRepo) {
-      const index: number = starList.findIndex(r => {
-        return (
-          r.source === repo.source &&
-          r.owner === repo.owner &&
-          r.repo === repo.repo
-        );
-      });
-
-      if (index < 0) {
+      if (findIndex(repo) < 0) {
         starList.push(repo);
         context.globalState.update(storageKey, starList);
       }
     },
     async unstar(repo: IRepo) {
-      const index: number = starList.findIndex(r => {
-        return (
-          r.source === repo.source &&
-          r.owner === repo.owner &&
-          r.repo === repo.repo
-        );
-      });
-
+      const index = findIndex(repo);
       if (index >= 0) {
         starList.splice(index, 1);
         context.globalState.update(storageKey, starList);
       }
+    },
+    clear() {
+      starList.splice(0, starList.length);
+      context.globalState.update(storageKey, starList);
     }
   };
 }

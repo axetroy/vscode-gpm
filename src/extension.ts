@@ -112,6 +112,12 @@ export async function activate(context: vscode.ExtensionContext) {
     await gpmExplorer.refresh();
   });
 
+  // clear star
+  vscode.commands.registerCommand("gpm.clearStarProject", async (repo: IRepo) => {
+    await gpmExplorer.star.clear();
+    await gpmExplorer.refresh();
+  });
+
   // watch config change and refresh
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(e => {

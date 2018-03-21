@@ -90,6 +90,11 @@
                 "category": "gpm"
             },
             {
+                "command": "gpm.clearStarProject",
+                "title": "Clear Stars",
+                "category": "gpm"
+            },
+            {
                 "command": "gpm.removeProject",
                 "title": "Remove project",
                 "category": "gpm"
@@ -133,6 +138,11 @@
                     "command": "gpm.unstarProject",
                     "group": "context",
                     "when": "view == gpmExplorer && viewItem == project"
+                },
+                {
+                    "command": "gpm.clearStarProject",
+                    "group": "context",
+                    "when": "view == gpmExplorer && viewItem == star"
                 },
                 {
                     "command": "gpm.removeProject",
