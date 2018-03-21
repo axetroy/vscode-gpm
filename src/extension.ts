@@ -18,38 +18,44 @@ export async function activate(context: vscode.ExtensionContext) {
   const gpmExplorer = new ProjectTreeProvider(context);
 
   // open file
-  vscode.commands.registerCommand("gpm.open", filepath => {
-    fs
-      .stat(filepath)
-      .then(stat => {
-        if (stat.isFile()) {
-          const openPath = vscode.Uri.file(filepath);
-          vscode.workspace.openTextDocument(openPath).then(doc => {
-            vscode.window.showTextDocument(doc);
-          });
-        }
-      })
-      .catch((err: Error) => {
-        vscode.window.showErrorMessage(err.message);
-      });
+  vscode.commands.registerCommand("gpm.open", async filepath => {
+    try {
+      const statInfo = await fs.stat(filepath);
+      if (statInfo.isFile()) {
+        const openPath = vscode.Uri.file(filepath);
+        vscode.workspace
+          .openTextDocument(openPath)
+          .then(doc => vscode.window.showTextDocument(doc));
+      }
+    } catch (err) {
+      vscode.window.showErrorMessage(err.message);
+    }
   });
 
   // open project in current window
-  vscode.commands.registerCommand("gpm.openInCurrentWindow", element => {
-    const openPath = vscode.Uri.file(element.filepath);
-    vscode.commands.executeCommand("vscode.openFolder", openPath);
-  });
+  vscode.commands.registerCommand("gpm.openInCurrentWindow", element =>
+    vscode.commands.executeCommand(
+      "vscode.openFolder",
+      vscode.Uri.file(element.filepath)
+    )
+  );
 
   // open project in new window
-  vscode.commands.registerCommand("gpm.openInNewWindow", element => {
-    const openPath = vscode.Uri.file(element.filepath);
-    vscode.commands.executeCommand("vscode.openFolder", openPath, true);
-  });
+  vscode.commands.registerCommand("gpm.openInNewWindow", element =>
+    vscode.commands.executeCommand(
+      "vscode.openFolder",
+      vscode.Uri.file(element.filepath),
+      true
+    )
+  );
 
   // refresh project
-  vscode.commands.registerCommand("gpm.refreshProject", element => {
-    gpmExplorer.refresh();
-  });
+  vscode.commands.registerCommand("gpm.refreshProject", () =>
+    gpmExplorer.refresh()
+  );
+
+  // clear cache
+  vscode.commands.registerCommand("gpm.clearCache", () => gpm.cleanCache());
 
   // prune project
   vscode.commands.registerCommand("gpm.pruneProject", () => gpm.prune());

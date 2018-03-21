@@ -52,6 +52,15 @@
                 }
             },
             {
+                "command": "gpm.clearCache",
+                "title": "Clear cache",
+                "category": "gpm",
+                "icon": {
+                    "light": "resources/light/clear_cache.svg",
+                    "dark": "resources/dark/clear_cache.svg"
+                }
+            },
+            {
                 "command": "gpm.addProject",
                 "title": "Add project",
                 "category": "gpm",
@@ -91,7 +100,7 @@
             },
             {
                 "command": "gpm.clearStarProject",
-                "title": "Clear Stars",
+                "title": "Clear stars",
                 "category": "gpm"
             },
             {
@@ -113,8 +122,13 @@
                     "when": "view == gpmExplorer"
                 },
                 {
-                    "command": "gpm.refreshProject",
+                    "command": "gpm.clearCache",
                     "group": "navigation@3",
+                    "when": "view == gpmExplorer"
+                },
+                {
+                    "command": "gpm.refreshProject",
+                    "group": "navigation@4",
                     "when": "view == gpmExplorer"
                 }
             ],

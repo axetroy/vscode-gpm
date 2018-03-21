@@ -27,6 +27,9 @@ interface IRc {
 }
 
 export class Gpm {
+  // cache path
+  public cachePath: string = this.context.storagePath ||
+    path.join(process.env.HOME as string, ".gpm", "temp");
   constructor(public context: vscode.ExtensionContext) {}
   private async getValidProjectName(repoPath: string): Promise<string | void> {
     if (await fs.pathExists(repoPath)) {
@@ -88,12 +91,7 @@ export class Gpm {
       return;
     }
 
-    const randomTemp: string = path.join(
-      process.env.HOME as string,
-      ".gpm",
-      "temp",
-      uniqueString()
-    );
+    const randomTemp: string = path.join(this.cachePath, uniqueString());
 
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
@@ -227,6 +225,14 @@ export class Gpm {
     );
     this.refresh();
   }
+  public async cleanCache() {
+    try {
+      await fs.remove(this.cachePath);
+      await vscode.window.showInformationMessage("Cache have been cleaned.");
+    } catch (err) {
+      await vscode.window.showErrorMessage(err.message);
+    }
+  }
   public refresh() {
     // empty refresh
     // it will overwrite in other place
@@ -280,12 +286,11 @@ export class Gpm {
     hookName: Hook,
     channel?: vscode.OutputChannel
   ) {
-
     // if user disable auto run hook
     if (!getIsAutoRunHook()) {
       return;
     }
-    
+
     const gpmrcPath = path.join(cwd, ".gpmrc");
     // run the hooks
     if (await fs.pathExists(gpmrcPath)) {
