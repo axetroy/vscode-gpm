@@ -35,6 +35,24 @@ vscode-gpm is a extension to manage project.
 }
 ```
 
+## Custom Hooks
+
+Make sure the file `.gpmrc` have exist in the target project.
+
+```json
+{
+  "hooks": {
+    "postadd": "npm install"
+  }
+}
+```
+
+support hooks:
+
+* [x] postadd: The hook after add project
+* [ ] preRemove: The hook before remove project
+* [ ] postRemove: The hooks after remove project
+
 ## Related
 
 [https://github.com/gpmer/gpm.js/](https://github.com/gpmer/gpm.js/)
