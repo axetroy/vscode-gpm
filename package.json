@@ -180,6 +180,11 @@
                     "type": "string",
                     "default": "$HOME/gpm",
                     "description": "Git Package Root Path, default: $HOME/gpm, support other environment variables, eb. $GOPATH"
+                },
+                "gpm.isAutoRunHook":{
+                    "type": "boolean",
+                    "default": false,
+                    "description": "WARNING: custom hook may be dangerous. risk on your own."
                 }
             }
         }

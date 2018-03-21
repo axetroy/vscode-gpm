@@ -13,4 +13,8 @@ function getRootPath(): string {
     .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")]);
 }
 
-export { getConfiguration, getField, getRootPath };
+function getIsAutoRunHook(): boolean {
+  return !!getField("isAutoRunHook");
+}
+
+export { getConfiguration, getField, getRootPath, getIsAutoRunHook };

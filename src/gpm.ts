@@ -7,7 +7,7 @@ const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
-import { getRootPath } from "./config";
+import { getRootPath, getIsAutoRunHook } from "./config";
 
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
@@ -280,6 +280,12 @@ export class Gpm {
     hookName: Hook,
     channel?: vscode.OutputChannel
   ) {
+
+    // if user disable auto run hook
+    if (!getIsAutoRunHook()) {
+      return;
+    }
+    
     const gpmrcPath = path.join(cwd, ".gpmrc");
     // run the hooks
     if (await fs.pathExists(gpmrcPath)) {
