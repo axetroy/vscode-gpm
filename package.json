@@ -71,17 +71,17 @@
             },
             {
                 "command": "gpm.openInCurrentWindow",
-                "title": "Open in current window",
+                "title": "Open in Current Window",
                 "category": "gpm"
             },
             {
                 "command": "gpm.openInNewWindow",
-                "title": "Open in new window",
+                "title": "Open in New Window",
                 "category": "gpm"
             },
             {
                 "command": "gpm.pruneProject",
-                "title": "Prune project",
+                "title": "Prune Project",
                 "category": "gpm",
                 "icon": {
                     "light": "resources/light/delete.svg",
@@ -100,17 +100,17 @@
             },
             {
                 "command": "gpm.clearStarProject",
-                "title": "Clear stars",
+                "title": "Clear Stars",
                 "category": "gpm"
             },
             {
                 "command": "gpm.removeProject",
-                "title": "Remove project",
+                "title": "Remove Project",
                 "category": "gpm"
             },
             {
                 "command": "gpm.interruptCommand",
-                "title": "Interrupt current running command",
+                "title": "Interrupt Current Running Command",
                 "category": "gpm"
             }
         ],

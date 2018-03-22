@@ -5,10 +5,29 @@ import * as vscode from "vscode";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
 import { ProjectTreeProvider, IRepo } from "./projectTree";
+import { getRootPath } from "./config";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
+  const rootPath: string = getRootPath();
+
+  // if root path not exist
+  // ask user create it or not
+  if (!await fs.pathExists(rootPath)) {
+    const action = await vscode.window.showInformationMessage(
+      `GPM root folder '${rootPath}' not found.`,
+      "Create",
+      "Cancel"
+    );
+    switch (action) {
+      case "Create":
+        await fs.ensureDir(rootPath);
+        break;
+      default:
+    }
+  }
+
   // status bar
   const statusBar = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
