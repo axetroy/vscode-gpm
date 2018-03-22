@@ -9,6 +9,7 @@ vscode-gpm is a extension to manage project.
 * [x] Remove project
 * [x] Prune project
 * [x] Star project
+* [x] Search project
 * [x] Custom hooks
 
 ## [CHANGELOG](https://github.com/axetroy/vscode-gpm/blob/master/CHANGELOG.md)
@@ -27,19 +28,27 @@ Support almost git address. including Github/Gitlab/Coding...
 
 ### Add project
 
-![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/add.gif)
+![add project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/add.gif)
 
 ### Edit project
 
-![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/edit.gif)
+![edit project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/edit.gif)
 
 ### Open project
 
-![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/open.gif)
+![open project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/open.gif)
 
 ### Star project
 
-![](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/star.gif)
+![star project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/star.gif)
+
+### Search project
+
+![search project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/search.gif)
+
+### List project to open
+
+![list project to open](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/list2open.gif)
 
 ## Configuration
 
