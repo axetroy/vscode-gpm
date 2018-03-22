@@ -264,20 +264,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       });
     }
 
-    function push(repo: IRepo) {
-      const index = findIndex(repo);
-      if (index > 0) {
-        repositories.splice(index, 1);
-      }
-    }
-
-    function remove(repo: IRepo) {
-      const index = findIndex(repo);
-      if (index > 0) {
-        repositories.splice(index, 1);
-      }
-    }
-
     function flatten(array: any[]) {
       return array.reduce((a: any[], b: any[]) => {
         return a.concat(b);
