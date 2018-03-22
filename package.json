@@ -112,28 +112,57 @@
                 "command": "gpm.interruptCommand",
                 "title": "Interrupt Current Running Command",
                 "category": "gpm"
+            },
+            {
+                "command": "gpm.listProjectToRemove",
+                "title": "List Project to Remove",
+                "category": "gpm"
+            },
+            {
+                "command": "gpm.listProjectToOpen",
+                "title": "List Project to Open",
+                "category": "gpm"
+            },
+            {
+                "command": "gpm.listProjectToOpenInNewWindow",
+                "title": "List Project to Open in New Window",
+                "category": "gpm"
+            },
+            {
+                "command": "gpm.searchProject",
+                "title": "Search Project",
+                "category": "gpm",
+                "icon": {
+                    "light": "resources/light/search.svg",
+                    "dark": "resources/dark/search.svg"
+                }
             }
         ],
         "menus": {
             "view/title": [
                 {
-                    "command": "gpm.addProject",
+                    "command": "gpm.searchProject",
                     "group": "navigation@1",
                     "when": "view == gpmExplorer"
                 },
                 {
-                    "command": "gpm.pruneProject",
+                    "command": "gpm.addProject",
                     "group": "navigation@2",
                     "when": "view == gpmExplorer"
                 },
                 {
-                    "command": "gpm.clearCache",
+                    "command": "gpm.pruneProject",
                     "group": "navigation@3",
                     "when": "view == gpmExplorer"
                 },
                 {
-                    "command": "gpm.refreshProject",
+                    "command": "gpm.clearCache",
                     "group": "navigation@4",
+                    "when": "view == gpmExplorer"
+                },
+                {
+                    "command": "gpm.refreshProject",
+                    "group": "navigation@5",
                     "when": "view == gpmExplorer"
                 }
             ],

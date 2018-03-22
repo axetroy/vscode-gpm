@@ -43,6 +43,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const gpmExplorer = new ProjectTreeProvider(context);
 
+  gpmExplorer.traverse();
+
   // open file
   vscode.commands.registerCommand("gpm.open", async filepath => {
     try {
@@ -94,6 +96,14 @@ export async function activate(context: vscode.ExtensionContext) {
     gpm.remove(repo, gpmExplorer)
   );
 
+  // list project to remove
+  vscode.commands.registerCommand("gpm.listProjectToRemove", async () => {
+    const repo = await gpmExplorer.selectPick();
+    if (repo) {
+      return gpm.remove(repo, gpmExplorer);
+    }
+  });
+
   // star project
   // TODO: support star same name project
   vscode.commands.registerCommand("gpm.starProject", async (repo: IRepo) => {
@@ -110,6 +120,87 @@ export async function activate(context: vscode.ExtensionContext) {
 
   vscode.commands.registerCommand("gpm.interruptCommand", () =>
     gpm.interruptCommand()
+  );
+
+  vscode.commands.registerCommand("gpm.listProjectToOpen", async () => {
+    const repo = await gpmExplorer.selectPick();
+
+    if (!repo) {
+      return;
+    }
+
+    return vscode.commands.executeCommand(
+      "vscode.openFolder",
+      vscode.Uri.file(repo.path)
+    );
+  });
+
+  vscode.commands.registerCommand("gpm.searchProject", async () => {
+    type DoAction = "Open" | "Remove" | "Cancel";
+
+    const repo = await gpmExplorer.selectPick();
+
+    if (!repo) {
+      return;
+    }
+
+    const repoSymbol: string = `@${repo.owner}/${repo.repo}`;
+
+    const doAction = await vscode.window.showInformationMessage(
+      `What do you want to do about ${repoSymbol}?`,
+      "Open",
+      "Remove",
+      "Cancel"
+    );
+
+    switch (doAction as DoAction) {
+      case "Open":
+        type OpenAction = "Current Window" | "New Window" | "Cancel";
+        const action = await vscode.window.showInformationMessage(
+          `Which way to open ${repoSymbol}?`,
+          "Current Window",
+          "New Window",
+          "Cancel"
+        );
+
+        switch (action as OpenAction) {
+          case "Current Window":
+            return vscode.commands.executeCommand(
+              "vscode.openFolder",
+              vscode.Uri.file(repo.path)
+            );
+          case "New Window":
+            return vscode.commands.executeCommand(
+              "vscode.openFolder",
+              vscode.Uri.file(repo.path),
+              true
+            );
+          default:
+            return;
+        }
+
+      case "Remove":
+        return gpm.remove(repo, gpmExplorer);
+      default:
+        return;
+    }
+  });
+
+  vscode.commands.registerCommand(
+    "gpm.listProjectToOpenInNewWindow",
+    async () => {
+      const repo = await gpmExplorer.selectPick();
+
+      if (!repo) {
+        return;
+      }
+
+      return vscode.commands.executeCommand(
+        "vscode.openFolder",
+        vscode.Uri.file(repo.path),
+        true
+      );
+    }
   );
 
   // clear star

@@ -204,7 +204,6 @@ const type = {
 };
 
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
-  // @tslint-ignore: next-line
   private privateOnDidChangeTreeData: vscode.EventEmitter<
     IFile | undefined
   > = new vscode.EventEmitter<IFile | undefined>();
@@ -213,6 +212,101 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
   public star = createStar(this.context);
   constructor(public context: vscode.ExtensionContext) {}
+
+  public async selectPick(): Promise<IRepo | void> {
+    const repos = await this.traverse();
+
+    const itemList = repos.map(r => {
+      return {
+        label: `@${r.owner}/${r.repo}`,
+        description: r.source
+        // detail: r.path
+      };
+    });
+
+    const selectItem = await vscode.window.showQuickPick(itemList, {
+      matchOnDescription: true,
+      matchOnDetail: true,
+      placeHolder: "Select a Project to Open..."
+    });
+
+    if (!selectItem) {
+      return;
+    }
+
+    // selectItem
+    // label:"@axetroy/duomi-nodejs"
+    // description:"coding.net"
+
+    const repo = repos.find(
+      r =>
+        `${r.source}@${r.owner}/${r.repo}` ===
+        selectItem.description + selectItem.label
+    );
+
+    if (!repo) {
+      return;
+    }
+
+    return repo;
+  }
+
+  public traverse(): Promise<IRepo[]> {
+    const repositories: IRepo[] = [];
+
+    function findIndex(repo: IRepo) {
+      return repositories.findIndex(r => {
+        return (
+          r.source === repo.source &&
+          r.owner === repo.owner &&
+          r.repo === repo.repo
+        );
+      });
+    }
+
+    function push(repo: IRepo) {
+      const index = findIndex(repo);
+      if (index > 0) {
+        repositories.splice(index, 1);
+      }
+    }
+
+    function remove(repo: IRepo) {
+      const index = findIndex(repo);
+      if (index > 0) {
+        repositories.splice(index, 1);
+      }
+    }
+
+    function flatten(array: any[]) {
+      return array.reduce((a: any[], b: any[]) => {
+        return a.concat(b);
+      }, []);
+    }
+
+    return this.getChildren()
+      .then(sources => {
+        const promiseList: Array<Promise<IFile[]>> = [];
+        for (const source of sources) {
+          promiseList.push(this.getChildren(source));
+        }
+        return Promise.all(promiseList);
+      })
+      .then(list => {
+        const owners: IOwner[] = flatten(list);
+        const promiseList: Array<Promise<IFile[]>> = [];
+        for (const owner of owners) {
+          promiseList.push(this.getChildren(owner));
+        }
+        return Promise.all(promiseList);
+      })
+      .then(list => {
+        const repos: IRepo[] = (flatten(list) as IFile[]).filter(
+          v => v && v.type === "repo"
+        ) as IRepo[];
+        return Promise.resolve(repos);
+      });
+  }
 
   public refresh(): void {
     this.privateOnDidChangeTreeData.fire();
@@ -289,7 +383,9 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
           continue;
         }
 
-        children.push(createRepo(this.context, element, file));
+        const repo = createRepo(this.context, element, file);
+
+        children.push(repo);
       }
     } else {
       const fileList: string[] = [];
