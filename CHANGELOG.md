@@ -1,3 +1,13 @@
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/axetroy/vscode-gpm/compare/v0.9.0...v0.10.0) (2018-03-22)
+
+
+### Features
+
+* add commands, 'list project to open' and 'list project to open in new window' and 'list project to remove' and add search button in tree view title ([e2da63a](https://github.com/axetroy/vscode-gpm/commit/e2da63a))
+
+
+
 <a name="0.9.0"></a>
 # [0.9.0](https://github.com/axetroy/vscode-gpm/compare/v0.8.4...v0.9.0) (2018-03-22)
 
