@@ -40,18 +40,18 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // open project in current window
-  vscode.commands.registerCommand("gpm.openInCurrentWindow", element =>
+  vscode.commands.registerCommand("gpm.openInCurrentWindow", (repo: IRepo) =>
     vscode.commands.executeCommand(
       "vscode.openFolder",
-      vscode.Uri.file(element.filepath)
+      vscode.Uri.file(repo.path)
     )
   );
 
   // open project in new window
-  vscode.commands.registerCommand("gpm.openInNewWindow", element =>
+  vscode.commands.registerCommand("gpm.openInNewWindow", (repo: IRepo) =>
     vscode.commands.executeCommand(
       "vscode.openFolder",
-      vscode.Uri.file(element.filepath),
+      vscode.Uri.file(repo.path),
       true
     )
   );
