@@ -53,7 +53,9 @@ Make sure the file `.gpmrc` have exist in the target project.
 ```json
 {
   "hooks": {
-    "postadd": "npm install"
+    "postadd": "npm install",
+    "preremove": "echo 'run preremove hook'",
+    "postremove": "echo 'run postremove hook'",
   }
 }
 ```
@@ -61,8 +63,8 @@ Make sure the file `.gpmrc` have exist in the target project.
 support hooks:
 
 * [x] postadd: run command in **project path** after add project.
-* [x] preRemove: run command in **project path** before remove project.
-* [x] postRemove: run command in **owner path** after remove project.
+* [x] preremove: run command in **project path** before remove project.
+* [x] postremove: run command in **owner path** after remove project.
 
 hook is default disable. if you want enable it. see [Configuration](#configuration).
 
