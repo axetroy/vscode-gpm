@@ -4,3 +4,4 @@ node_modules
 *.vsix
 *.lock
 package-lock.json
+*.log

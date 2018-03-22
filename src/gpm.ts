@@ -13,7 +13,6 @@ import { IRepo, ProjectTreeProvider } from "./projectTree";
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
 type PruneAction = "Continue" | "Cancel";
-
 type Hook = "add" | "postadd" | "preremove" | "postremove";
 
 interface IRc {
@@ -22,8 +21,6 @@ interface IRc {
     postadd?: string;
     preremove?: string;
     postremove?: string;
-    preprune?: string;
-    postprune?: string;
   };
 }
 
