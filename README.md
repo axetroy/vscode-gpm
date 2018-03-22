@@ -13,11 +13,15 @@ vscode-gpm is a extension to manage project.
 
 ## [CHANGELOG](https://github.com/axetroy/vscode-gpm/blob/master/CHANGELOG.md)
 
-## Support platform
+## Support
 
 * [ ] Windows (Not test on windows)
 * [x] Mac OS
 * [x] Linux
+
+Support almost git address. including Github/Gitlab/Coding...
+
+**TIP: Not support private repository with https**
 
 ## Screen shot
 
@@ -55,7 +59,7 @@ Make sure the file `.gpmrc` have exist in the target project.
   "hooks": {
     "postadd": "npm install",
     "preremove": "echo 'run preremove hook'",
-    "postremove": "echo 'run postremove hook'",
+    "postremove": "echo 'run postremove hook'"
   }
 }
 ```
