@@ -116,6 +116,13 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
+export async function deactivate(context: vscode.ExtensionContext) {
   // when disable extension
+  // clear cache
+  const gpm = new Gpm(context);
+  try {
+    await fs.remove(gpm.cachePath);
+  } catch (err) {
+    console.error(err);
+  }
 }
