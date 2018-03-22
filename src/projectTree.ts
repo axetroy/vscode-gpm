@@ -252,7 +252,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   }
 
   public traverse(): Promise<IRepo[]> {
-    const repositories: IRepo[] = [];
 
     function flatten(array: any[]) {
       return array.reduce((a: any[], b: any[]) => {
