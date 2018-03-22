@@ -1,3 +1,44 @@
+<a name="0.9.0"></a>
+# [0.9.0](https://github.com/axetroy/vscode-gpm/compare/v0.8.4...v0.9.0) (2018-03-22)
+
+
+### Features
+
+* if root path not exist, then ask user create it or not ([cc7caed](https://github.com/axetroy/vscode-gpm/commit/cc7caed))
+* when disable extension, auto clear cache ([197f9bf](https://github.com/axetroy/vscode-gpm/commit/197f9bf))
+
+
+
+<a name="0.8.4"></a>
+## [0.8.4](https://github.com/axetroy/vscode-gpm/compare/v0.8.3...v0.8.4) (2018-03-22)
+
+
+### Bug Fixes
+
+* fix bug can not open project ([38df6c7](https://github.com/axetroy/vscode-gpm/commit/38df6c7))
+
+
+
+<a name="0.8.3"></a>
+## [0.8.3](https://github.com/axetroy/vscode-gpm/compare/v0.8.2...v0.8.3) (2018-03-21)
+
+
+### Features
+
+* do not pipe command message to output channel ([4b638f9](https://github.com/axetroy/vscode-gpm/commit/4b638f9))
+
+
+
+<a name="0.8.2"></a>
+## [0.8.2](https://github.com/axetroy/vscode-gpm/compare/v0.8.1...v0.8.2) (2018-03-21)
+
+
+
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/axetroy/vscode-gpm/compare/v0.8.0...v0.8.1) (2018-03-21)
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/axetroy/vscode-gpm/compare/v0.7.0...v0.8.0) (2018-03-21)
 
