@@ -1,3 +1,18 @@
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/axetroy/vscode-gpm/compare/v0.10.0...v0.11.0) (2018-03-23)
+
+
+### Features
+
+* improve in search project ([eb17cbb](https://github.com/axetroy/vscode-gpm/commit/eb17cbb))
+* listen on command and active extension ([0defc26](https://github.com/axetroy/vscode-gpm/commit/0defc26))
+* now only show Unstar on stared project ([29fdb93](https://github.com/axetroy/vscode-gpm/commit/29fdb93))
+* now show the command even the gpm haven't init ([b36891c](https://github.com/axetroy/vscode-gpm/commit/b36891c))
+* show command after init job done ([9659ade](https://github.com/axetroy/vscode-gpm/commit/9659ade))
+* unsubscript when inactive extension ([f32b4c5](https://github.com/axetroy/vscode-gpm/commit/f32b4c5))
+
+
+
 <a name="0.10.0"></a>
 # [0.10.0](https://github.com/axetroy/vscode-gpm/compare/v0.9.0...v0.10.0) (2018-03-22)
 
