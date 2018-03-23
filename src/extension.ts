@@ -78,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   // refresh project
-  vscode.commands.registerCommand("gpm.refreshProject", () =>
+  vscode.commands.registerCommand("gpm.refresh", () =>
     gpmExplorer.refresh()
   );
 
@@ -86,18 +86,18 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("gpm.clearCache", () => gpm.cleanCache());
 
   // prune project
-  vscode.commands.registerCommand("gpm.pruneProject", () => gpm.prune());
+  vscode.commands.registerCommand("gpm.prune", () => gpm.prune());
 
   // add project
-  vscode.commands.registerCommand("gpm.addProject", () => gpm.add());
+  vscode.commands.registerCommand("gpm.add", () => gpm.add());
 
   // remove project
-  vscode.commands.registerCommand("gpm.removeProject", (repo: IRepo) =>
+  vscode.commands.registerCommand("gpm.remove", (repo: IRepo) =>
     gpm.remove(repo, gpmExplorer)
   );
 
   // list project to remove
-  vscode.commands.registerCommand("gpm.listProjectToRemove", async () => {
+  vscode.commands.registerCommand("gpm.list2remove", async () => {
     const repo = await gpmExplorer.selectPick();
     if (repo) {
       return gpm.remove(repo, gpmExplorer);
@@ -106,14 +106,14 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // star project
   // TODO: support star same name project
-  vscode.commands.registerCommand("gpm.starProject", async (repo: IRepo) => {
+  vscode.commands.registerCommand("gpm.star", async (repo: IRepo) => {
     await gpmExplorer.star.star(repo);
     await gpmExplorer.refresh();
   });
 
   // unstar project
   // TODO: only show unstar when project was stared
-  vscode.commands.registerCommand("gpm.unstarProject", async (repo: IRepo) => {
+  vscode.commands.registerCommand("gpm.unstar", async (repo: IRepo) => {
     await gpmExplorer.star.unstar(repo);
     await gpmExplorer.refresh();
   });
@@ -122,7 +122,7 @@ export async function activate(context: vscode.ExtensionContext) {
     gpm.interruptCommand()
   );
 
-  vscode.commands.registerCommand("gpm.listProjectToOpen", async () => {
+  vscode.commands.registerCommand("gpm.list2open", async () => {
     const repo = await gpmExplorer.selectPick();
 
     if (!repo) {
@@ -135,7 +135,7 @@ export async function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  vscode.commands.registerCommand("gpm.searchProject", async () => {
+  vscode.commands.registerCommand("gpm.search", async () => {
     type DoAction = "Open" | "Remove" | "Cancel";
 
     const repo = await gpmExplorer.selectPick();
@@ -187,7 +187,7 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   vscode.commands.registerCommand(
-    "gpm.listProjectToOpenInNewWindow",
+    "gpm.list2openNew",
     async () => {
       const repo = await gpmExplorer.selectPick();
 
@@ -205,7 +205,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // clear star
   vscode.commands.registerCommand(
-    "gpm.clearStarProject",
+    "gpm.clearStars",
     async (repo: IRepo) => {
       await gpmExplorer.star.clear();
       await gpmExplorer.refresh();
