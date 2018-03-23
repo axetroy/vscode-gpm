@@ -237,9 +237,9 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
     });
 
     const selectItem = await vscode.window.showQuickPick(itemList, {
-      matchOnDescription: true,
-      matchOnDetail: true,
-      placeHolder: "Select a Project to Open..."
+      matchOnDescription: false,
+      matchOnDetail: false,
+      placeHolder: "Select a Project..."
     });
 
     if (!selectItem) {
