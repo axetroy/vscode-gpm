@@ -1,3 +1,13 @@
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/axetroy/vscode-gpm/compare/v0.11.0...v0.12.0) (2018-03-23)
+
+
+### Features
+
+* make sure if project cloned, opening dialog logic are same with other. ([19171f4](https://github.com/axetroy/vscode-gpm/commit/19171f4))
+
+
+
 <a name="0.11.0"></a>
 # [0.11.0](https://github.com/axetroy/vscode-gpm/compare/v0.10.0...v0.11.0) (2018-03-23)
 
