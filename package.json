@@ -184,90 +184,50 @@
                 {
                     "command": "gpm.openInCurrentWindow",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
+                    "when": "view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.openInCurrentWindow",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == gpmExplorer && viewItem == project.stared"
                 },
                 {
                     "command": "gpm.openInNewWindow",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
+                    "when": "view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.openInNewWindow",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == gpmExplorer && viewItem == project.stared"
                 },
                 {
                     "command": "gpm.remove",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
+                    "when": "view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.remove",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == gpmExplorer && viewItem == project.stared"
                 },
                 {
                     "command": "gpm.star",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
+                    "when": "view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.unstar",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == gpmExplorer && viewItem == project.stared"
                 },
                 {
                     "command": "gpm.clearStars",
                     "group": "context",
-                    "when": "gpmInit && view == gpmExplorer && viewItem == star"
+                    "when": "view == gpmExplorer && viewItem == star"
                 }
             ],
             "commandPalette": [
-                {
-                    "command": "gpm.add",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.list2open",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.list2openNew",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.list2remove",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.prune",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.clearCache",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.refresh",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.clearStars",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.search",
-                    "when": "gpmInit"
-                },
-                {
-                    "command": "gpm.interruptCommand",
-                    "when": "gpmInit"
-                },
                 {
                     "command": "gpm.remove",
                     "when": "never"
