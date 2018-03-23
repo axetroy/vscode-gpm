@@ -171,6 +171,14 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // clear star
+  context.subscriptions.push(
+    vscode.commands.registerCommand("gpm.clearStars", async (repo: IRepo) => {
+      await gpmExplorer.star.clear();
+      await gpmExplorer.refresh();
+    })
+  );
+
   // interrupt running command
   context.subscriptions.push(
     vscode.commands.registerCommand("gpm.interruptCommand", () =>
@@ -229,14 +237,6 @@ export async function activate(context: vscode.ExtensionContext) {
         default:
           return;
       }
-    })
-  );
-
-  // clear star
-  context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.clearStars", async (repo: IRepo) => {
-      await gpmExplorer.star.clear();
-      await gpmExplorer.refresh();
     })
   );
 

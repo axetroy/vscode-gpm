@@ -19,6 +19,7 @@ export interface IFile extends vscode.TreeItem {
 
 export interface IStar extends IFile {
   type: FileType;
+  find(repo: IRepo): IRepo | void;
   star(repo: IRepo): Promise<any>;
   unstar(repo: IRepo): Promise<any>;
   list(): IRepo[];
@@ -177,8 +178,15 @@ function createStar(context: vscode.ExtensionContext): IStar {
     list() {
       return starList;
     },
+    find(repo: IRepo): IRepo | void {
+      const index = findIndex(repo);
+      if (index >= 0) {
+        return starList[index];
+      }
+    },
     async star(repo: IRepo) {
       if (findIndex(repo) < 0) {
+        repo.contextValue = "project.stared";
         starList.push(repo);
         context.globalState.update(storageKey, starList);
       }
@@ -186,11 +194,15 @@ function createStar(context: vscode.ExtensionContext): IStar {
     async unstar(repo: IRepo) {
       const index = findIndex(repo);
       if (index >= 0) {
+        repo.contextValue = "project";
         starList.splice(index, 1);
         context.globalState.update(storageKey, starList);
       }
     },
     clear() {
+      for (const repo of starList) {
+        repo.contextValue = "project";
+      }
       starList.splice(0, starList.length);
       context.globalState.update(storageKey, starList);
     }
@@ -252,7 +264,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   }
 
   public traverse(): Promise<IRepo[]> {
-
     function flatten(array: any[]) {
       return array.reduce((a: any[], b: any[]) => {
         return a.concat(b);
@@ -360,7 +371,9 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
         const repo = createRepo(this.context, element, file);
 
-        children.push(repo);
+        const staredRepo = this.star.find(repo);
+
+        children.push(staredRepo ? staredRepo : repo);
       }
     } else {
       const fileList: string[] = [];
