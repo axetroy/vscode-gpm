@@ -30,7 +30,21 @@
     "activationEvents": [
         "onView:gpmExplorer",
         "onCommand:gpm.add",
-        "onCommand:gpm.refresh"
+        "onCommand:gpm.refresh",
+        "onCommand:gpm.open",
+        "onCommand:gpm.openInCurrentWindow",
+        "onCommand:gpm.list2open",
+        "onCommand:gpm.openInNewWindow",
+        "onCommand:gpm.list2openNew",
+        "onCommand:gpm.clearCache",
+        "onCommand:gpm.prune",
+        "onCommand:gpm.remove",
+        "onCommand:gpm.list2remove",
+        "onCommand:gpm.star",
+        "onCommand:gpm.unstar",
+        "onCommand:gpm.clearStars",
+        "onCommand:gpm.interruptCommand",
+        "onCommand:gpm.search"
     ],
     "contributes": {
         "views": {
