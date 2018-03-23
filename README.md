@@ -89,7 +89,7 @@ Q: Should I need to install [gpm](https://github.com/gpmer/gpm.js) in global?
 
 A: No, vscode-gpm is an independent package.
 
-Q: How to interrupt `git clone` command if you got bar network?
+Q: How to interrupt `git clone` command if you got bad network?
 
 A: Clone progress will print in status bar. click status bar and show an dialog to confirm interrupt it.
 
