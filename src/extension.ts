@@ -221,8 +221,11 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  console.log("GPM init done");
+  vscode.commands.executeCommand('setContext', 'gpmInit', true);
+
   // tree view
-  vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);
+  vscode.window.registerTreeDataProvider("gpmExplorer", gpmExplorer);  
 }
 
 // this method is called when your extension is deactivated

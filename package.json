@@ -143,62 +143,102 @@
                 {
                     "command": "gpm.searchProject",
                     "group": "navigation@1",
-                    "when": "view == gpmExplorer"
+                    "when": "gpmInit && view == gpmExplorer"
                 },
                 {
                     "command": "gpm.addProject",
                     "group": "navigation@2",
-                    "when": "view == gpmExplorer"
+                    "when": "gpmInit && view == gpmExplorer"
                 },
                 {
                     "command": "gpm.pruneProject",
                     "group": "navigation@3",
-                    "when": "view == gpmExplorer"
+                    "when": "gpmInit && view == gpmExplorer"
                 },
                 {
                     "command": "gpm.clearCache",
                     "group": "navigation@4",
-                    "when": "view == gpmExplorer"
+                    "when": "gpmInit && view == gpmExplorer"
                 },
                 {
                     "command": "gpm.refreshProject",
                     "group": "navigation@5",
-                    "when": "view == gpmExplorer"
+                    "when": "gpmInit && view == gpmExplorer"
                 }
             ],
             "view/item/context": [
                 {
                     "command": "gpm.openInCurrentWindow",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.openInNewWindow",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.starProject",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.unstarProject",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
                 },
                 {
                     "command": "gpm.clearStarProject",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == star"
+                    "when": "gpmInit && view == gpmExplorer && viewItem == star"
                 },
                 {
                     "command": "gpm.removeProject",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "gpmInit && view == gpmExplorer && viewItem == project"
                 }
             ],
             "commandPalette": [
+                {
+                    "command": "gpm.addProject",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.listProjectToOpen",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.listProjectToOpenInNewWindow",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.listProjectToRemove",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.pruneProject",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.clearCache",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.refreshProject",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.clearStarProject",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.searchProject",
+                    "when": "gpmInit"
+                },
+                {
+                    "command": "gpm.interruptCommand",
+                    "when": "gpmInit"
+                },
                 {
                     "command": "gpm.removeProject",
                     "when": "never"
