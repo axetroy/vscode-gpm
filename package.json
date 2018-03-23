@@ -19,6 +19,7 @@
     "keywords": [
         "git",
         "project",
+        "repository",
         "manage",
         "gpm"
     ],
@@ -28,7 +29,7 @@
     "icon": "resources/icon.png",
     "main": "./out/extension",
     "activationEvents": [
-        "onView:gpmExplorer",
+        "onView:GPMExplorer",
         "onCommand:gpm.add",
         "onCommand:gpm.refresh",
         "onCommand:gpm.open",
@@ -50,7 +51,7 @@
         "views": {
             "explorer": [
                 {
-                    "id": "gpmExplorer",
+                    "id": "GPMExplorer",
                     "name": "GPM"
                 }
             ]
@@ -157,74 +158,74 @@
                 {
                     "command": "gpm.search",
                     "group": "navigation@1",
-                    "when": "gpmInit && view == gpmExplorer"
+                    "when": "view == GPMExplorer"
                 },
                 {
                     "command": "gpm.add",
                     "group": "navigation@2",
-                    "when": "gpmInit && view == gpmExplorer"
+                    "when": "view == GPMExplorer"
                 },
                 {
                     "command": "gpm.prune",
                     "group": "navigation@3",
-                    "when": "gpmInit && view == gpmExplorer"
+                    "when": "view == GPMExplorer"
                 },
                 {
                     "command": "gpm.clearCache",
                     "group": "navigation@4",
-                    "when": "gpmInit && view == gpmExplorer"
+                    "when": "view == GPMExplorer"
                 },
                 {
                     "command": "gpm.refresh",
                     "group": "navigation@5",
-                    "when": "gpmInit && view == gpmExplorer"
+                    "when": "view == GPMExplorer"
                 }
             ],
             "view/item/context": [
                 {
                     "command": "gpm.openInCurrentWindow",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "view == GPMExplorer && viewItem == repository"
                 },
                 {
                     "command": "gpm.openInCurrentWindow",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == GPMExplorer && viewItem == repository.stared"
                 },
                 {
                     "command": "gpm.openInNewWindow",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "view == GPMExplorer && viewItem == repository"
                 },
                 {
                     "command": "gpm.openInNewWindow",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == GPMExplorer && viewItem == repository.stared"
                 },
                 {
                     "command": "gpm.remove",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "view == GPMExplorer && viewItem == repository"
                 },
                 {
                     "command": "gpm.remove",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == GPMExplorer && viewItem == repository.stared"
                 },
                 {
                     "command": "gpm.star",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project"
+                    "when": "view == GPMExplorer && viewItem == repository"
                 },
                 {
                     "command": "gpm.unstar",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == project.stared"
+                    "when": "view == GPMExplorer && viewItem == repository.stared"
                 },
                 {
                     "command": "gpm.clearStars",
                     "group": "context",
-                    "when": "view == gpmExplorer && viewItem == star"
+                    "when": "view == GPMExplorer && viewItem == star"
                 }
             ],
             "commandPalette": [

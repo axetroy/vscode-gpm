@@ -8,12 +8,13 @@ const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
 import { getRootPath, getIsAutoRunHook } from "./config";
-import { IRepo, ProjectTreeProvider } from "./projectTree";
+import { IRepository, ProjectTreeProvider } from "./projectTree";
 
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
 type PruneAction = "Continue" | "Cancel";
 type Hook = "add" | "postadd" | "preremove" | "postremove";
+type SearchAction = "Open" | "Remove" | "Cancel";
 
 interface IRc {
   hooks?: {
@@ -26,11 +27,32 @@ interface IRc {
 
 export class Gpm {
   private currentStream: ChildProcess | void = void 0;
-  public statusBar: vscode.StatusBarItem | void = void 0;
   // cache path
   public cachePath: string = this.context.storagePath ||
     path.join(process.env.HOME as string, ".gpm", "temp");
-  constructor(public context: vscode.ExtensionContext) {}
+  constructor(
+    public context: vscode.ExtensionContext,
+    public explorer: ProjectTreeProvider,
+    public statusBar: vscode.StatusBarItem
+  ) {}
+  public async init() {
+    const rootPath = getRootPath();
+    if (!await fs.pathExists(rootPath)) {
+      const action = await vscode.window.showInformationMessage(
+        `GPM root folder '${rootPath}' not found.`,
+        "Create",
+        "Cancel"
+      );
+      switch (action) {
+        case "Create":
+          await fs.ensureDir(rootPath);
+          break;
+        default:
+      }
+    }
+
+    this.explorer.traverse();
+  }
   private async getValidProjectName(repoPath: string): Promise<string | void> {
     if (await fs.pathExists(repoPath)) {
       const actionName = await vscode.window.showWarningMessage(
@@ -87,8 +109,7 @@ export class Gpm {
 
     // invalid git address
     if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
-      await vscode.window.showErrorMessage("Invalid git address.");
-      return;
+      return vscode.window.showErrorMessage("Invalid git address.");
     }
 
     const randomTemp: string = path.join(this.cachePath, uniqueString());
@@ -149,8 +170,13 @@ export class Gpm {
 
       switch (action as ProjectPostAddAction) {
         case "Open":
-          const openPath = vscode.Uri.file(repoDir);
-          await vscode.commands.executeCommand("vscode.openFolder", openPath);
+          await this.open({
+            source: gitInfo.source,
+            owner: gitInfo.owner,
+            path: repoDir,
+            repository: gitInfo.name,
+            type: "repository"
+          });
           break;
         default:
         // do nothing
@@ -214,7 +240,7 @@ export class Gpm {
     );
     this.refresh();
   }
-  public async remove(repo: IRepo, gpmExplorer: ProjectTreeProvider) {
+  public async remove(repository: IRepository) {
     const action = await vscode.window.showInformationMessage(
       "[Irrevocable] Are you sure to remove project?",
       "Yes",
@@ -230,28 +256,28 @@ export class Gpm {
       // whatever hook success or fail
       // it still going on
       try {
-        await this.runHook(repo.path, "preremove");
+        await this.runHook(repository.path, "preremove");
       } catch (err) {
         console.error(err);
       }
 
       // remove project
-      await fs.remove(repo.path);
+      await fs.remove(repository.path);
 
       // run the hooks after remove project
       // whatever hook success or fail
       // it still going on
       try {
-        await this.runHook(path.dirname(repo.path), "postremove");
+        await this.runHook(path.dirname(repository.path), "postremove");
       } catch (err) {
         console.error(err);
       }
 
       // unstar prject
-      gpmExplorer.star.unstar(repo);
+      this.explorer.star.unstar(repository);
 
-      const ownerPath: string = path.dirname(repo.path);
-      const sourcePath: string = path.dirname(path.dirname(repo.path));
+      const ownerPath: string = path.dirname(repository.path);
+      const sourcePath: string = path.dirname(path.dirname(repository.path));
 
       const projectList = await fs.readdir(ownerPath);
 
@@ -268,9 +294,9 @@ export class Gpm {
       }
 
       vscode.window.showInformationMessage(
-        `@${repo.owner}/${repo.repo} have been removed.`
+        `@${repository.owner}/${repository.repository} have been removed.`
       );
-      gpmExplorer.refresh(); // refresh
+      this.refresh();
     } catch (err) {
       vscode.window.showErrorMessage(err.message);
     }
@@ -282,6 +308,38 @@ export class Gpm {
     } catch (err) {
       await vscode.window.showErrorMessage(err.message);
     }
+  }
+  public async open(repository: IRepository) {
+    const repoSymbol: string = `@${repository.owner}/${repository.repository}`;
+    type OpenAction = "Current Window" | "New Window" | "Cancel";
+
+    const action = await vscode.window.showInformationMessage(
+      `Which way to open ${repoSymbol}?`,
+      "Current Window",
+      "New Window",
+      "Cancel"
+    );
+
+    switch (action as OpenAction) {
+      case "Current Window":
+        return this.openInCurrentWindow(repository);
+      case "New Window":
+        return this.openInNewWindow(repository);
+      default:
+        return;
+    }
+  }
+  public async openInCurrentWindow(repository: IRepository) {
+    return vscode.commands.executeCommand(
+      "vscode.openFolder",
+      vscode.Uri.file(repository.path)
+    );
+  }
+  public async openInNewWindow(repository: IRepository) {
+    return vscode.commands.executeCommand(
+      "vscode.openFolder",
+      vscode.Uri.file(repository.path)
+    );
   }
   public async interruptCommand() {
     if (this.currentStream) {
@@ -305,6 +363,43 @@ export class Gpm {
       }
     }
   }
+  public async select():Promise<IRepository | void>{
+    const repositories = await this.explorer.traverse();
+
+    const itemList = repositories.map(r => {
+      return {
+        label: `@${r.owner}/${r.repository}`,
+        description: r.source
+        // detail: r.path
+      };
+    });
+
+    const selectItem = await vscode.window.showQuickPick(itemList, {
+      matchOnDescription: false,
+      matchOnDetail: false,
+      placeHolder: "Select a Project..."
+    });
+
+    if (!selectItem) {
+      return;
+    }
+
+    // selectItem
+    // label:"@axetroy/duomi-nodejs"
+    // description:"coding.net"
+
+    const repository = repositories.find(
+      r =>
+        `${r.source}@${r.owner}/${r.repository}` ===
+        selectItem.description + selectItem.label
+    );
+
+    if (!repository) {
+      return;
+    }
+
+    return repository;
+  }
   private resetStatusBar() {
     const statusBar = this.statusBar;
     if (statusBar) {
@@ -315,11 +410,34 @@ export class Gpm {
     }
   }
   public refresh() {
-    // empty refresh
-    // it will overwrite in other place
+    return this.explorer.refresh();
+  }
+  public async search() {
+    const repository = await this.select();
+
+    if (!repository) {
+      return;
+    }
+
+    const repoSymbol: string = `@${repository.owner}/${repository.repository}`;
+
+    const doAction = await vscode.window.showInformationMessage(
+      `What do you want to do about ${repoSymbol}?`,
+      "Open",
+      "Remove",
+      "Cancel"
+    );
+
+    switch (doAction as SearchAction) {
+      case "Open":
+        return this.open(repository);
+      case "Remove":
+        return this.remove(repository);
+      default:
+        return;
+    }
   }
   private async runShell(cwd: string, command: string) {
-    const gpmEntity = this;
     const statusBar = this.statusBar as vscode.StatusBarItem;
     return new Promise((resolve, reject) => {
       shell.cd(cwd);
@@ -330,16 +448,16 @@ export class Gpm {
 
       this.currentStream = stream;
 
-      function log(message: string | Buffer | Error) {
+      const log = (message: string | Buffer | Error) => {
         statusBar.text = message + "";
         statusBar.command = "gpm.interruptCommand"; // set command for cancel clone
         statusBar.show();
 
         // if stream have been kill, then reset status bar
         if (stream.killed) {
-          gpmEntity.resetStatusBar();
+          this.resetStatusBar();
         }
-      }
+      };
 
       stream
         .on("error", data => {

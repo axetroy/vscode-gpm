@@ -10,7 +10,13 @@ function getIcon(context: vscode.ExtensionContext, icon: string) {
   };
 }
 
-export type FileType = "file" | "folder" | "star" | "source" | "owner" | "repo";
+export type FileType =
+  | "file"
+  | "folder"
+  | "star"
+  | "source"
+  | "owner"
+  | "repository";
 
 export interface IFile extends vscode.TreeItem {
   type: FileType;
@@ -19,10 +25,10 @@ export interface IFile extends vscode.TreeItem {
 
 export interface IStar extends IFile {
   type: FileType;
-  find(repo: IRepo): IRepo | void;
-  star(repo: IRepo): Promise<any>;
-  unstar(repo: IRepo): Promise<any>;
-  list(): IRepo[];
+  find(repository: IRepository): IRepository | void;
+  star(repository: IRepository): Promise<any>;
+  unstar(repository: IRepository): Promise<any>;
+  list(): IRepository[];
   clear(): void;
 }
 
@@ -34,8 +40,8 @@ export interface IOwner extends ISource {
   owner: string;
 }
 
-export interface IRepo extends IOwner {
-  repo: string;
+export interface IRepository extends IOwner {
+  repository: string;
 }
 
 function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
@@ -46,7 +52,6 @@ function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
     command: {
       title: "Open file",
       command: "gpm.open",
-      tooltip: "Open file",
       arguments: [filepath]
     },
     iconPath: vscode.ThemeIcon.File,
@@ -136,32 +141,32 @@ function createRepo(
   context: vscode.ExtensionContext,
   owner: IOwner,
   repoName: string
-): IRepo {
+): IRepository {
   return {
     label: repoName,
-    contextValue: "project",
+    contextValue: "repository",
     collapsibleState: 1,
     command: void 0,
-    iconPath: getIcon(context, "repo.svg"),
+    iconPath: getIcon(context, "repository.svg"),
     // customer property
     source: owner.source,
     owner: owner.owner,
-    repo: repoName,
-    type: "repo",
+    repository: repoName,
+    type: "repository",
     path: path.join(owner.path, repoName)
   };
 }
 
 function createStar(context: vscode.ExtensionContext): IStar {
-  const storageKey: string = "@star";
-  const starList: IRepo[] = context.globalState.get(storageKey) || [];
+  const storageKey: string = "@stars";
+  const starList: IRepository[] = context.globalState.get(storageKey) || [];
 
-  function findIndex(repo: IRepo): number {
+  function findIndex(repository: IRepository): number {
     return starList.findIndex(r => {
       return (
-        r.source === repo.source &&
-        r.owner === repo.owner &&
-        r.repo === repo.repo
+        r.source === repository.source &&
+        r.owner === repository.owner &&
+        r.repository === repository.repository
       );
     });
   }
@@ -178,30 +183,30 @@ function createStar(context: vscode.ExtensionContext): IStar {
     list() {
       return starList;
     },
-    find(repo: IRepo): IRepo | void {
-      const index = findIndex(repo);
+    find(repository: IRepository): IRepository | void {
+      const index = findIndex(repository);
       if (index >= 0) {
         return starList[index];
       }
     },
-    async star(repo: IRepo) {
-      if (findIndex(repo) < 0) {
-        repo.contextValue = "project.stared";
-        starList.push(repo);
+    async star(repository: IRepository) {
+      if (findIndex(repository) < 0) {
+        repository.contextValue = "repository.stared";
+        starList.push(repository);
         context.globalState.update(storageKey, starList);
       }
     },
-    async unstar(repo: IRepo) {
-      const index = findIndex(repo);
+    async unstar(repository: IRepository) {
+      const index = findIndex(repository);
       if (index >= 0) {
-        repo.contextValue = "project";
+        repository.contextValue = "repository";
         starList.splice(index, 1);
         context.globalState.update(storageKey, starList);
       }
     },
     clear() {
-      for (const repo of starList) {
-        repo.contextValue = "project";
+      for (const repository of starList) {
+        repository.contextValue = "repository";
       }
       starList.splice(0, starList.length);
       context.globalState.update(storageKey, starList);
@@ -212,6 +217,7 @@ function createStar(context: vscode.ExtensionContext): IStar {
 const type = {
   isSource: (o: any): o is ISource => o && o.type === "source",
   isOwner: (o: any): o is IOwner => o && o.type === "owner",
+  isRepository: (o: any): o is IRepository => o && o.type === "repository",
   isStar: (o: any): o is IStar => o && o.type === "star"
 };
 
@@ -225,45 +231,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   public star = createStar(this.context);
   constructor(public context: vscode.ExtensionContext) {}
 
-  public async selectPick(): Promise<IRepo | void> {
-    const repos = await this.traverse();
-
-    const itemList = repos.map(r => {
-      return {
-        label: `@${r.owner}/${r.repo}`,
-        description: r.source
-        // detail: r.path
-      };
-    });
-
-    const selectItem = await vscode.window.showQuickPick(itemList, {
-      matchOnDescription: false,
-      matchOnDetail: false,
-      placeHolder: "Select a Project..."
-    });
-
-    if (!selectItem) {
-      return;
-    }
-
-    // selectItem
-    // label:"@axetroy/duomi-nodejs"
-    // description:"coding.net"
-
-    const repo = repos.find(
-      r =>
-        `${r.source}@${r.owner}/${r.repo}` ===
-        selectItem.description + selectItem.label
-    );
-
-    if (!repo) {
-      return;
-    }
-
-    return repo;
-  }
-
-  public traverse(): Promise<IRepo[]> {
+  public traverse(): Promise<IRepository[]> {
     function flatten(array: any[]) {
       return array.reduce((a: any[], b: any[]) => {
         return a.concat(b);
@@ -287,10 +255,10 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         return Promise.all(promiseList);
       })
       .then(list => {
-        const repos: IRepo[] = (flatten(list) as IFile[]).filter(
-          v => v && v.type === "repo"
-        ) as IRepo[];
-        return Promise.resolve(repos);
+        const repositories: IRepository[] = (flatten(list) as IFile[]).filter(
+          type.isRepository
+        );
+        return Promise.resolve(repositories);
       });
   }
 
@@ -307,13 +275,13 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       return element.list();
     }
 
-    let children: IFile[] = [];
+    const children: IFile[] = [];
     const GPM_PATH: string = getRootPath();
 
     const elementFilePath: string = !element ? GPM_PATH : element.path;
 
     const files: string[] = await fs.readdir(elementFilePath);
-    // root
+
     if (!element) {
       if (this.star.list().length) {
         children.push(this.star);
@@ -331,14 +299,17 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
         const owners = await fs.readdir(path.join(GPM_PATH, file));
 
-        // skip empty project
+        // skip empty repository
         if (!owners || !owners.length) {
           continue;
         }
 
         children.push(createSource(this.context, file));
       }
-    } else if (type.isSource(element)) {
+      return children;
+    }
+
+    if (type.isSource(element)) {
       for (const file of files) {
         if (/^\./.test(file)) {
           continue;
@@ -349,16 +320,19 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
           continue;
         }
 
-        const repos = await fs.readdir(path.join(element.path, file));
+        const repositories = await fs.readdir(path.join(element.path, file));
 
-        // skip empty project
-        if (!repos || !repos.length) {
+        // skip empty repository
+        if (!repositories || !repositories.length) {
           continue;
         }
 
         children.push(createOwner(this.context, element, file));
       }
-    } else if (type.isOwner(element)) {
+      return children;
+    }
+
+    if (type.isOwner(element)) {
       for (const file of files) {
         if (/^\./.test(file)) {
           continue;
@@ -369,36 +343,36 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
           continue;
         }
 
-        const repo = createRepo(this.context, element, file);
+        const repository = createRepo(this.context, element, file);
 
-        const staredRepo = this.star.find(repo);
+        const staredRepo = this.star.find(repository);
 
-        children.push(staredRepo ? staredRepo : repo);
+        children.push(staredRepo ? staredRepo : repository);
       }
-    } else {
-      const fileList: string[] = [];
-      const dirList: string[] = [];
-
-      for (const file of files) {
-        const stat = await fs.stat(path.join((element as IFile).path, file));
-        if (stat.isDirectory()) {
-          dirList.push(file);
-        } else {
-          fileList.push(file);
-        }
-      }
-
-      children = dirList
-        .map(dir => createFolder(this.context, path.join(element.path, dir)))
-        .concat(
-          fileList.map(filename =>
-            createFile(
-              this.context,
-              path.join((element as IFile).path, filename)
-            )
-          )
-        );
+      return children;
     }
+
+    const fileList: string[] = [];
+    const dirList: string[] = [];
+
+    for (const file of files) {
+      const stat = await fs.stat(path.join((element as IFile).path, file));
+      if (stat.isDirectory()) {
+        dirList.push(file);
+      } else {
+        fileList.push(file);
+      }
+    }
+
+    dirList
+      .map(dir => createFolder(this.context, path.join(element.path, dir)))
+      .concat(
+        fileList.map(filename =>
+          createFile(this.context, path.join((element as IFile).path, filename))
+        )
+      )
+      .forEach(ele => children.push(ele));
+
     return children;
   }
 }
