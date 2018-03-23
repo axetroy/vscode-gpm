@@ -20,9 +20,9 @@ vscode-gpm is a extension to manage project.
 * [x] Mac OS
 * [x] Linux
 
-Support almost git address. including Github/Gitlab/Coding...
+Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 
-**TIP: Not support private repository with https**
+**TIP: Not support private repository with https protocol, please use ssh protocol instead of https**
 
 ## Screen shot
 
