@@ -1,3 +1,13 @@
+<a name="0.12.1"></a>
+## [0.12.1](https://github.com/axetroy/vscode-gpm/compare/v0.12.0...v0.12.1) (2018-03-26)
+
+
+### Bug Fixes
+
+* fix open in new window not work ([122af2a](https://github.com/axetroy/vscode-gpm/commit/122af2a))
+
+
+
 <a name="0.12.0"></a>
 # [0.12.0](https://github.com/axetroy/vscode-gpm/compare/v0.11.0...v0.12.0) (2018-03-23)
 
