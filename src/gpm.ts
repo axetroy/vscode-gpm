@@ -338,7 +338,8 @@ export class Gpm {
   public async openInNewWindow(repository: IRepository) {
     return vscode.commands.executeCommand(
       "vscode.openFolder",
-      vscode.Uri.file(repository.path)
+      vscode.Uri.file(repository.path),
+      true
     );
   }
   public async interruptCommand() {
@@ -363,7 +364,7 @@ export class Gpm {
       }
     }
   }
-  public async select():Promise<IRepository | void>{
+  public async select(): Promise<IRepository | void> {
     const repositories = await this.explorer.traverse();
 
     const itemList = repositories.map(r => {
