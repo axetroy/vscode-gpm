@@ -263,6 +263,19 @@
                     "type": "boolean",
                     "default": false,
                     "description": "WARNING: custom hook may be dangerous. risk on your own."
+                },
+                "gpm.searchBehavior": {
+                    "type": "string",
+                    "default": "openInNewWindow",
+                    "oneOf": [
+                        "openInNewWindow",
+                        "openInCurrentWindow",
+                        "remove",
+                        "star",
+                        "unstar",
+                        "ask"
+                    ],
+                    "description": "Define the behavior of search and select a project."
                 }
             }
         }

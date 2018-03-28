@@ -7,7 +7,7 @@ const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
-import { getRootPath, getIsAutoRunHook } from "./config";
+import { getRootPath, getIsAutoRunHook, getSearchBehavior } from "./config";
 import { IRepository, ProjectTreeProvider } from "./projectTree";
 
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
@@ -420,22 +420,39 @@ export class Gpm {
       return;
     }
 
-    const repoSymbol: string = `@${repository.owner}/${repository.repository}`;
+    const behavior = getSearchBehavior();
 
-    const doAction = await vscode.window.showInformationMessage(
-      `What do you want to do about ${repoSymbol}?`,
-      "Open",
-      "Remove",
-      "Cancel"
-    );
-
-    switch (doAction as SearchAction) {
-      case "Open":
-        return this.open(repository);
-      case "Remove":
+    switch (behavior) {
+      case "openInNewWindow":
+        return this.openInNewWindow(repository);
+      case "openInCurrentWindow":
+        return this.openInCurrentWindow(repository);
+      case "remove":
         return this.remove(repository);
+      case "star":
+        return this.explorer.star.star(repository);
+      case "unstar":
+        return this.explorer.star.unstar(repository);
       default:
-        return;
+        const repoSymbol: string = `@${repository.owner}/${
+          repository.repository
+        }`;
+
+        const doAction = await vscode.window.showInformationMessage(
+          `What do you want to do about ${repoSymbol}?`,
+          "Open",
+          "Remove",
+          "Cancel"
+        );
+
+        switch (doAction as SearchAction) {
+          case "Open":
+            return this.open(repository);
+          case "Remove":
+            return this.remove(repository);
+          default:
+            return;
+        }
     }
   }
   private async runShell(cwd: string, command: string) {
