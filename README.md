@@ -55,7 +55,8 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 ```json
 {
   "gpm.rootPath": "$HOME/gpm",
-  "gpm.isAutoRunHook": false
+  "gpm.isAutoRunHook": false,
+  "gpm.searchBehavior": "openInNewWindow"
 }
 ```
 
