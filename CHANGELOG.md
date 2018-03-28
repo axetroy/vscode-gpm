@@ -1,3 +1,13 @@
+<a name="0.13.0"></a>
+# [0.13.0](https://github.com/axetroy/vscode-gpm/compare/v0.12.1...v0.13.0) (2018-03-28)
+
+
+### Features
+
+* add config to set the behavior of search, default is open in new window ([c35db82](https://github.com/axetroy/vscode-gpm/commit/c35db82))
+
+
+
 <a name="0.12.1"></a>
 ## [0.12.1](https://github.com/axetroy/vscode-gpm/compare/v0.12.0...v0.12.1) (2018-03-26)
 
