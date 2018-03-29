@@ -1,3 +1,13 @@
+<a name="0.13.1"></a>
+## [0.13.1](https://github.com/axetroy/vscode-gpm/compare/v0.13.0...v0.13.1) (2018-03-29)
+
+
+### Bug Fixes
+
+* try support window ([b9c802b](https://github.com/axetroy/vscode-gpm/commit/b9c802b))
+
+
+
 <a name="0.13.0"></a>
 # [0.13.0](https://github.com/axetroy/vscode-gpm/compare/v0.12.1...v0.13.0) (2018-03-28)
 
