@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 export type SearchBehavior =
   | "openInNewWindow"
@@ -21,9 +22,11 @@ export function getSearchBehavior(): SearchBehavior {
 }
 
 export function getRootPath(): string {
-  return getField("rootPath")
-    .replace(/^~/, process.env.HOME as string)
-    .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")]);
+  return path.normalize(
+    getField("rootPath")
+      .replace(/^~/, process.env.HOME as string)
+      .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")])
+  );
 }
 
 export function getIsAutoRunHook(): boolean {
