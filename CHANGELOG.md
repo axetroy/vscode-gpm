@@ -1,3 +1,20 @@
+<a name="0.14.0"></a>
+# [0.14.0](https://github.com/axetroy/vscode-gpm/compare/v0.13.1...v0.14.0) (2018-04-01)
+
+
+### Bug Fixes
+
+* fix icon path ([bb61c2d](https://github.com/axetroy/vscode-gpm/commit/bb61c2d))
+
+
+### Features
+
+* add config to set the tree view should be show or not ([9ecfb6b](https://github.com/axetroy/vscode-gpm/commit/9ecfb6b))
+* support list to star and list to unstar command ([0f35966](https://github.com/axetroy/vscode-gpm/commit/0f35966))
+* support star current project ([c314611](https://github.com/axetroy/vscode-gpm/commit/c314611))
+
+
+
 <a name="0.13.1"></a>
 ## [0.13.1](https://github.com/axetroy/vscode-gpm/compare/v0.13.0...v0.13.1) (2018-03-29)
 
