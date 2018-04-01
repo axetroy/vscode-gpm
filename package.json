@@ -66,8 +66,8 @@
                 "title": "Refresh Project",
                 "category": "gpm",
                 "icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
+                    "light": "resources/light/command/refresh.svg",
+                    "dark": "resources/dark/command/refresh.svg"
                 }
             },
             {
@@ -80,8 +80,8 @@
                 "title": "Add Project",
                 "category": "gpm",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/light/command//add.svg",
+                    "dark": "resources/dark/command/add.svg"
                 }
             },
             {
@@ -144,8 +144,8 @@
                 "title": "Search Project",
                 "category": "gpm",
                 "icon": {
-                    "light": "resources/light/search.svg",
-                    "dark": "resources/dark/search.svg"
+                    "light": "resources/light/command/search.svg",
+                    "dark": "resources/dark/command/search.svg"
                 }
             },
             {
