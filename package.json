@@ -105,8 +105,18 @@
                 "category": "gpm"
             },
             {
+                "command": "gpm.list2star",
+                "title": "List Project to Star",
+                "category": "gpm"
+            },
+            {
                 "command": "gpm.unstar",
                 "title": "Unstar",
+                "category": "gpm"
+            },
+            {
+                "command": "gpm.list2unstar",
+                "title": "List Project to Unstar",
                 "category": "gpm"
             },
             {
@@ -212,6 +222,16 @@
                     "command": "gpm.unstar",
                     "group": "context",
                     "when": "view == GPMExplorer && viewItem == repository.stared"
+                },
+                {
+                    "command": "gpm.list2star",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == star"
+                },
+                {
+                    "command": "gpm.list2unstar",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == star"
                 },
                 {
                     "command": "gpm.clearStars",

@@ -364,8 +364,13 @@ export class Gpm {
       }
     }
   }
-  public async select(): Promise<IRepository | void> {
-    const repositories = await this.explorer.traverse();
+  public async select(
+    repositories?: IRepository[],
+    options?: vscode.QuickPickOptions
+  ): Promise<IRepository | void> {
+    if (!repositories) {
+      repositories = await this.explorer.traverse();
+    }
 
     const itemList = repositories.map(r => {
       return {
@@ -376,9 +381,12 @@ export class Gpm {
     });
 
     const selectItem = await vscode.window.showQuickPick(itemList, {
-      matchOnDescription: false,
-      matchOnDetail: false,
-      placeHolder: "Select a Project..."
+      ...{
+        matchOnDescription: false,
+        matchOnDetail: false,
+        placeHolder: "Select a Project..."
+      },
+      ...(options || {})
     });
 
     if (!selectItem) {

@@ -50,7 +50,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // list project to open in current window
   context.subscriptions.push(
     vscode.commands.registerCommand("gpm.list2open", async () => {
-      const repository = await gpm.select();
+      const repository = await gpm.select(void 0, {
+        placeHolder: "Select a Project to Open in Current Window."
+      });
 
       if (repository) {
         return gpm.openInCurrentWindow(repository);
@@ -69,7 +71,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // list project to open in new window
   context.subscriptions.push(
     vscode.commands.registerCommand("gpm.list2openNew", async () => {
-      const repository = await gpm.select();
+      const repository = await gpm.select(void 0, {
+        placeHolder: "Select a Project to Open in New Window."
+      });
 
       if (repository) {
         return gpm.openInNewWindow(repository);
@@ -107,7 +111,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // list project to remove
   context.subscriptions.push(
     vscode.commands.registerCommand("gpm.list2remove", async () => {
-      const repository = await gpm.select();
+      const repository = await gpm.select(void 0, {
+        placeHolder: "Select a Project to Remove."
+      });
       if (repository) {
         return gpm.remove(repository);
       }
@@ -125,6 +131,20 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  // list project to star
+  context.subscriptions.push(
+    vscode.commands.registerCommand("gpm.list2star", async () => {
+      const repository = await gpm.select(void 0, {
+        placeHolder: "Select a Project to Star."
+      });
+
+      if (repository) {
+        await gpm.explorer.star.star(repository);
+        return gpm.refresh();
+      }
+    })
+  );
+
   // unstar project
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -134,6 +154,20 @@ export async function activate(context: vscode.ExtensionContext) {
         await gpm.refresh();
       }
     )
+  );
+
+  // list project to unstar
+  context.subscriptions.push(
+    vscode.commands.registerCommand("gpm.list2unstar", async () => {
+      const repository = await gpm.select(gpm.explorer.star.list(), {
+        placeHolder: "Select a Project to Unstar."
+      });
+
+      if (repository) {
+        await gpm.explorer.star.unstar(repository);
+        return gpm.refresh();
+      }
+    })
   );
 
   // clear star
