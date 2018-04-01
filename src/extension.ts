@@ -5,10 +5,13 @@ import * as vscode from "vscode";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
 import { ProjectTreeProvider, IRepository } from "./projectTree";
+import { getField, updateField } from "./config";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
+  const CAN_SHOW_EXPLORER: string = "showExplorer";
+
   // status bar
   const statusBar = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
@@ -156,6 +159,18 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("gpm.search", () => gpm.search())
   );
 
+  // toggle tree view
+  context.subscriptions.push(
+    vscode.commands.registerCommand("gpm.toggleExplorer", async () => {
+      await updateField(CAN_SHOW_EXPLORER, !getField(CAN_SHOW_EXPLORER));
+      await vscode.commands.executeCommand(
+        "setContext",
+        CAN_SHOW_EXPLORER,
+        getField(CAN_SHOW_EXPLORER)
+      );
+    })
+  );
+
   // watch config change and refresh
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(e => {
@@ -163,6 +178,12 @@ export async function activate(context: vscode.ExtensionContext) {
         gpm.refresh();
       }
     })
+  );
+
+  vscode.commands.executeCommand(
+    "setContext",
+    CAN_SHOW_EXPLORER,
+    !!getField(CAN_SHOW_EXPLORER)
   );
 
   // tree view

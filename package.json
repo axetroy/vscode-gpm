@@ -29,6 +29,8 @@
     "icon": "resources/icon.png",
     "main": "./out/extension",
     "activationEvents": [
+        "*",
+        "workspaceContains:**/.gpmrc",
         "onView:GPMExplorer",
         "onCommand:gpm.add",
         "onCommand:gpm.refresh",
@@ -45,14 +47,16 @@
         "onCommand:gpm.unstar",
         "onCommand:gpm.clearStars",
         "onCommand:gpm.interruptCommand",
-        "onCommand:gpm.search"
+        "onCommand:gpm.search",
+        "onCommand:gpm.toggleExplorer"
     ],
     "contributes": {
         "views": {
             "explorer": [
                 {
                     "id": "GPMExplorer",
-                    "name": "GPM"
+                    "name": "GPM",
+                    "when": "showExplorer"
                 }
             ]
         },
@@ -69,11 +73,7 @@
             {
                 "command": "gpm.clearCache",
                 "title": "Clear Cache",
-                "category": "gpm",
-                "icon": {
-                    "light": "resources/light/clear_cache.svg",
-                    "dark": "resources/dark/clear_cache.svg"
-                }
+                "category": "gpm"
             },
             {
                 "command": "gpm.add",
@@ -97,11 +97,7 @@
             {
                 "command": "gpm.prune",
                 "title": "Prune Project",
-                "category": "gpm",
-                "icon": {
-                    "light": "resources/light/delete.svg",
-                    "dark": "resources/dark/delete.svg"
-                }
+                "category": "gpm"
             },
             {
                 "command": "gpm.star",
@@ -151,6 +147,11 @@
                     "light": "resources/light/search.svg",
                     "dark": "resources/dark/search.svg"
                 }
+            },
+            {
+                "command": "gpm.toggleExplorer",
+                "title": "Toggle the Tree View",
+                "category": "gpm"
             }
         ],
         "menus": {
@@ -166,18 +167,8 @@
                     "when": "view == GPMExplorer"
                 },
                 {
-                    "command": "gpm.prune",
-                    "group": "navigation@3",
-                    "when": "view == GPMExplorer"
-                },
-                {
-                    "command": "gpm.clearCache",
-                    "group": "navigation@4",
-                    "when": "view == GPMExplorer"
-                },
-                {
                     "command": "gpm.refresh",
-                    "group": "navigation@5",
+                    "group": "navigation@3",
                     "when": "view == GPMExplorer"
                 }
             ],
@@ -276,6 +267,11 @@
                         "ask"
                     ],
                     "description": "Define the behavior of search and select a project."
+                },
+                "gpm.showExplorer":{
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show the project explorer or not"
                 }
             }
         }

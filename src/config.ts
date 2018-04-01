@@ -14,7 +14,11 @@ export function getConfiguration(): vscode.WorkspaceConfiguration {
 }
 
 export function getField(field: string): any {
-  return getConfiguration()[field];
+  return getConfiguration().get(field);
+}
+
+export function updateField(field: string, value: any) {
+  return getConfiguration().update(field, value, 1);
 }
 
 export function getSearchBehavior(): SearchBehavior {
