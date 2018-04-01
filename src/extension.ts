@@ -2,10 +2,17 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import * as path from "path";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
-import { ProjectTreeProvider, IRepository } from "./projectTree";
-import { getField, updateField } from "./config";
+import {
+  ProjectTreeProvider,
+  IRepository,
+  createRepo,
+  createOwner,
+  createSource
+} from "./projectTree";
+import { getField, updateField, getRootPath } from "./config";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -127,6 +134,34 @@ export async function activate(context: vscode.ExtensionContext) {
       async (repository: IRepository) => {
         await explorer.star.star(repository);
         await gpm.refresh();
+      }
+    )
+  );
+
+  // star current project
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "gpm.starCurrent",
+      async (repository: IRepository) => {
+        const rootPath = vscode.workspace.rootPath;
+        if (!rootPath) {
+          return;
+        }
+        const gpmRoot = path.join(rootPath, "..", "..", "..");
+        if (gpmRoot === getRootPath()) {
+          const repoName = path.basename(rootPath);
+          const ownerName = path.basename(path.join(rootPath, ".."));
+          const sourceName = path.basename(path.join(rootPath, "..", ".."));
+
+          const source = createSource(context, sourceName);
+          const owner = createOwner(context, source, ownerName);
+          const repo = createRepo(context, owner, repoName);
+
+          await gpm.explorer.star.star(repo);
+          gpm.refresh();
+        } else {
+          vscode.window.showWarningMessage(`Invalid project: '${rootPath}'`);
+        }
       }
     )
   );

@@ -29,26 +29,7 @@
     "icon": "resources/icon.png",
     "main": "./out/extension",
     "activationEvents": [
-        "*",
-        "workspaceContains:**/.gpmrc",
-        "onView:GPMExplorer",
-        "onCommand:gpm.add",
-        "onCommand:gpm.refresh",
-        "onCommand:gpm.open",
-        "onCommand:gpm.openInCurrentWindow",
-        "onCommand:gpm.list2open",
-        "onCommand:gpm.openInNewWindow",
-        "onCommand:gpm.list2openNew",
-        "onCommand:gpm.clearCache",
-        "onCommand:gpm.prune",
-        "onCommand:gpm.remove",
-        "onCommand:gpm.list2remove",
-        "onCommand:gpm.star",
-        "onCommand:gpm.unstar",
-        "onCommand:gpm.clearStars",
-        "onCommand:gpm.interruptCommand",
-        "onCommand:gpm.search",
-        "onCommand:gpm.toggleExplorer"
+        "*"
     ],
     "contributes": {
         "views": {
@@ -64,7 +45,7 @@
             {
                 "command": "gpm.refresh",
                 "title": "Refresh Project",
-                "category": "gpm",
+                "category": "GPM",
                 "icon": {
                     "light": "resources/light/command/refresh.svg",
                     "dark": "resources/dark/command/refresh.svg"
@@ -73,12 +54,12 @@
             {
                 "command": "gpm.clearCache",
                 "title": "Clear Cache",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.add",
                 "title": "Add Project",
-                "category": "gpm",
+                "category": "GPM",
                 "icon": {
                     "light": "resources/light/command//add.svg",
                     "dark": "resources/dark/command/add.svg"
@@ -87,72 +68,77 @@
             {
                 "command": "gpm.openInCurrentWindow",
                 "title": "Open in Current Window",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.openInNewWindow",
                 "title": "Open in New Window",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.prune",
                 "title": "Prune Project",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.star",
                 "title": "Star",
-                "category": "gpm"
+                "category": "GPM"
+            },
+            {
+                "command": "gpm.starCurrent",
+                "title": "Star Current Project",
+                "category": "GPM"
             },
             {
                 "command": "gpm.list2star",
                 "title": "List Project to Star",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.unstar",
                 "title": "Unstar",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.list2unstar",
                 "title": "List Project to Unstar",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.clearStars",
                 "title": "Clear Stars",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.remove",
                 "title": "Remove Project",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.interruptCommand",
                 "title": "Interrupt Current Running Command",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.list2remove",
                 "title": "List Project to Remove",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.list2open",
                 "title": "List Project to Open",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.list2openNew",
                 "title": "List Project to Open in New Window",
-                "category": "gpm"
+                "category": "GPM"
             },
             {
                 "command": "gpm.search",
                 "title": "Search Project",
-                "category": "gpm",
+                "category": "GPM",
                 "icon": {
                     "light": "resources/light/command/search.svg",
                     "dark": "resources/dark/command/search.svg"
@@ -161,7 +147,7 @@
             {
                 "command": "gpm.toggleExplorer",
                 "title": "Toggle the Tree View",
-                "category": "gpm"
+                "category": "GPM"
             }
         ],
         "menus": {

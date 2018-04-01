@@ -48,7 +48,7 @@ export interface IRepository extends IOwner {
   repository: string;
 }
 
-function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
+export function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
   return {
     label: path.basename(filepath),
     contextValue: "file",
@@ -65,7 +65,7 @@ function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
   };
 }
 
-function createFolder(
+export function createFolder(
   context: vscode.ExtensionContext,
   filepath: string
 ): IFile {
@@ -81,7 +81,7 @@ function createFolder(
   };
 }
 
-function createSource(
+export function createSource(
   context: vscode.ExtensionContext,
   sourceName: string
 ): ISource {
@@ -125,7 +125,7 @@ function createSource(
   return item;
 }
 
-function createOwner(
+export function createOwner(
   context: vscode.ExtensionContext,
   source: ISource,
   ownerName: string
@@ -144,7 +144,7 @@ function createOwner(
   };
 }
 
-function createRepo(
+export function createRepo(
   context: vscode.ExtensionContext,
   owner: IOwner,
   repoName: string
@@ -164,7 +164,7 @@ function createRepo(
   };
 }
 
-function createStar(context: vscode.ExtensionContext): IStar {
+export function createStar(context: vscode.ExtensionContext): IStar {
   const storageKey: string = "@stars";
   const starList: IRepository[] = context.globalState.get(storageKey) || [];
 
