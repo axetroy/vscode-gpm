@@ -3,11 +3,15 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import { getRootPath } from "./config";
 
-function getIcon(context: vscode.ExtensionContext, icon: string) {
+function getIcon(context: vscode.ExtensionContext, paths: string[]) {
   return {
-    dark: context.asAbsolutePath(path.join("resources", "dark", icon)),
-    light: context.asAbsolutePath(path.join("resources", "light", icon))
+    dark: context.asAbsolutePath(path.join("resources", "dark", ...paths)),
+    light: context.asAbsolutePath(path.join("resources", "light", ...paths))
   };
+}
+
+function getSourceIcon(context: vscode.ExtensionContext, name: string) {
+  return getIcon(context, ["source", name]);
 }
 
 export type FileType =
@@ -93,28 +97,31 @@ function createSource(
     type: "source",
     path: path.join(rootPath, sourceName)
   };
+  let icon: string = "";
   switch (sourceName) {
     case "github.com":
-      item.iconPath = getIcon(context, "github.svg");
+      icon = "github.svg";
       break;
     case "gitlab.com":
-      item.iconPath = getIcon(context, "gitlab.svg");
+      icon = "gitlab.svg";
       break;
     case "coding.net":
-      item.iconPath = getIcon(context, "coding.svg");
+      icon = "coding.svg";
       break;
     case "bitbucket.org":
-      item.iconPath = getIcon(context, "bitbucket.svg");
+      icon = "bitbucket.svg";
       break;
     case "apache.org":
-      item.iconPath = getIcon(context, "apache.svg");
+      icon = "apache.svg";
       break;
     case "googlesource.com":
-      item.iconPath = getIcon(context, "google.svg");
+      icon = "google.svg";
       break;
     default:
-      item.iconPath = getIcon(context, "git.svg");
+      icon = "git.svg";
   }
+  item.iconPath = getSourceIcon(context, icon);
+
   return item;
 }
 
@@ -128,7 +135,7 @@ function createOwner(
     contextValue: "owner",
     collapsibleState: 1,
     command: void 0,
-    iconPath: getIcon(context, "user.svg"),
+    iconPath: getIcon(context, ["user.svg"]),
     // customer property
     source: source.source,
     owner: ownerName,
@@ -147,7 +154,7 @@ function createRepo(
     contextValue: "repository",
     collapsibleState: 1,
     command: void 0,
-    iconPath: getIcon(context, "repository.svg"),
+    iconPath: getIcon(context, ["repository.svg"]),
     // customer property
     source: owner.source,
     owner: owner.owner,
@@ -175,7 +182,7 @@ function createStar(context: vscode.ExtensionContext): IStar {
     label: "Your stars",
     contextValue: "star",
     collapsibleState: 2,
-    iconPath: getIcon(context, "star.svg"),
+    iconPath: getIcon(context, ["star.svg"]),
     tooltip: "The project you stared",
     // customer property
     type: "star",
