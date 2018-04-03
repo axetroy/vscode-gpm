@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
+import * as os from "os";
 
 export type SearchBehavior =
   | "openInNewWindow"
@@ -27,9 +28,13 @@ export function getSearchBehavior(): SearchBehavior {
 
 export function getRootPath(): string {
   return path.normalize(
-    getField("rootPath")
+    (getField("rootPath") as string)
       .replace(/^~/, process.env.HOME as string)
-      .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")])
+      .replace("$HOME", os.homedir())
+      .replace(
+        /\$\w+/,
+        (word: string) => process.env[word.replace(/^\$/, "")] as string
+      )
   );
 }
 

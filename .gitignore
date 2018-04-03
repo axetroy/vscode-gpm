@@ -5,3 +5,4 @@ node_modules
 *.lock
 package-lock.json
 *.log
+.DS_Store
