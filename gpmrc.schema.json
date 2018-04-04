@@ -1,0 +1,26 @@
+{
+  "title": "JSON schema for Gpm configuration files",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "hooks": {
+      "default": {},
+      "description": "The hooks for Gpm",
+      "type": "object",
+      "properties": {
+        "postadd": {
+          "description": "The hook run after clone project.",
+          "type": "string"
+        },
+        "preremove": {
+          "description": "The hook run before remove project.",
+          "type": "string"
+        },
+        "postremove": {
+          "description": "The hook run after remove project.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

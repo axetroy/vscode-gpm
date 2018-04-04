@@ -304,7 +304,13 @@
                     "description": "Show the project explorer or not"
                 }
             }
-        }
+        },
+        "jsonValidation": [
+            {
+                "fileMatch": ".gpmrc",
+                "url": "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/gpmrc.schema.json"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
