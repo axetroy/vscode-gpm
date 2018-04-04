@@ -148,6 +148,16 @@
                 "command": "gpm.toggleExplorer",
                 "title": "Toggle the Tree View",
                 "category": "GPM"
+            },
+            {
+                "command": "gpm.openInTerminal",
+                "title": "Open in Terminal",
+                "category": "GPM"
+            },
+            {
+                "command": "gpm.list2OpenInTerminal",
+                "title": "List Project to Open in Terminal",
+                "category": "GPM"
             }
         ],
         "menus": {
@@ -223,6 +233,16 @@
                     "command": "gpm.clearStars",
                     "group": "context",
                     "when": "view == GPMExplorer && viewItem == star"
+                },
+                {
+                    "command": "gpm.openInTerminal",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == repository"
+                },
+                {
+                    "command": "gpm.openInTerminal",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == repository.stared"
                 }
             ],
             "commandPalette": [
@@ -244,6 +264,10 @@
                 },
                 {
                     "command": "gpm.unstar",
+                    "when": "never"
+                },
+                {
+                    "command": "gpm.openInTerminal",
                     "when": "never"
                 }
             ]
