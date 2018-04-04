@@ -1,3 +1,25 @@
+<a name="0.15.0"></a>
+# [0.15.0](https://github.com/axetroy/vscode-gpm/compare/v0.14.1...v0.15.0) (2018-04-04)
+
+
+### Features
+
+* support .gpmrc json file validate ([2a63943](https://github.com/axetroy/vscode-gpm/commit/2a63943))
+* support auto set .gpmrc to json lang ([ed6960e](https://github.com/axetroy/vscode-gpm/commit/ed6960e))
+* support open in terminal command ([c6810ee](https://github.com/axetroy/vscode-gpm/commit/c6810ee))
+
+
+
+<a name="0.14.1"></a>
+## [0.14.1](https://github.com/axetroy/vscode-gpm/compare/v0.14.0...v0.14.1) (2018-04-03)
+
+
+### Bug Fixes
+
+* try to fix bug in Windows ([126a3e5](https://github.com/axetroy/vscode-gpm/commit/126a3e5))
+
+
+
 <a name="0.14.0"></a>
 # [0.14.0](https://github.com/axetroy/vscode-gpm/compare/v0.13.1...v0.14.0) (2018-04-01)
 
