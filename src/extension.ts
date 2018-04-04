@@ -288,6 +288,16 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerTreeDataProvider("GPMExplorer", explorer)
   );
+
+  const fileConfig = vscode.workspace.getConfiguration("files");
+  const associations = fileConfig.get("associations") || {};
+
+  fileConfig.update("associations", {
+    ...associations,
+    ...{
+      ".gpmrc": "json"
+    }
+  });
 }
 
 // this method is called when your extension is deactivated
