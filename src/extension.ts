@@ -240,33 +240,29 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  const terminals: {
-    [path: string]: vscode.Terminal;
-  } = {};
-
   // open project in terminal
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "gpm.openInTerminal",
-      async (repo: IRepository) => {
-        let terminal: vscode.Terminal;
-
-        if (!terminals[repo.path]) {
-          terminal = vscode.window.createTerminal({
-            name: "[GPM]: " + repo.repository,
-            cwd: repo.path,
-            env: process.env as any
-          });
-
-          context.subscriptions.push(terminal);
-          terminals[repo.path] = terminal;
-        } else {
-          terminal = terminals[repo.path];
-        }
-
-        terminal.show();
+      (repo: IRepository) => {
+        return gpm.openTerminal(repo);
       }
     )
+  );
+
+  // list to open project in terminal
+  context.subscriptions.push(
+    vscode.commands.registerCommand("gpm.list2openInTerminal", async () => {
+      const repo = await gpm.select(void 0, {
+        placeHolder: "Select a Project to Open in Terminal"
+      });
+
+      if (!repo) {
+        return;
+      }
+
+      return gpm.openTerminal(repo);
+    })
   );
 
   // watch config change and refresh

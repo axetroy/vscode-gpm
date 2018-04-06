@@ -155,7 +155,7 @@
                 "category": "GPM"
             },
             {
-                "command": "gpm.list2OpenInTerminal",
+                "command": "gpm.list2openInTerminal",
                 "title": "List Project to Open in Terminal",
                 "category": "GPM"
             }

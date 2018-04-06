@@ -26,6 +26,7 @@ interface IRc {
 }
 
 export class Gpm {
+  public terminals: { [path: string]: vscode.Terminal } = {};
   private currentStream: ChildProcess | void = void 0;
   // cache path
   public cachePath: string = this.context.storagePath ||
@@ -408,6 +409,24 @@ export class Gpm {
     }
 
     return repository;
+  }
+  public openTerminal(repo: IRepository) {
+    let terminal: vscode.Terminal;
+
+    if (!this.terminals[repo.path]) {
+      terminal = vscode.window.createTerminal({
+        name: "[GPM]: " + repo.repository,
+        cwd: repo.path,
+        env: process.env as any
+      });
+
+      this.context.subscriptions.push(terminal);
+      this.terminals[repo.path] = terminal;
+    } else {
+      terminal = this.terminals[repo.path];
+    }
+
+    terminal.show();
   }
   private resetStatusBar() {
     const statusBar = this.statusBar;
