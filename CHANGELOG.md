@@ -1,3 +1,13 @@
+<a name="0.15.1"></a>
+## [0.15.1](https://github.com/axetroy/vscode-gpm/compare/v0.15.0...v0.15.1) (2018-04-06)
+
+
+### Bug Fixes
+
+* command list2openTerminal is not defined ([6f2334d](https://github.com/axetroy/vscode-gpm/commit/6f2334d))
+
+
+
 <a name="0.15.0"></a>
 # [0.15.0](https://github.com/axetroy/vscode-gpm/compare/v0.14.1...v0.15.0) (2018-04-04)
 
