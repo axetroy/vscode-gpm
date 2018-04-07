@@ -304,6 +304,9 @@ export class Gpm {
         await this.remove(repo);
       }
     }
+
+    await fs.remove(owner.path);
+    return this.refresh();
   }
 
   public async removeSource(source: ISource) {
@@ -316,6 +319,9 @@ export class Gpm {
         await this.removeOwner(owner);
       }
     }
+
+    await fs.remove(source.path);
+    return this.refresh();
   }
 
   public async cleanCache() {

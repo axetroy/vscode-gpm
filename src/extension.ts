@@ -322,6 +322,62 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // create repository
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "gpm.createRepository",
+      async (owner: IOwner) => {
+        const repoName = await vscode.window.showInputBox({
+          placeHolder: "Enter a name of project."
+        });
+
+        if (!repoName) {
+          return;
+        }
+
+        const repoPath = path.join(owner.path, repoName);
+
+        const exist = await fs.pathExists(repoPath);
+
+        if (exist) {
+          return;
+        }
+
+        await fs.ensureDir(repoPath);
+
+        return gpm.refresh();
+      }
+    )
+  );
+
+  // create owner
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "gpm.createOwner",
+      async (source: ISource) => {
+        const ownerName = await vscode.window.showInputBox({
+          placeHolder: "Enter a name of owner."
+        });
+
+        if (!ownerName) {
+          return;
+        }
+
+        const ownerPath = path.join(source.path, ownerName);
+
+        const exist = await fs.pathExists(ownerPath);
+
+        if (exist) {
+          return;
+        }
+
+        await fs.ensureDir(ownerPath);
+
+        return gpm.refresh();
+      }
+    )
+  );
+
   // watch config change and refresh
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(e => {

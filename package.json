@@ -168,6 +168,16 @@
                 "command": "gpm.list2openInTerminal",
                 "title": "List Project to Open in Terminal",
                 "category": "GPM"
+            },
+            {
+                "command": "gpm.createRepository",
+                "title": "Create Project",
+                "category": "GPM"
+            },
+            {
+                "command": "gpm.createOwner",
+                "title": "Create Owner",
+                "category": "GPM"
             }
         ],
         "menus": {
@@ -293,6 +303,16 @@
                     "command": "gpm.openInTerminal",
                     "group": "context",
                     "when": "view == GPMExplorer && viewItem == source"
+                },
+                {
+                    "command": "gpm.createRepository",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == owner"
+                },
+                {
+                    "command": "gpm.createOwner",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == source"
                 }
             ],
             "commandPalette": [
@@ -326,6 +346,14 @@
                 },
                 {
                     "command": "gpm.openInTerminal",
+                    "when": "never"
+                },
+                {
+                    "command": "gpm.createRepository",
+                    "when": "never"
+                },
+                {
+                    "command": "gpm.createOwner",
                     "when": "never"
                 }
             ]

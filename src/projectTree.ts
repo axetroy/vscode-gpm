@@ -48,7 +48,10 @@ export interface IRepository extends IOwner {
   repository: string;
 }
 
-export function createFile(context: vscode.ExtensionContext, filepath: string): IFile {
+export function createFile(
+  context: vscode.ExtensionContext,
+  filepath: string
+): IFile {
   return {
     label: path.basename(filepath),
     contextValue: "file",
@@ -304,13 +307,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
           continue;
         }
 
-        const owners = await fs.readdir(path.join(GPM_PATH, file));
-
-        // skip empty repository
-        if (!owners || !owners.length) {
-          continue;
-        }
-
         children.push(createSource(this.context, file));
       }
       return children;
@@ -324,13 +320,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         const statInfo = await fs.stat(path.join(element.path, file));
 
         if (statInfo.isFile()) {
-          continue;
-        }
-
-        const repositories = await fs.readdir(path.join(element.path, file));
-
-        // skip empty repository
-        if (!repositories || !repositories.length) {
           continue;
         }
 
