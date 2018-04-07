@@ -380,7 +380,7 @@ export class Gpm {
       }
     }
   }
-  public async select(
+  public async selectRepository(
     repositories?: IRepository[],
     options?: vscode.QuickPickOptions
   ): Promise<IRepository | void> {
@@ -456,7 +456,7 @@ export class Gpm {
     return this.explorer.refresh();
   }
   public async search() {
-    const repository = await this.select();
+    const repository = await this.selectRepository();
 
     if (!repository) {
       return;

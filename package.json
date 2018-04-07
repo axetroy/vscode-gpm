@@ -271,6 +271,14 @@
                     "when": "never"
                 },
                 {
+                    "command": "gpm.removeOwner",
+                    "when": "never"
+                },
+                {
+                    "command": "gpm.removeSource",
+                    "when": "never"
+                },
+                {
                     "command": "gpm.openInCurrentWindow",
                     "when": "never"
                 },
