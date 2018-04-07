@@ -1,3 +1,17 @@
+<a name="0.16.0"></a>
+# [0.16.0](https://github.com/axetroy/vscode-gpm/compare/v0.15.1...v0.16.0) (2018-04-07)
+
+
+### Features
+
+* support create project and owner in context menu ([6a98e27](https://github.com/axetroy/vscode-gpm/commit/6a98e27))
+* support open in current window for owner and source ([8c88df9](https://github.com/axetroy/vscode-gpm/commit/8c88df9))
+* support open in new window for owner and source ([43c5667](https://github.com/axetroy/vscode-gpm/commit/43c5667))
+* support open source/owner in terminal command ([0ab1a1f](https://github.com/axetroy/vscode-gpm/commit/0ab1a1f))
+* support remove owner and source command ([dd7a021](https://github.com/axetroy/vscode-gpm/commit/dd7a021))
+
+
+
 <a name="0.15.1"></a>
 ## [0.15.1](https://github.com/axetroy/vscode-gpm/compare/v0.15.0...v0.15.1) (2018-04-06)
 
