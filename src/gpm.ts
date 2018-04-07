@@ -8,7 +8,14 @@ const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
 import { getRootPath, getIsAutoRunHook, getSearchBehavior } from "./config";
-import { IRepository, ProjectTreeProvider } from "./projectTree";
+import {
+  IRepository,
+  ProjectTreeProvider,
+  IOwner,
+  ISource,
+  createRepo,
+  createOwner
+} from "./projectTree";
 
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
@@ -242,66 +249,74 @@ export class Gpm {
     this.refresh();
   }
   public async remove(repository: IRepository) {
-    const action = await vscode.window.showInformationMessage(
-      "[Irrevocable] Are you sure to remove project?",
-      "Yes",
-      "No"
-    );
-
-    if (action !== "Yes") {
-      return;
+    // run the hooks before remove project
+    // whatever hook success or fail
+    // it still going on
+    try {
+      await this.runHook(repository.path, "preremove");
+    } catch (err) {
+      console.error(err);
     }
 
+    // remove project
+    await fs.remove(repository.path);
+
+    // run the hooks after remove project
+    // whatever hook success or fail
+    // it still going on
     try {
-      // run the hooks before remove project
-      // whatever hook success or fail
-      // it still going on
-      try {
-        await this.runHook(repository.path, "preremove");
-      } catch (err) {
-        console.error(err);
-      }
-
-      // remove project
-      await fs.remove(repository.path);
-
-      // run the hooks after remove project
-      // whatever hook success or fail
-      // it still going on
-      try {
-        await this.runHook(path.dirname(repository.path), "postremove");
-      } catch (err) {
-        console.error(err);
-      }
-
-      // unstar prject
-      this.explorer.star.unstar(repository);
-
-      const ownerPath: string = path.dirname(repository.path);
-      const sourcePath: string = path.dirname(path.dirname(repository.path));
-
-      const projectList = await fs.readdir(ownerPath);
-
-      // if project is empty, remove owner folder
-      if (!projectList || !projectList.length) {
-        await fs.remove(ownerPath);
-      }
-
-      const ownerList = await fs.readdir(sourcePath);
-
-      // if owner is empty, remove source folder
-      if (!ownerList || !ownerList.length) {
-        await fs.remove(sourcePath);
-      }
-
-      vscode.window.showInformationMessage(
-        `@${repository.owner}/${repository.repository} have been removed.`
-      );
-      this.refresh();
+      await this.runHook(path.dirname(repository.path), "postremove");
     } catch (err) {
-      vscode.window.showErrorMessage(err.message);
+      console.error(err);
+    }
+
+    // unstar prject
+    this.explorer.star.unstar(repository);
+
+    const ownerPath: string = path.dirname(repository.path);
+    const sourcePath: string = path.dirname(path.dirname(repository.path));
+
+    const projectList = await fs.readdir(ownerPath);
+
+    // if project is empty, remove owner folder
+    if (!projectList || !projectList.length) {
+      await fs.remove(ownerPath);
+    }
+
+    const ownerList = await fs.readdir(sourcePath);
+
+    // if owner is empty, remove source folder
+    if (!ownerList || !ownerList.length) {
+      await fs.remove(sourcePath);
+    }
+
+    this.refresh();
+  }
+
+  public async removeOwner(owner: IOwner) {
+    const repositories = await fs.readdir(owner.path);
+
+    for (const repository of repositories) {
+      const stat = await fs.stat(path.join(owner.path, repository));
+      if (stat.isDirectory()) {
+        const repo = createRepo(this.context, owner, repository);
+        await this.remove(repo);
+      }
     }
   }
+
+  public async removeSource(source: ISource) {
+    const owners = await fs.readdir(source.path);
+
+    for (const ownerName of owners) {
+      const stat = await fs.stat(path.join(source.path, ownerName));
+      if (stat.isDirectory()) {
+        const owner = createOwner(this.context, source, ownerName);
+        await this.removeOwner(owner);
+      }
+    }
+  }
+
   public async cleanCache() {
     try {
       await fs.remove(this.cachePath);

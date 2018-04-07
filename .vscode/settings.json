@@ -9,5 +9,6 @@
     "editor.tabSize": 2,
     "files.associations": {
         ".gpmrc": "json"
-    }
+    },
+    "eslint.enable": false
 }

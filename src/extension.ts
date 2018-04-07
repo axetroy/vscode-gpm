@@ -10,7 +10,9 @@ import {
   IRepository,
   createRepo,
   createOwner,
-  createSource
+  createSource,
+  IOwner,
+  ISource
 } from "./projectTree";
 import { getField, updateField, getRootPath } from "./config";
 
@@ -110,8 +112,67 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // remove project
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.remove", (repository: IRepository) =>
-      gpm.remove(repository)
+    vscode.commands.registerCommand(
+      "gpm.remove",
+      async (repository: IRepository) => {
+        const action = await vscode.window.showInformationMessage(
+          `[Irrevocable] Are you sure to remove project @${repository.owner}/${
+            repository.repository
+          }?`,
+          "Yes",
+          "No"
+        );
+
+        if (action !== "Yes") {
+          return;
+        }
+
+        await gpm.remove(repository);
+      }
+    )
+  );
+
+  // remove owner
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "gpm.removeOwner",
+      async (owner: IOwner) => {
+        const action = await vscode.window.showInformationMessage(
+          `[Irrevocable] Are you sure to remove all project of @${
+            owner.owner
+          }?`,
+          "Yes",
+          "No"
+        );
+
+        if (action !== "Yes") {
+          return;
+        }
+
+        await gpm.removeOwner(owner);
+      }
+    )
+  );
+
+  // remove source
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "gpm.removeSource",
+      async (source: ISource) => {
+        const action = await vscode.window.showInformationMessage(
+          `[Irrevocable] Are you sure to remove all project of ${
+            source.source
+          }?`,
+          "Yes",
+          "No"
+        );
+
+        if (action !== "Yes") {
+          return;
+        }
+
+        await gpm.removeSource(source);
+      }
     )
   );
 
