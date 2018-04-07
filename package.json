@@ -263,6 +263,16 @@
                     "command": "gpm.openInTerminal",
                     "group": "context",
                     "when": "view == GPMExplorer && viewItem == repository.stared"
+                },
+                {
+                    "command": "gpm.openInTerminal",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == owner"
+                },
+                {
+                    "command": "gpm.openInTerminal",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == source"
                 }
             ],
             "commandPalette": [

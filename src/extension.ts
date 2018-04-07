@@ -12,7 +12,8 @@ import {
   createOwner,
   createSource,
   IOwner,
-  ISource
+  ISource,
+  IFile
 } from "./projectTree";
 import { getField, updateField, getRootPath } from "./config";
 
@@ -305,7 +306,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "gpm.openInTerminal",
-      (repo: IRepository) => {
+      (repo: IFile) => {
         return gpm.openTerminal(repo);
       }
     )

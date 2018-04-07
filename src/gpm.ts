@@ -14,7 +14,8 @@ import {
   IOwner,
   ISource,
   createRepo,
-  createOwner
+  createOwner,
+  IFile
 } from "./projectTree";
 
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
@@ -425,20 +426,36 @@ export class Gpm {
 
     return repository;
   }
-  public openTerminal(repo: IRepository) {
+  public openTerminal(file: IFile) {
     let terminal: vscode.Terminal;
 
-    if (!this.terminals[repo.path]) {
+    let name: string;
+
+    switch (file.type) {
+      case "repository":
+        name = (file as IRepository).repository;
+        break;
+      case "owner":
+        name = (file as IOwner).owner;
+        break;
+      case "source":
+        name = (file as ISource).source;
+        break;
+      default:
+        name = "undefined";
+    }
+
+    if (!this.terminals[file.path]) {
       terminal = vscode.window.createTerminal({
-        name: "[GPM]: " + repo.repository,
-        cwd: repo.path,
+        name: "[GPM]: " + name,
+        cwd: file.path,
         env: process.env as any
       });
 
       this.context.subscriptions.push(terminal);
-      this.terminals[repo.path] = terminal;
+      this.terminals[file.path] = terminal;
     } else {
-      terminal = this.terminals[repo.path];
+      terminal = this.terminals[file.path];
     }
 
     terminal.show();
