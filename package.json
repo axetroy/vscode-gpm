@@ -210,6 +210,16 @@
                     "when": "view == GPMExplorer && viewItem == repository.stared"
                 },
                 {
+                    "command": "gpm.openInNewWindow",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == owner"
+                },
+                {
+                    "command": "gpm.openInNewWindow",
+                    "group": "context",
+                    "when": "view == GPMExplorer && viewItem == source"
+                },
+                {
                     "command": "gpm.remove",
                     "group": "context",
                     "when": "view == GPMExplorer && viewItem == repository"

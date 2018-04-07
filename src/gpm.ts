@@ -352,10 +352,10 @@ export class Gpm {
       vscode.Uri.file(repository.path)
     );
   }
-  public async openInNewWindow(repository: IRepository) {
+  public async openInNewWindow(file: IFile) {
     return vscode.commands.executeCommand(
       "vscode.openFolder",
-      vscode.Uri.file(repository.path),
+      vscode.Uri.file(file.path),
       true
     );
   }

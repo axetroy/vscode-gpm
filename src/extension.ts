@@ -72,9 +72,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // open project in new window
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "gpm.openInNewWindow",
-      (repository: IRepository) => gpm.openInNewWindow(repository)
+    vscode.commands.registerCommand("gpm.openInNewWindow", (file: IFile) =>
+      gpm.openInNewWindow(file)
     )
   );
 
@@ -304,12 +303,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // open project in terminal
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "gpm.openInTerminal",
-      (repo: IFile) => {
-        return gpm.openTerminal(repo);
-      }
-    )
+    vscode.commands.registerCommand("gpm.openInTerminal", (repo: IFile) => {
+      return gpm.openTerminal(repo);
+    })
   );
 
   // list to open project in terminal
