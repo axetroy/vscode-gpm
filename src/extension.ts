@@ -51,9 +51,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // open project in current window
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "gpm.openInCurrentWindow",
-      (repository: IRepository) => gpm.openInCurrentWindow(repository)
+    vscode.commands.registerCommand("gpm.openInCurrentWindow", (file: IFile) =>
+      gpm.openInCurrentWindow(file)
     )
   );
 

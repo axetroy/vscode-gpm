@@ -346,18 +346,18 @@ export class Gpm {
         return;
     }
   }
-  public async openInCurrentWindow(repository: IRepository) {
+  private openFile(filepath: string, ...res: any[]) {
     return vscode.commands.executeCommand(
       "vscode.openFolder",
-      vscode.Uri.file(repository.path)
+      vscode.Uri.file(filepath),
+      ...res
     );
   }
+  public async openInCurrentWindow(file: IFile) {
+    return this.openFile(file.path);
+  }
   public async openInNewWindow(file: IFile) {
-    return vscode.commands.executeCommand(
-      "vscode.openFolder",
-      vscode.Uri.file(file.path),
-      true
-    );
+    return this.openFile(file.path, true);
   }
   public async interruptCommand() {
     if (this.currentStream) {
