@@ -281,75 +281,96 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   }
 
   public async getChildren(element?: IFile): Promise<IFile[]> {
+    if (!element) {
+      return this.getSources();
+    }
+
     if (type.isStar(element)) {
       return element.list();
     }
 
-    const children: IFile[] = [];
-    const GPM_PATH: string = config.rootPath;
-
-    const elementFilePath: string = !element ? GPM_PATH : element.path;
-
-    const files: string[] = await fs.readdir(elementFilePath);
-
-    if (!element) {
-      if (this.star.list().length) {
-        children.push(this.star);
-      }
-
-      for (const file of files) {
-        if (/^\./.test(file)) {
-          continue;
-        }
-        const statInfo = await fs.stat(path.join(GPM_PATH, file));
-
-        if (statInfo.isFile()) {
-          continue;
-        }
-
-        children.push(createSource(this.context, file));
-      }
-      return children;
-    }
-
     if (type.isSource(element)) {
-      for (const file of files) {
-        if (/^\./.test(file)) {
-          continue;
-        }
-        const statInfo = await fs.stat(path.join(element.path, file));
-
-        if (statInfo.isFile()) {
-          continue;
-        }
-
-        children.push(createOwner(this.context, element, file));
-      }
-      return children;
+      return this.getOwner(element);
     }
 
     if (type.isOwner(element)) {
-      for (const file of files) {
-        if (/^\./.test(file)) {
-          continue;
-        }
-        const statInfo = await fs.stat(path.join(element.path, file));
-
-        if (statInfo.isFile()) {
-          continue;
-        }
-
-        const repository = createRepo(this.context, element, file);
-
-        const staredRepo = this.star.find(repository);
-
-        children.push(staredRepo ? staredRepo : repository);
-      }
-      return children;
+      return this.getRepository(element);
     }
 
+    return this.getExplorer(element);
+  }
+  private async getSources() {
+    const children: IFile[] = [];
+
+    const GPM_ROOT_PATH = config.rootPath;
+
+    const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(
+      file => !/^\./.test(file)
+    );
+
+    // concat with star
+    if (this.star.list().length) {
+      children.push(this.star);
+    }
+
+    for (const file of files) {
+      const statInfo = await fs.stat(path.join(GPM_ROOT_PATH, file));
+
+      if (statInfo.isFile()) {
+        continue;
+      }
+
+      children.push(createSource(this.context, file));
+    }
+    return children;
+  }
+  private async getOwner(element: ISource): Promise<IOwner[]> {
+    const children: IOwner[] = [];
+
+    const files: string[] = (await fs.readdir(element.path)).filter(
+      file => !/^\./.test(file)
+    );
+
+    for (const file of files) {
+      const statInfo = await fs.stat(path.join(element.path, file));
+
+      if (statInfo.isFile()) {
+        continue;
+      }
+
+      children.push(createOwner(this.context, element, file));
+    }
+    return children;
+  }
+  private async getRepository(element: IOwner): Promise<IRepository[]> {
+    const children: IRepository[] = [];
+
+    const files: string[] = (await fs.readdir(element.path)).filter(
+      file => !/^\./.test(file)
+    );
+
+    for (const file of files) {
+      const statInfo = await fs.stat(path.join(element.path, file));
+
+      if (statInfo.isFile()) {
+        continue;
+      }
+
+      const repository = createRepo(this.context, element, file);
+
+      const staredRepo = this.star.find(repository);
+
+      children.push(staredRepo ? staredRepo : repository);
+    }
+    return children;
+  }
+
+  private async getExplorer(element: IFile): Promise<IFile[]> {
+    const children: IFile[] = [];
     const fileList: string[] = [];
     const dirList: string[] = [];
+
+    const files: string[] = await fs.readdir(element.path);
 
     for (const file of files) {
       const stat = await fs.stat(path.join((element as IFile).path, file));

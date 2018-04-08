@@ -12,6 +12,12 @@ export type SearchBehavior =
 
 class Config {
   private extensionField = "gpm";
+  public fields = {
+    ROOT_PATH: "rootPath",
+    CAN_SHOW_EXPLORER: "showExplorer",
+    IS_AUTO_RUN_HOOK: "isAutoRunHook",
+    SEARCH_BEHAVIOR: "searchBehavior"
+  };
   get configuration() {
     return vscode.workspace.getConfiguration(this.extensionField);
   }
@@ -22,7 +28,7 @@ class Config {
    */
   get rootPath(): string {
     return path.normalize(
-      (this.field("rootPath").get() as string)
+      (this.select(this.fields.ROOT_PATH).get() as string)
         .replace(/^~/, process.env.HOME as string)
         .replace("$HOME", os.homedir())
         .replace(
@@ -32,18 +38,21 @@ class Config {
     );
   }
   get isAutoRunHook(): boolean {
-    return !!this.field("isAutoRunHook").get();
+    return !!this.select(this.fields.IS_AUTO_RUN_HOOK).get();
+  }
+  get canShowExplorer(): boolean {
+    return !!this.select(this.fields.CAN_SHOW_EXPLORER).get();
   }
   get searchBehavior(): SearchBehavior {
-    return this.field("searchBehavior").get() as SearchBehavior;
+    return this.select(this.fields.SEARCH_BEHAVIOR).get() as SearchBehavior;
   }
   /**
-   * get/update the field
+   * select a field
    * @param {string} field
-   * @returns {*}
+   * @returns
    * @memberof Config
    */
-  public field(field: string) {
+  public select(field: string) {
     // return this.configuration.get(field);
     return {
       get: () => {

@@ -20,8 +20,6 @@ import config from "./config";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-  const CAN_SHOW_EXPLORER: string = "showExplorer";
-
   // status bar
   const statusBar = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
@@ -291,11 +289,12 @@ export async function activate(context: vscode.ExtensionContext) {
   // toggle tree view
   context.subscriptions.push(
     vscode.commands.registerCommand("gpm.toggleExplorer", async () => {
-      await updateField(CAN_SHOW_EXPLORER, !getField(CAN_SHOW_EXPLORER));
+      const field = config.select(config.fields.CAN_SHOW_EXPLORER);
+      await field.update(!field.get());
       await vscode.commands.executeCommand(
         "setContext",
-        CAN_SHOW_EXPLORER,
-        getField(CAN_SHOW_EXPLORER)
+        config.fields.CAN_SHOW_EXPLORER,
+        !!field.get()
       );
     })
   );
@@ -389,8 +388,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   vscode.commands.executeCommand(
     "setContext",
-    CAN_SHOW_EXPLORER,
-    !!getField(CAN_SHOW_EXPLORER)
+    config.fields.CAN_SHOW_EXPLORER,
+    config.canShowExplorer
   );
 
   // tree view
@@ -398,6 +397,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.registerTreeDataProvider("GPMExplorer", explorer)
   );
 
+  // set .gpmrc file to json
   const fileConfig = vscode.workspace.getConfiguration("files");
   const associations = fileConfig.get("associations") || {};
 
