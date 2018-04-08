@@ -18,11 +18,14 @@ import {
   IFile
 } from "./projectTree";
 
+type InitAction = "Create" | "Cancel";
 type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
 type ProjectPostAddAction = "Open" | "Cancel";
 type PruneAction = "Continue" | "Cancel";
 type Hook = "add" | "postadd" | "preremove" | "postremove";
 type SearchAction = "Open" | "Remove" | "Cancel";
+type OpenAction = "Current Window" | "New Window" | "Cancel";
+type ConfirmAction = "Yes" | "No";
 
 interface IRc {
   hooks?: {
@@ -52,7 +55,7 @@ export class Gpm {
         "Create",
         "Cancel"
       );
-      switch (action) {
+      switch (action as InitAction) {
         case "Create":
           await fs.ensureDir(rootPath);
           break;
@@ -271,7 +274,7 @@ export class Gpm {
       console.error(err);
     }
 
-    // unstar prject
+    // unstar project
     this.explorer.star.unstar(repository);
 
     const ownerPath: string = path.dirname(repository.path);
@@ -334,7 +337,6 @@ export class Gpm {
   }
   public async open(repository: IRepository) {
     const repoSymbol: string = `@${repository.owner}/${repository.repository}`;
-    type OpenAction = "Current Window" | "New Window" | "Cancel";
 
     const action = await vscode.window.showInformationMessage(
       `Which way to open ${repoSymbol}?`,
@@ -372,7 +374,7 @@ export class Gpm {
         "Yes",
         "No"
       );
-      switch (confirm) {
+      switch (confirm as ConfirmAction) {
         case "Yes":
           this.currentStream.kill();
           this.currentStream = void 0;
