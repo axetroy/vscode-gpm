@@ -15,7 +15,7 @@ import {
   ISource,
   IFile
 } from "./projectTree";
-import { getField, updateField, getRootPath } from "./config";
+import config from "./config";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -208,7 +208,7 @@ export async function activate(context: vscode.ExtensionContext) {
           return;
         }
         const gpmRoot = path.join(rootPath, "..", "..", "..");
-        if (gpmRoot === getRootPath()) {
+        if (gpmRoot === config.rootPath) {
           const repoName = path.basename(rootPath);
           const ownerName = path.basename(path.join(rootPath, ".."));
           const sourceName = path.basename(path.join(rootPath, "..", ".."));

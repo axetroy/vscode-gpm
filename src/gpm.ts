@@ -7,7 +7,7 @@ const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
-import { getRootPath, getIsAutoRunHook, getSearchBehavior } from "./config";
+import config from "./config";
 import {
   IRepository,
   ProjectTreeProvider,
@@ -48,7 +48,7 @@ export class Gpm {
     public statusBar: vscode.StatusBarItem
   ) {}
   public async init() {
-    const rootPath = getRootPath();
+    const rootPath = config.rootPath;
     if (!await fs.pathExists(rootPath)) {
       const action = await vscode.window.showInformationMessage(
         `GPM root folder '${rootPath}' not found.`,
@@ -128,7 +128,7 @@ export class Gpm {
 
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
-    const baseDir: string = getRootPath();
+    const baseDir: string = config.rootPath;
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
 
@@ -216,7 +216,7 @@ export class Gpm {
         return;
     }
 
-    const walker = new Walker(getRootPath());
+    const walker = new Walker(config.rootPath);
 
     let files = 0;
     let directory = 0;
@@ -487,7 +487,7 @@ export class Gpm {
       return;
     }
 
-    const behavior = getSearchBehavior();
+    const behavior = config.searchBehavior;
 
     switch (behavior) {
       case "openInNewWindow":
@@ -572,7 +572,7 @@ export class Gpm {
   }
   public async runHook(cwd: string, hookName: Hook) {
     // if user disable auto run hook
-    if (!getIsAutoRunHook()) {
+    if (!config.isAutoRunHook) {
       return;
     }
 

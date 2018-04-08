@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs-extra";
 import * as path from "path";
-import { getRootPath } from "./config";
+import config from "./config";
 
 function getIcon(context: vscode.ExtensionContext, paths: string[]) {
   return {
@@ -88,7 +88,7 @@ export function createSource(
   context: vscode.ExtensionContext,
   sourceName: string
 ): ISource {
-  const rootPath: string = getRootPath();
+  const rootPath: string = config.rootPath;
   const item: ISource = {
     label: sourceName,
     contextValue: "source",
@@ -286,7 +286,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
     }
 
     const children: IFile[] = [];
-    const GPM_PATH: string = getRootPath();
+    const GPM_PATH: string = config.rootPath;
 
     const elementFilePath: string = !element ? GPM_PATH : element.path;
 

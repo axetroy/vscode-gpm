@@ -1,429 +1,422 @@
 {
-    "name": "vscode-gpm",
-    "displayName": "gpm",
-    "description": "Git Project Manager",
-    "version": "0.16.0",
-    "publisher": "axetroy",
-    "engines": {
-        "vscode": "^1.21.0"
+  "name": "vscode-gpm",
+  "displayName": "gpm",
+  "description": "Git Project Manager",
+  "version": "0.16.0",
+  "publisher": "axetroy",
+  "engines": {
+    "vscode": "^1.21.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axetroy/vscode-gpm.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/axetroy/vscode-gpm/issues"
+  },
+  "homepage": "https://github.com/axetroy/vscode-gpm#readme",
+  "keywords": ["git", "project", "repository", "manage", "gpm"],
+  "categories": ["Other"],
+  "icon": "resources/icon.png",
+  "main": "./out/extension",
+  "activationEvents": ["*"],
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "GPMExplorer",
+          "name": "GPM",
+          "when": "showExplorer"
+        }
+      ]
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/axetroy/vscode-gpm.git"
-    },
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/axetroy/vscode-gpm/issues"
-    },
-    "homepage": "https://github.com/axetroy/vscode-gpm#readme",
-    "keywords": [
-        "git",
-        "project",
-        "repository",
-        "manage",
-        "gpm"
+    "commands": [
+      {
+        "command": "gpm.refresh",
+        "title": "Refresh Project",
+        "category": "GPM",
+        "icon": {
+          "light": "resources/light/command/refresh.svg",
+          "dark": "resources/dark/command/refresh.svg"
+        }
+      },
+      {
+        "command": "gpm.clearCache",
+        "title": "Clear Cache",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.add",
+        "title": "Add Project",
+        "category": "GPM",
+        "icon": {
+          "light": "resources/light/command//add.svg",
+          "dark": "resources/dark/command/add.svg"
+        }
+      },
+      {
+        "command": "gpm.openInCurrentWindow",
+        "title": "Open in Current Window",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.openInNewWindow",
+        "title": "Open in New Window",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.prune",
+        "title": "Prune Project",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.star",
+        "title": "Star",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.starCurrent",
+        "title": "Star Current Project",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2star",
+        "title": "List Project to Star",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.unstar",
+        "title": "Unstar",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2unstar",
+        "title": "List Project to Unstar",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.clearStars",
+        "title": "Clear Stars",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.remove",
+        "title": "Remove",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.removeOwner",
+        "title": "Remove",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.removeSource",
+        "title": "Remove",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.interruptCommand",
+        "title": "Interrupt Current Running Command",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2remove",
+        "title": "List Project to Remove",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2open",
+        "title": "List Project to Open",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2openNew",
+        "title": "List Project to Open in New Window",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.search",
+        "title": "Search Project",
+        "category": "GPM",
+        "icon": {
+          "light": "resources/light/command/search.svg",
+          "dark": "resources/dark/command/search.svg"
+        }
+      },
+      {
+        "command": "gpm.toggleExplorer",
+        "title": "Toggle the Tree View",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.openInTerminal",
+        "title": "Open in Terminal",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2openInTerminal",
+        "title": "List Project to Open in Terminal",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.createRepository",
+        "title": "Create Project",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.createOwner",
+        "title": "Create Owner",
+        "category": "GPM"
+      }
     ],
-    "categories": [
-        "Other"
-    ],
-    "icon": "resources/icon.png",
-    "main": "./out/extension",
-    "activationEvents": [
-        "*"
-    ],
-    "contributes": {
-        "views": {
-            "explorer": [
-                {
-                    "id": "GPMExplorer",
-                    "name": "GPM",
-                    "when": "showExplorer"
-                }
-            ]
+    "menus": {
+      "view/title": [
+        {
+          "command": "gpm.search",
+          "group": "navigation@1",
+          "when": "view == GPMExplorer"
         },
-        "commands": [
-            {
-                "command": "gpm.refresh",
-                "title": "Refresh Project",
-                "category": "GPM",
-                "icon": {
-                    "light": "resources/light/command/refresh.svg",
-                    "dark": "resources/dark/command/refresh.svg"
-                }
-            },
-            {
-                "command": "gpm.clearCache",
-                "title": "Clear Cache",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.add",
-                "title": "Add Project",
-                "category": "GPM",
-                "icon": {
-                    "light": "resources/light/command//add.svg",
-                    "dark": "resources/dark/command/add.svg"
-                }
-            },
-            {
-                "command": "gpm.openInCurrentWindow",
-                "title": "Open in Current Window",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.openInNewWindow",
-                "title": "Open in New Window",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.prune",
-                "title": "Prune Project",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.star",
-                "title": "Star",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.starCurrent",
-                "title": "Star Current Project",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.list2star",
-                "title": "List Project to Star",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.unstar",
-                "title": "Unstar",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.list2unstar",
-                "title": "List Project to Unstar",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.clearStars",
-                "title": "Clear Stars",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.remove",
-                "title": "Remove",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.removeOwner",
-                "title": "Remove",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.removeSource",
-                "title": "Remove",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.interruptCommand",
-                "title": "Interrupt Current Running Command",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.list2remove",
-                "title": "List Project to Remove",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.list2open",
-                "title": "List Project to Open",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.list2openNew",
-                "title": "List Project to Open in New Window",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.search",
-                "title": "Search Project",
-                "category": "GPM",
-                "icon": {
-                    "light": "resources/light/command/search.svg",
-                    "dark": "resources/dark/command/search.svg"
-                }
-            },
-            {
-                "command": "gpm.toggleExplorer",
-                "title": "Toggle the Tree View",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.openInTerminal",
-                "title": "Open in Terminal",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.list2openInTerminal",
-                "title": "List Project to Open in Terminal",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.createRepository",
-                "title": "Create Project",
-                "category": "GPM"
-            },
-            {
-                "command": "gpm.createOwner",
-                "title": "Create Owner",
-                "category": "GPM"
-            }
-        ],
-        "menus": {
-            "view/title": [
-                {
-                    "command": "gpm.search",
-                    "group": "navigation@1",
-                    "when": "view == GPMExplorer"
-                },
-                {
-                    "command": "gpm.add",
-                    "group": "navigation@2",
-                    "when": "view == GPMExplorer"
-                },
-                {
-                    "command": "gpm.refresh",
-                    "group": "navigation@3",
-                    "when": "view == GPMExplorer"
-                }
-            ],
-            "view/item/context": [
-                {
-                    "command": "gpm.openInCurrentWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository"
-                },
-                {
-                    "command": "gpm.openInCurrentWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository.stared"
-                },
-                {
-                    "command": "gpm.openInCurrentWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == owner"
-                },
-                {
-                    "command": "gpm.openInCurrentWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == source"
-                },
-                {
-                    "command": "gpm.openInNewWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository"
-                },
-                {
-                    "command": "gpm.openInNewWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository.stared"
-                },
-                {
-                    "command": "gpm.openInNewWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == owner"
-                },
-                {
-                    "command": "gpm.openInNewWindow",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == source"
-                },
-                {
-                    "command": "gpm.remove",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository"
-                },
-                {
-                    "command": "gpm.remove",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository.stared"
-                },
-                {
-                    "command": "gpm.removeOwner",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == owner"
-                },
-                {
-                    "command": "gpm.removeSource",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == source"
-                },
-                {
-                    "command": "gpm.star",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository"
-                },
-                {
-                    "command": "gpm.unstar",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository.stared"
-                },
-                {
-                    "command": "gpm.list2star",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == star"
-                },
-                {
-                    "command": "gpm.list2unstar",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == star"
-                },
-                {
-                    "command": "gpm.clearStars",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == star"
-                },
-                {
-                    "command": "gpm.openInTerminal",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository"
-                },
-                {
-                    "command": "gpm.openInTerminal",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == repository.stared"
-                },
-                {
-                    "command": "gpm.openInTerminal",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == owner"
-                },
-                {
-                    "command": "gpm.openInTerminal",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == source"
-                },
-                {
-                    "command": "gpm.createRepository",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == owner"
-                },
-                {
-                    "command": "gpm.createOwner",
-                    "group": "context",
-                    "when": "view == GPMExplorer && viewItem == source"
-                }
-            ],
-            "commandPalette": [
-                {
-                    "command": "gpm.remove",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.removeOwner",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.removeSource",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.openInCurrentWindow",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.openInNewWindow",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.star",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.unstar",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.openInTerminal",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.createRepository",
-                    "when": "never"
-                },
-                {
-                    "command": "gpm.createOwner",
-                    "when": "never"
-                }
-            ]
+        {
+          "command": "gpm.add",
+          "group": "navigation@2",
+          "when": "view == GPMExplorer"
         },
-        "configuration": {
-            "title": "GPM",
-            "properties": {
-                "gpm.rootPath": {
-                    "type": "string",
-                    "default": "$HOME/gpm",
-                    "description": "Git Package Root Path, default: $HOME/gpm, support other environment variables, eb. $GOPATH"
-                },
-                "gpm.isAutoRunHook": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "WARNING: custom hook may be dangerous. risk on your own."
-                },
-                "gpm.searchBehavior": {
-                    "type": "string",
-                    "default": "openInNewWindow",
-                    "oneOf": [
-                        "openInNewWindow",
-                        "openInCurrentWindow",
-                        "remove",
-                        "star",
-                        "unstar",
-                        "ask"
-                    ],
-                    "description": "Define the behavior of search and select a project."
-                },
-                "gpm.showExplorer": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Show the project explorer or not"
-                }
-            }
+        {
+          "command": "gpm.refresh",
+          "group": "navigation@3",
+          "when": "view == GPMExplorer"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "gpm.openInCurrentWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository"
         },
-        "jsonValidation": [
-            {
-                "fileMatch": ".gpmrc",
-                "url": "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/gpmrc.schema.json"
-            }
-        ]
+        {
+          "command": "gpm.openInCurrentWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository.stared"
+        },
+        {
+          "command": "gpm.openInCurrentWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == owner"
+        },
+        {
+          "command": "gpm.openInCurrentWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == source"
+        },
+        {
+          "command": "gpm.openInNewWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository"
+        },
+        {
+          "command": "gpm.openInNewWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository.stared"
+        },
+        {
+          "command": "gpm.openInNewWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == owner"
+        },
+        {
+          "command": "gpm.openInNewWindow",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == source"
+        },
+        {
+          "command": "gpm.remove",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository"
+        },
+        {
+          "command": "gpm.remove",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository.stared"
+        },
+        {
+          "command": "gpm.removeOwner",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == owner"
+        },
+        {
+          "command": "gpm.removeSource",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == source"
+        },
+        {
+          "command": "gpm.star",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository"
+        },
+        {
+          "command": "gpm.unstar",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository.stared"
+        },
+        {
+          "command": "gpm.list2star",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == star"
+        },
+        {
+          "command": "gpm.list2unstar",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == star"
+        },
+        {
+          "command": "gpm.clearStars",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == star"
+        },
+        {
+          "command": "gpm.openInTerminal",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository"
+        },
+        {
+          "command": "gpm.openInTerminal",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository.stared"
+        },
+        {
+          "command": "gpm.openInTerminal",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == owner"
+        },
+        {
+          "command": "gpm.openInTerminal",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == source"
+        },
+        {
+          "command": "gpm.createRepository",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == owner"
+        },
+        {
+          "command": "gpm.createOwner",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == source"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "gpm.remove",
+          "when": "never"
+        },
+        {
+          "command": "gpm.removeOwner",
+          "when": "never"
+        },
+        {
+          "command": "gpm.removeSource",
+          "when": "never"
+        },
+        {
+          "command": "gpm.openInCurrentWindow",
+          "when": "never"
+        },
+        {
+          "command": "gpm.openInNewWindow",
+          "when": "never"
+        },
+        {
+          "command": "gpm.star",
+          "when": "never"
+        },
+        {
+          "command": "gpm.unstar",
+          "when": "never"
+        },
+        {
+          "command": "gpm.openInTerminal",
+          "when": "never"
+        },
+        {
+          "command": "gpm.createRepository",
+          "when": "never"
+        },
+        {
+          "command": "gpm.createOwner",
+          "when": "never"
+        }
+      ]
     },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./ && npm run lint",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "lint": "tslint -p ./ -c tslint.json",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test",
-        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-        "publish": "npx vsce publish"
+    "configuration": {
+      "title": "GPM",
+      "properties": {
+        "gpm.rootPath": {
+          "type": "string",
+          "default": "$HOME/gpm",
+          "description":
+            "Git Package Root Path, default: $HOME/gpm, support other environment variables, eb. $GOPATH"
+        },
+        "gpm.isAutoRunHook": {
+          "type": "boolean",
+          "default": false,
+          "description":
+            "WARNING: custom hook may be dangerous. risk on your own."
+        },
+        "gpm.searchBehavior": {
+          "type": "string",
+          "default": "openInNewWindow",
+          "oneOf": [
+            "openInNewWindow",
+            "openInCurrentWindow",
+            "remove",
+            "star",
+            "unstar",
+            "ask"
+          ],
+          "description": "Define the behavior of search and select a project."
+        },
+        "gpm.showExplorer": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the project explorer or not"
+        }
+      }
     },
-    "devDependencies": {
-        "@types/fs-extra": "^5.0.1",
-        "@types/mocha": "^2.2.42",
-        "@types/node": "^9.6.2",
-        "@types/shelljs": "^0.7.8",
-        "conventional-changelog-cli": "^1.3.21",
-        "tslint": "^5.8.0",
-        "tslint-config-prettier": "^1.10.0",
-        "typescript": "^2.8.1",
-        "vscode": "^1.1.6"
-    },
-    "dependencies": {
-        "@axetroy/walk": "^0.1.0",
-        "fs-extra": "^5.0.0",
-        "git-url-parse": "^8.3.1",
-        "shelljs": "^0.8.1",
-        "unique-string": "^1.0.0"
-    }
+    "jsonValidation": [
+      {
+        "fileMatch": ".gpmrc",
+        "url":
+          "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/gpmrc.schema.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./ && npm run lint",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "lint": "tslint -p ./ -c tslint.json",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "publish": "npx vsce publish"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.1",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^9.6.2",
+    "@types/shelljs": "^0.7.8",
+    "conventional-changelog-cli": "^1.3.21",
+    "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.10.0",
+    "typescript": "^2.8.1",
+    "vscode": "^1.1.6"
+  },
+  "dependencies": {
+    "@axetroy/walk": "^0.1.0",
+    "fs-extra": "^5.0.0",
+    "git-url-parse": "^8.3.1",
+    "shelljs": "^0.8.1",
+    "unique-string": "^1.0.0"
+  }
 }
