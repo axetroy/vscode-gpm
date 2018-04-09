@@ -1,3 +1,18 @@
+<a name="0.16.1"></a>
+## [0.16.1](https://github.com/axetroy/vscode-gpm/compare/v0.16.0...v0.16.1) (2018-04-09)
+
+
+### Bug Fixes
+
+* Update config in workspace, It will create .vscode folder ([1b25f66](https://github.com/axetroy/vscode-gpm/commit/1b25f66))
+
+
+### Features
+
+* Upgrade deps ([1b1d8d5](https://github.com/axetroy/vscode-gpm/commit/1b1d8d5))
+
+
+
 <a name="0.16.0"></a>
 # [0.16.0](https://github.com/axetroy/vscode-gpm/compare/v0.15.1...v0.16.0) (2018-04-07)
 
