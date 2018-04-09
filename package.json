@@ -2,7 +2,7 @@
   "name": "vscode-gpm",
   "displayName": "gpm",
   "description": "Git Project Manager",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "publisher": "axetroy",
   "engines": {
     "vscode": "^1.21.0"
@@ -16,11 +16,21 @@
     "url": "https://github.com/axetroy/vscode-gpm/issues"
   },
   "homepage": "https://github.com/axetroy/vscode-gpm#readme",
-  "keywords": ["git", "project", "repository", "manage", "gpm"],
-  "categories": ["Other"],
+  "keywords": [
+    "git",
+    "project",
+    "repository",
+    "manage",
+    "gpm"
+  ],
+  "categories": [
+    "Other"
+  ],
   "icon": "resources/icon.png",
   "main": "./out/extension",
-  "activationEvents": ["*"],
+  "activationEvents": [
+    "*"
+  ],
   "contributes": {
     "views": {
       "explorer": [
@@ -354,14 +364,12 @@
         "gpm.rootPath": {
           "type": "string",
           "default": "$HOME/gpm",
-          "description":
-            "Git Package Root Path, default: $HOME/gpm, support other environment variables, eb. $GOPATH"
+          "description": "Git Package Root Path, default: $HOME/gpm, support other environment variables, eb. $GOPATH"
         },
         "gpm.isAutoRunHook": {
           "type": "boolean",
           "default": false,
-          "description":
-            "WARNING: custom hook may be dangerous. risk on your own."
+          "description": "WARNING: custom hook may be dangerous. risk on your own."
         },
         "gpm.searchBehavior": {
           "type": "string",
@@ -386,8 +394,7 @@
     "jsonValidation": [
       {
         "fileMatch": ".gpmrc",
-        "url":
-          "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/gpmrc.schema.json"
+        "url": "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/gpmrc.schema.json"
       }
     ]
   },
