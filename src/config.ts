@@ -58,8 +58,11 @@ class Config {
       get: () => {
         return this.configuration.get(field);
       },
-      update: (value: any) => {
-        return this.configuration.update(field, value);
+      update: (
+        value: any,
+        configurationTarget?: vscode.ConfigurationTarget | boolean
+      ) => {
+        return this.configuration.update(field, value, configurationTarget);
       }
     };
   }

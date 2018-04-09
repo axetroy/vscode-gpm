@@ -290,7 +290,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("gpm.toggleExplorer", async () => {
       const field = config.select(config.fields.CAN_SHOW_EXPLORER);
-      await field.update(!field.get());
+      await field.update(!field.get(), vscode.ConfigurationTarget.Global);
       await vscode.commands.executeCommand(
         "setContext",
         config.fields.CAN_SHOW_EXPLORER,
@@ -364,7 +364,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
         const ownerPath = path.join(source.path, ownerName);
 
-        const exist = await fs.pathExists(ownerPath);
+        const exist: boolean = await fs.pathExists(ownerPath);
 
         if (exist) {
           return;
@@ -399,18 +399,27 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // set .gpmrc file to json
   const fileConfig = vscode.workspace.getConfiguration("files");
-  const associations = fileConfig.get("associations") || {};
+  const associations: any = fileConfig.get("associations") || {};
 
-  fileConfig.update("associations", {
-    ...associations,
-    ...{
-      ".gpmrc": "json"
-    }
-  });
+  if (!associations[".gpmrc"]) {
+    // update
+    fileConfig.update(
+      "associations",
+      {
+        ...associations,
+        ...{
+          ".gpmrc": "json"
+        }
+      },
+      vscode.ConfigurationTarget.Global
+    );
+  }
 }
 
 // this method is called when your extension is deactivated
-export async function deactivate(context: vscode.ExtensionContext) {
+export async function deactivate(
+  context: vscode.ExtensionContext
+): Promise<void> {
   // when disable extension
   // clear cache
   const gpm = new Gpm(
