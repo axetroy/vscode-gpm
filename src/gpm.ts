@@ -517,13 +517,13 @@ export class Gpm {
     let name: string;
 
     switch (file.type) {
-      case "repository":
+      case FileType.Repository:
         name = (file as IRepository).repository;
         break;
-      case "owner":
+      case FileType.Owner:
         name = (file as IOwner).owner;
         break;
-      case "source":
+      case FileType.Source:
         name = (file as ISource).source;
         break;
       default:
