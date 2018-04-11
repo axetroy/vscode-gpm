@@ -8,55 +8,60 @@ const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 import { isLink } from "./utils";
 import config from "./config";
+import { ProjectTreeProvider, createRepo, createOwner } from "./projectTree";
 import {
-  IRepository,
-  ProjectTreeProvider,
-  IOwner,
+  FileType,
+  IFile,
   ISource,
-  createRepo,
-  createOwner,
-  IFile
-} from "./projectTree";
-
-type InitAction = "Create" | "Cancel";
-type ProjectExistAction = "Overwrite" | "Rename" | "Cancel";
-type ProjectPostAddAction = "Open" | "Cancel";
-type PruneAction = "Continue" | "Cancel";
-type Hook = "add" | "postadd" | "preremove" | "postremove";
-type SearchAction = "Open" | "Remove" | "Cancel";
-type OpenAction = "Current Window" | "New Window" | "Cancel";
-type ConfirmAction = "Yes" | "No";
-
-interface IRc {
-  hooks?: {
-    add?: string;
-    postadd?: string;
-    preremove?: string;
-    postremove?: string;
-  };
-}
+  IOwner,
+  IRepository,
+  IPreset,
+  ConfirmAction,
+  InitAction,
+  Hook,
+  OpenAction,
+  SearchAction,
+  PruneAction,
+  ProjectExistAction,
+  ProjectPostAddAction,
+  Command,
+  SearchBehavior
+} from "./type";
 
 export class Gpm {
-  public terminals: { [path: string]: vscode.Terminal } = {};
+  public readonly PresetFile: string = ".gpmrc";
+  // current opening terminals
+  private readonly terminals: { [path: string]: vscode.Terminal } = {};
+  // current running command stream
   private currentStream: ChildProcess | void = void 0;
   // cache path
-  public cachePath: string = this.context.storagePath ||
+  public readonly CachePath: string = this.context.storagePath ||
     path.join(process.env.HOME as string, ".gpm", "temp");
-  constructor(
-    public context: vscode.ExtensionContext,
-    public explorer: ProjectTreeProvider,
-    public statusBar: vscode.StatusBarItem
-  ) {}
+
+  // project explorer
+  public readonly explorer: ProjectTreeProvider = new ProjectTreeProvider(
+    this.context
+  );
+  // status bar
+  private readonly statusBar: vscode.StatusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right,
+    100
+  );
+  constructor(private readonly context: vscode.ExtensionContext) {}
+  /**
+   * Init gpm, check the gpm root path exist or not
+   * @memberof Gpm
+   */
   public async init() {
     const rootPath = config.rootPath;
     if (!await fs.pathExists(rootPath)) {
       const action = await vscode.window.showInformationMessage(
         `GPM root folder '${rootPath}' not found.`,
-        "Create",
-        "Cancel"
+        InitAction.Create,
+        InitAction.Cancel
       );
       switch (action as InitAction) {
-        case "Create":
+        case InitAction.Create:
           await fs.ensureDir(rootPath);
           break;
         default:
@@ -69,15 +74,15 @@ export class Gpm {
     if (await fs.pathExists(repoPath)) {
       const actionName = await vscode.window.showWarningMessage(
         "Project already exists.",
-        "Overwrite",
-        "Rename",
-        "Cancel"
+        ProjectExistAction.Overwrite,
+        ProjectExistAction.Rename,
+        ProjectExistAction.Cancel
       );
 
       switch (actionName as ProjectExistAction) {
-        case "Overwrite":
+        case ProjectExistAction.Overwrite:
           return repoPath;
-        case "Rename":
+        case ProjectExistAction.Rename:
           const newName = await vscode.window.showInputBox({
             prompt: "Enter a new name of project."
           });
@@ -96,6 +101,11 @@ export class Gpm {
       return repoPath;
     }
   }
+  /**
+   * Add project
+   * @returns
+   * @memberof Gpm
+   */
   public async add() {
     // make sure git instsalled
     try {
@@ -110,7 +120,7 @@ export class Gpm {
 
     const gitProjectAddress = await vscode.window.showInputBox({
       placeHolder: "e.g. https://github.com/eggjs/egg.git",
-      prompt: "Enter git project https/ssh address."
+      prompt: "Enter public git project https/ssh address."
     });
 
     if (!gitProjectAddress) {
@@ -124,7 +134,7 @@ export class Gpm {
       return vscode.window.showErrorMessage("Invalid git address.");
     }
 
-    const randomTemp: string = path.join(this.cachePath, uniqueString());
+    const randomTemp: string = path.join(this.CachePath, uniqueString());
 
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
@@ -169,25 +179,25 @@ export class Gpm {
         // run the hooks
         // whatever hook success or fail
         // it still going on
-        await this.runHook(repoDir, "postadd");
+        await this.runHook(repoDir, Hook.Postadd);
       } catch (err) {
         console.error(err);
       }
 
       const action: string | void = await vscode.window.showInformationMessage(
         `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
-        "Open",
-        "Cancel"
+        ProjectPostAddAction.Open,
+        ProjectPostAddAction.Cancel
       );
 
       switch (action as ProjectPostAddAction) {
-        case "Open":
+        case ProjectPostAddAction.Open:
           await this.open({
             source: gitInfo.source,
             owner: gitInfo.owner,
             path: repoDir,
             repository: gitInfo.name,
-            type: "repository"
+            type: FileType.Repository
           });
           break;
         default:
@@ -202,15 +212,20 @@ export class Gpm {
       throw err;
     }
   }
+  /**
+   * Prune project, remove all node_modules folder
+   * @returns
+   * @memberof Gpm
+   */
   public async prune() {
     const action = await vscode.window.showWarningMessage(
       "prune will remove all node_modules folder, will you continue?",
-      "Continue",
-      "Cancel"
+      PruneAction.Continue,
+      PruneAction.Cancel
     );
 
     switch (action as PruneAction) {
-      case "Continue":
+      case PruneAction.Continue:
         break;
       default:
         return;
@@ -252,12 +267,17 @@ export class Gpm {
     );
     this.refresh();
   }
+  /**
+   * Remove project
+   * @param {IRepository} repository
+   * @memberof Gpm
+   */
   public async remove(repository: IRepository) {
     // run the hooks before remove project
     // whatever hook success or fail
     // it still going on
     try {
-      await this.runHook(repository.path, "preremove");
+      await this.runHook(repository.path, Hook.Preremove);
     } catch (err) {
       console.error(err);
     }
@@ -269,7 +289,7 @@ export class Gpm {
     // whatever hook success or fail
     // it still going on
     try {
-      await this.runHook(path.dirname(repository.path), "postremove");
+      await this.runHook(path.dirname(repository.path), Hook.Postremove);
     } catch (err) {
       console.error(err);
     }
@@ -296,7 +316,12 @@ export class Gpm {
 
     this.refresh();
   }
-
+  /**
+   * Remove Owner folder
+   * @param {IOwner} owner
+   * @returns
+   * @memberof Gpm
+   */
   public async removeOwner(owner: IOwner) {
     const repositories = await fs.readdir(owner.path);
 
@@ -311,7 +336,12 @@ export class Gpm {
     await fs.remove(owner.path);
     return this.refresh();
   }
-
+  /**
+   * Remove Source Folder
+   * @param {ISource} source
+   * @returns
+   * @memberof Gpm
+   */
   public async removeSource(source: ISource) {
     const owners = await fs.readdir(source.path);
 
@@ -326,34 +356,51 @@ export class Gpm {
     await fs.remove(source.path);
     return this.refresh();
   }
-
+  /**
+   * Clear cache
+   * @memberof Gpm
+   */
   public async cleanCache() {
     try {
-      await fs.remove(this.cachePath);
+      await fs.remove(this.CachePath);
       await vscode.window.showInformationMessage("Cache have been cleaned.");
     } catch (err) {
       await vscode.window.showErrorMessage(err.message);
     }
   }
+  /**
+   * Open Project
+   * @param {IRepository} repository
+   * @returns
+   * @memberof Gpm
+   */
   public async open(repository: IRepository) {
     const repoSymbol: string = `@${repository.owner}/${repository.repository}`;
 
     const action = await vscode.window.showInformationMessage(
       `Which way to open ${repoSymbol}?`,
-      "Current Window",
-      "New Window",
-      "Cancel"
+      OpenAction.CurrentWindow,
+      OpenAction.NewWindow,
+      OpenAction.Cancel
     );
 
     switch (action as OpenAction) {
-      case "Current Window":
+      case OpenAction.CurrentWindow:
         return this.openInCurrentWindow(repository);
-      case "New Window":
+      case OpenAction.NewWindow:
         return this.openInNewWindow(repository);
       default:
         return;
     }
   }
+  /**
+   * Open file
+   * @private
+   * @param {string} filepath
+   * @param {...any[]} res
+   * @returns
+   * @memberof Gpm
+   */
   private openFile(filepath: string, ...res: any[]) {
     return vscode.commands.executeCommand(
       "vscode.openFolder",
@@ -361,21 +408,39 @@ export class Gpm {
       ...res
     );
   }
+  /**
+   * Open file in current window
+   * @param {IFile} file
+   * @returns
+   * @memberof Gpm
+   */
   public async openInCurrentWindow(file: IFile) {
     return this.openFile(file.path);
   }
+  /**
+   * Open file in new window
+   * @param {IFile} file
+   * @returns
+   * @memberof Gpm
+   */
   public async openInNewWindow(file: IFile) {
     return this.openFile(file.path, true);
   }
+  /**
+   * interrupt current running command
+   * @returns
+   * @memberof Gpm
+   */
   public async interruptCommand() {
     if (this.currentStream) {
       const confirm = await vscode.window.showWarningMessage(
         "Do you want to interrupt command?",
-        "Yes",
-        "No"
+        ConfirmAction.Yes,
+        ConfirmAction.No
       );
+
       switch (confirm as ConfirmAction) {
-        case "Yes":
+        case ConfirmAction.Yes:
           this.currentStream.kill();
           this.currentStream = void 0;
           if (this.statusBar) {
@@ -389,6 +454,13 @@ export class Gpm {
       }
     }
   }
+  /**
+   * Select a repository from repositories
+   * @param {IRepository[]} [repositories]
+   * @param {vscode.QuickPickOptions} [options]
+   * @returns {(Promise<IRepository | void>)}
+   * @memberof Gpm
+   */
   public async selectRepository(
     repositories?: IRepository[],
     options?: vscode.QuickPickOptions
@@ -434,6 +506,11 @@ export class Gpm {
 
     return repository;
   }
+  /**
+   * Open file/folder in terminal
+   * @param {IFile} file
+   * @memberof Gpm
+   */
   public openTerminal(file: IFile) {
     let terminal: vscode.Terminal;
 
@@ -468,6 +545,11 @@ export class Gpm {
 
     terminal.show();
   }
+  /**
+   * Reset status bar
+   * @private
+   * @memberof Gpm
+   */
   private resetStatusBar() {
     const statusBar = this.statusBar;
     if (statusBar) {
@@ -477,9 +559,19 @@ export class Gpm {
       this.currentStream = void 0;
     }
   }
+  /**
+   * Refresh project
+   * @returns
+   * @memberof Gpm
+   */
   public refresh() {
     return this.explorer.refresh();
   }
+  /**
+   * Search project
+   * @returns
+   * @memberof Gpm
+   */
   public async search() {
     const repository = await this.selectRepository();
 
@@ -490,37 +582,73 @@ export class Gpm {
     const behavior = config.searchBehavior;
 
     switch (behavior) {
-      case "openInNewWindow":
+      case SearchBehavior.OpenInNewWindow:
         return this.openInNewWindow(repository);
-      case "openInCurrentWindow":
+      case SearchBehavior.OpenInCurrentWindow:
         return this.openInCurrentWindow(repository);
-      case "remove":
+      case SearchBehavior.Remove:
         return this.remove(repository);
-      case "star":
+      case SearchBehavior.Star:
         return this.explorer.star.star(repository);
-      case "unstar":
+      case SearchBehavior.Unstar:
         return this.explorer.star.unstar(repository);
-      default:
+      case SearchBehavior.Ask:
         const repoSymbol: string = `@${repository.owner}/${
           repository.repository
         }`;
 
         const doAction = await vscode.window.showInformationMessage(
           `What do you want to do about ${repoSymbol}?`,
-          "Open",
-          "Remove",
-          "Cancel"
+          SearchAction.Open,
+          SearchAction.Remove,
+          SearchAction.Cancel
         );
 
         switch (doAction as SearchAction) {
-          case "Open":
+          case SearchAction.Open:
             return this.open(repository);
-          case "Remove":
+          case SearchAction.Remove:
             return this.remove(repository);
           default:
             return;
         }
+      default:
+      // do nothing
     }
+  }
+  /**
+   * Star project
+   * @param {IRepository} repository
+   * @memberof Gpm
+   */
+  public async star(repository: IRepository) {
+    await this.explorer.star.star(repository);
+    this.refresh();
+  }
+  /**
+   * Unstar project
+   * @param {IRepository} repository
+   * @memberof Gpm
+   */
+  public async unstar(repository: IRepository) {
+    await this.explorer.star.unstar(repository);
+    this.refresh();
+  }
+  /**
+   * Get the star list
+   * @returns
+   * @memberof Gpm
+   */
+  public starList() {
+    return this.explorer.star.list();
+  }
+  /**
+   * Clear all stars
+   * @returns
+   * @memberof Gpm
+   */
+  public clearStars() {
+    return this.explorer.star.clear();
   }
   private async runShell(cwd: string, command: string) {
     const statusBar = this.statusBar as vscode.StatusBarItem;
@@ -535,7 +663,7 @@ export class Gpm {
 
       const log = (message: string | Buffer | Error) => {
         statusBar.text = message + "";
-        statusBar.command = "gpm.interruptCommand"; // set command for cancel clone
+        statusBar.command = Command.InterruptCommand; // set command for cancel clone
         statusBar.show();
 
         // if stream have been kill, then reset status bar
@@ -570,19 +698,26 @@ export class Gpm {
         .on("error", data => log(data));
     });
   }
+  /**
+   * Run hook in the path if it exist
+   * @param {string} cwd
+   * @param {Hook} hookName
+   * @returns
+   * @memberof Gpm
+   */
   public async runHook(cwd: string, hookName: Hook) {
     // if user disable auto run hook
     if (!config.isAutoRunHook) {
       return;
     }
 
-    const gpmrcPath = path.join(cwd, ".gpmrc");
+    const gpmrcPath = path.join(cwd, this.PresetFile);
     // run the hooks
     if (await fs.pathExists(gpmrcPath)) {
       // if .gpmrc file exist
-      const rc: IRc = await fs.readJson(gpmrcPath);
-      if (rc.hooks) {
-        const cmd = rc.hooks[hookName] || rc.hooks.postadd;
+      const preset: IPreset = await fs.readJson(gpmrcPath);
+      if (preset.hooks) {
+        const cmd = preset.hooks[hookName] || preset.hooks.postadd;
         if (cmd) {
           vscode.window.showInformationMessage("Running hook: " + cmd);
           await this.runShell(cwd, cmd);

@@ -5,34 +5,27 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
-import {
-  ProjectTreeProvider,
-  IRepository,
-  createRepo,
-  createOwner,
-  createSource,
-  IOwner,
-  ISource,
-  IFile
-} from "./projectTree";
+import { createRepo, createOwner, createSource } from "./projectTree";
 import config from "./config";
+import {
+  ConfirmAction,
+  IFile,
+  ISource,
+  IOwner,
+  IRepository,
+  Command
+} from "./type";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-  // status bar
-  const statusBar = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
-  const explorer = new ProjectTreeProvider(context);
-  const gpm = new Gpm(context, explorer, statusBar);
+  const gpm = new Gpm(context);
 
   await gpm.init();
 
   // open file
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.open", async filepath => {
+    vscode.commands.registerCommand(Command.OpenFile, async filepath => {
       try {
         const statInfo = await fs.stat(filepath);
         if (statInfo.isFile()) {
@@ -49,82 +42,92 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // open project in current window
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.openInCurrentWindow", (file: IFile) =>
-      gpm.openInCurrentWindow(file)
+    vscode.commands.registerCommand(
+      Command.OpenInCurrentWindow,
+      (file: IFile) => gpm.openInCurrentWindow(file)
     )
   );
 
   // list project to open in current window
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.list2open", async () => {
-      const repository = await gpm.selectRepository(void 0, {
-        placeHolder: "Select a Project to Open in Current Window."
-      });
+    vscode.commands.registerCommand(
+      Command.ListProject2OpenInCurrentWindow,
+      async () => {
+        const repository = await gpm.selectRepository(void 0, {
+          placeHolder: "Select a Project to Open in Current Window."
+        });
 
-      if (repository) {
-        return gpm.openInCurrentWindow(repository);
+        if (repository) {
+          return gpm.openInCurrentWindow(repository);
+        }
       }
-    })
+    )
   );
 
   // open project in new window
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.openInNewWindow", (file: IFile) =>
+    vscode.commands.registerCommand(Command.OpenInNewWindow, (file: IFile) =>
       gpm.openInNewWindow(file)
     )
   );
 
   // list project to open in new window
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.list2openNew", async () => {
-      const repository = await gpm.selectRepository(void 0, {
-        placeHolder: "Select a Project to Open in New Window."
-      });
+    vscode.commands.registerCommand(
+      Command.ListProject2OpenInNewWindow,
+      async () => {
+        const repository = await gpm.selectRepository(void 0, {
+          placeHolder: "Select a Project to Open in New Window."
+        });
 
-      if (repository) {
-        return gpm.openInNewWindow(repository);
+        if (repository) {
+          return gpm.openInNewWindow(repository);
+        }
       }
-    })
+    )
   );
 
   // refresh project
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.refresh", () => gpm.refresh())
+    vscode.commands.registerCommand(Command.Refresh, gpm.refresh.bind(gpm))
   );
 
   // clear cache
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.clearCache", () => gpm.cleanCache())
+    vscode.commands.registerCommand(
+      Command.ClearCache,
+      gpm.cleanCache.bind(gpm)
+    )
   );
 
   // prune project
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.prune", () => gpm.prune())
+    vscode.commands.registerCommand(Command.Prune, gpm.prune.bind(gpm))
   );
 
   // add project
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.add", () => gpm.add())
+    vscode.commands.registerCommand(Command.AddProject, gpm.add.bind(gpm))
   );
 
   // remove project
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.remove",
+      Command.RemoveProject,
       async (repository: IRepository) => {
         const action = await vscode.window.showInformationMessage(
           `[Irrevocable] Are you sure to remove project @${repository.owner}/${
             repository.repository
           }?`,
-          "Yes",
-          "No"
+          ConfirmAction.Yes,
+          ConfirmAction.No
         );
 
-        if (action !== "Yes") {
-          return;
+        switch (action as ConfirmAction) {
+          case ConfirmAction.Yes:
+            await gpm.remove(repository);
+            break;
         }
-
-        await gpm.remove(repository);
       }
     )
   );
@@ -132,21 +135,21 @@ export async function activate(context: vscode.ExtensionContext) {
   // remove owner
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.removeOwner",
+      Command.RemoveOwner,
       async (owner: IOwner) => {
         const action = await vscode.window.showInformationMessage(
           `[Irrevocable] Are you sure to remove all project of @${
             owner.owner
           }?`,
-          "Yes",
-          "No"
+          ConfirmAction.Yes,
+          ConfirmAction.No
         );
 
-        if (action !== "Yes") {
-          return;
+        switch (action as ConfirmAction) {
+          case ConfirmAction.Yes:
+            await gpm.removeOwner(owner);
+            break;
         }
-
-        await gpm.removeOwner(owner);
       }
     )
   );
@@ -154,28 +157,28 @@ export async function activate(context: vscode.ExtensionContext) {
   // remove source
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.removeSource",
+      Command.RemoveSource,
       async (source: ISource) => {
         const action = await vscode.window.showInformationMessage(
           `[Irrevocable] Are you sure to remove all project of ${
             source.source
           }?`,
-          "Yes",
-          "No"
+          ConfirmAction.Yes,
+          ConfirmAction.No
         );
 
-        if (action !== "Yes") {
-          return;
+        switch (action as ConfirmAction) {
+          case ConfirmAction.Yes:
+            await gpm.removeSource(source);
+            break;
         }
-
-        await gpm.removeSource(source);
       }
     )
   );
 
   // list project to remove
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.list2remove", async () => {
+    vscode.commands.registerCommand(Command.ListProject2Remove, async () => {
       const repository = await gpm.selectRepository(void 0, {
         placeHolder: "Select a Project to Remove."
       });
@@ -187,19 +190,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // star project
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "gpm.star",
-      async (repository: IRepository) => {
-        await explorer.star.star(repository);
-        await gpm.refresh();
-      }
-    )
+    vscode.commands.registerCommand(Command.Star, gpm.star.bind(gpm))
   );
 
   // star current project
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.starCurrent",
+      Command.StarCurrentProject,
       async (repository: IRepository) => {
         const rootPath = vscode.workspace.rootPath;
         if (!rootPath) {
@@ -215,8 +212,7 @@ export async function activate(context: vscode.ExtensionContext) {
           const owner = createOwner(context, source, ownerName);
           const repo = createRepo(context, owner, repoName);
 
-          await gpm.explorer.star.star(repo);
-          gpm.refresh();
+          await gpm.star(repo);
         } else {
           vscode.window.showWarningMessage(`Invalid project: '${rootPath}'`);
         }
@@ -226,39 +222,31 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // list project to star
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.list2star", async () => {
+    vscode.commands.registerCommand(Command.ListProject2Star, async () => {
       const repository = await gpm.selectRepository(void 0, {
         placeHolder: "Select a Project to Star."
       });
 
       if (repository) {
-        await gpm.explorer.star.star(repository);
-        return gpm.refresh();
+        return gpm.star(repository);
       }
     })
   );
 
   // unstar project
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "gpm.unstar",
-      async (repository: IRepository) => {
-        await explorer.star.unstar(repository);
-        await gpm.refresh();
-      }
-    )
+    vscode.commands.registerCommand(Command.Unstar, gpm.unstar.bind(gpm))
   );
 
   // list project to unstar
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.list2unstar", async () => {
-      const repository = await gpm.selectRepository(gpm.explorer.star.list(), {
+    vscode.commands.registerCommand(Command.ListProject2UnStar, async () => {
+      const repository = await gpm.selectRepository(gpm.starList(), {
         placeHolder: "Select a Project to Unstar."
       });
 
       if (repository) {
-        await gpm.explorer.star.unstar(repository);
-        return gpm.refresh();
+        return gpm.unstar(repository);
       }
     })
   );
@@ -266,29 +254,27 @@ export async function activate(context: vscode.ExtensionContext) {
   // clear star
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.clearStars",
-      async (repository: IRepository) => {
-        await explorer.star.clear();
-        await gpm.refresh();
-      }
+      Command.ClearStars,
+      gpm.clearStars.bind(gpm)
     )
   );
 
   // interrupt running command
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.interruptCommand", () =>
-      gpm.interruptCommand()
+    vscode.commands.registerCommand(
+      Command.InterruptCommand,
+      gpm.interruptCommand.bind(gpm)
     )
   );
 
   // search project
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.search", () => gpm.search())
+    vscode.commands.registerCommand(Command.Search, gpm.search.bind(gpm))
   );
 
   // toggle tree view
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.toggleExplorer", async () => {
+    vscode.commands.registerCommand(Command.ToggleExplorer, async () => {
       const field = config.select(config.fields.CAN_SHOW_EXPLORER);
       await field.update(!field.get(), vscode.ConfigurationTarget.Global);
       await vscode.commands.executeCommand(
@@ -301,30 +287,34 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // open project in terminal
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.openInTerminal", (repo: IFile) => {
-      return gpm.openTerminal(repo);
-    })
+    vscode.commands.registerCommand(
+      Command.OpenInTerminal,
+      gpm.openTerminal.bind(gpm)
+    )
   );
 
   // list to open project in terminal
   context.subscriptions.push(
-    vscode.commands.registerCommand("gpm.list2openInTerminal", async () => {
-      const repo = await gpm.selectRepository(void 0, {
-        placeHolder: "Select a Project to Open in Terminal"
-      });
+    vscode.commands.registerCommand(
+      Command.ListProject2OpenInTerminal,
+      async () => {
+        const repo = await gpm.selectRepository(void 0, {
+          placeHolder: "Select a Project to Open in Terminal"
+        });
 
-      if (!repo) {
-        return;
+        if (!repo) {
+          return;
+        }
+
+        return gpm.openTerminal(repo);
       }
-
-      return gpm.openTerminal(repo);
-    })
+    )
   );
 
   // create repository
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.createRepository",
+      Command.CreateRepository,
       async (owner: IOwner) => {
         const repoName = await vscode.window.showInputBox({
           placeHolder: "Enter a name of project."
@@ -352,7 +342,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // create owner
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "gpm.createOwner",
+      Command.CreateOwner,
       async (source: ISource) => {
         const ownerName = await vscode.window.showInputBox({
           placeHolder: "Enter a name of owner."
@@ -394,21 +384,21 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // tree view
   context.subscriptions.push(
-    vscode.window.registerTreeDataProvider("GPMExplorer", explorer)
+    vscode.window.registerTreeDataProvider("GPMExplorer", gpm.explorer)
   );
 
   // set .gpmrc file to json
   const fileConfig = vscode.workspace.getConfiguration("files");
   const associations: any = fileConfig.get("associations") || {};
 
-  if (!associations[".gpmrc"]) {
+  if (!associations[gpm.PresetFile]) {
     // update
     fileConfig.update(
       "associations",
       {
         ...associations,
         ...{
-          ".gpmrc": "json"
+          [gpm.PresetFile]: "json"
         }
       },
       vscode.ConfigurationTarget.Global
@@ -422,13 +412,9 @@ export async function deactivate(
 ): Promise<void> {
   // when disable extension
   // clear cache
-  const gpm = new Gpm(
-    context,
-    new ProjectTreeProvider(context),
-    vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100)
-  );
+  const gpm = new Gpm(context);
   try {
-    await fs.remove(gpm.cachePath);
+    await fs.remove(gpm.CachePath);
   } catch (err) {
     console.error(err);
   }

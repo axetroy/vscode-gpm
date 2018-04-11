@@ -3,6 +3,8 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import config from "./config";
 
+import { FileType, IFile, ISource, IOwner, IRepository, IStar } from "./type";
+
 function getIcon(context: vscode.ExtensionContext, paths: string[]) {
   return {
     dark: context.asAbsolutePath(path.join("resources", "dark", ...paths)),
@@ -12,40 +14,6 @@ function getIcon(context: vscode.ExtensionContext, paths: string[]) {
 
 function getSourceIcon(context: vscode.ExtensionContext, name: string) {
   return getIcon(context, ["source", name]);
-}
-
-export type FileType =
-  | "file"
-  | "folder"
-  | "star"
-  | "source"
-  | "owner"
-  | "repository";
-
-export interface IFile extends vscode.TreeItem {
-  type: FileType;
-  path: string;
-}
-
-export interface IStar extends IFile {
-  type: FileType;
-  find(repository: IRepository): IRepository | void;
-  star(repository: IRepository): Promise<any>;
-  unstar(repository: IRepository): Promise<any>;
-  list(): IRepository[];
-  clear(): void;
-}
-
-export interface ISource extends IFile {
-  source: string;
-}
-
-export interface IOwner extends ISource {
-  owner: string;
-}
-
-export interface IRepository extends IOwner {
-  repository: string;
 }
 
 export function createFile(
@@ -63,7 +31,7 @@ export function createFile(
     },
     iconPath: vscode.ThemeIcon.File,
     // customer property
-    type: "file",
+    type: FileType.File,
     path: filepath
   };
 }
@@ -79,7 +47,7 @@ export function createFolder(
     command: void 0,
     iconPath: vscode.ThemeIcon.Folder,
     // customer property
-    type: "folder",
+    type: FileType.Folder,
     path: filepath
   };
 }
@@ -97,7 +65,7 @@ export function createSource(
     iconPath: "",
     // customer property
     source: sourceName,
-    type: "source",
+    type: FileType.Source,
     path: path.join(rootPath, sourceName)
   };
   let icon: string = "";
@@ -142,7 +110,7 @@ export function createOwner(
     // customer property
     source: source.source,
     owner: ownerName,
-    type: "owner",
+    type: FileType.Owner,
     path: path.join(source.path, ownerName)
   };
 }
@@ -162,7 +130,7 @@ export function createRepo(
     source: owner.source,
     owner: owner.owner,
     repository: repoName,
-    type: "repository",
+    type: FileType.Repository,
     path: path.join(owner.path, repoName)
   };
 }
@@ -188,7 +156,7 @@ export function createStar(context: vscode.ExtensionContext): IStar {
     iconPath: getIcon(context, ["star.svg"]),
     tooltip: "The project you stared",
     // customer property
-    type: "star",
+    type: FileType.Star,
     path: "", // empty path
     list() {
       return starList;

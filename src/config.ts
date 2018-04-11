@@ -1,14 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as os from "os";
-
-export type SearchBehavior =
-  | "openInNewWindow"
-  | "openInCurrentWindow"
-  | "remove"
-  | "star"
-  | "unstar"
-  | "ask";
+import { SearchBehavior } from "./type";
 
 class Config {
   private extensionField = "gpm";
@@ -18,6 +11,11 @@ class Config {
     IS_AUTO_RUN_HOOK: "isAutoRunHook",
     SEARCH_BEHAVIOR: "searchBehavior"
   };
+  /**
+   * Get configuration of this extension
+   * @readonly
+   * @memberof Config
+   */
   get configuration() {
     return vscode.workspace.getConfiguration(this.extensionField);
   }
