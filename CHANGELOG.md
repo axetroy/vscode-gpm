@@ -1,3 +1,14 @@
+<a name="0.16.2"></a>
+## [0.16.2](https://github.com/axetroy/vscode-gpm/compare/v0.16.1...v0.16.2) (2018-04-11)
+
+
+### Bug Fixes
+
+* add missing return type for openTerminal method ([9131c95](https://github.com/axetroy/vscode-gpm/commit/9131c95))
+* can not open terminal if it have been close or exit before ([de87fac](https://github.com/axetroy/vscode-gpm/commit/de87fac))
+
+
+
 <a name="0.16.1"></a>
 ## [0.16.1](https://github.com/axetroy/vscode-gpm/compare/v0.16.0...v0.16.1) (2018-04-09)
 
