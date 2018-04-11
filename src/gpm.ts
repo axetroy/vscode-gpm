@@ -75,8 +75,10 @@ export class Gpm {
 
     this.explorer.traverse();
   }
-  private async getValidProjectName(repoPath: string): Promise<string | void> {
-    if (await fs.pathExists(repoPath)) {
+  private async getValidProjectName(
+    repositoryPath: string
+  ): Promise<string | void> {
+    if (await fs.pathExists(repositoryPath)) {
       const actionName = await vscode.window.showWarningMessage(
         "Project already exists.",
         ProjectExistAction.Overwrite,
@@ -86,7 +88,7 @@ export class Gpm {
 
       switch (actionName as ProjectExistAction) {
         case ProjectExistAction.Overwrite:
-          return repoPath;
+          return repositoryPath;
         case ProjectExistAction.Rename:
           const newName = await vscode.window.showInputBox({
             prompt: "Enter a new name of project."
@@ -97,13 +99,13 @@ export class Gpm {
           }
 
           return this.getValidProjectName(
-            path.join(path.dirname(repoPath), newName)
+            path.join(path.dirname(repositoryPath), newName)
           );
         default:
           return;
       }
     } else {
-      return repoPath;
+      return repositoryPath;
     }
   }
   /**
@@ -147,11 +149,11 @@ export class Gpm {
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
 
-    const repoDir = await this.getValidProjectName(
+    const repositoryPath = await this.getValidProjectName(
       path.join(ownerDir, gitInfo.name)
     );
 
-    if (!repoDir) {
+    if (!repositoryPath) {
       return;
     }
 
@@ -170,11 +172,11 @@ export class Gpm {
       await fs.ensureDir(ownerDir);
 
       // if it's a link, then unlink first
-      if (await isLink(repoDir)) {
-        await fs.unlink(repoDir);
+      if (await isLink(repositoryPath)) {
+        await fs.unlink(repositoryPath);
       }
-      await fs.remove(repoDir);
-      await fs.move(tempDir, repoDir);
+      await fs.remove(repositoryPath);
+      await fs.move(tempDir, repositoryPath);
       await fs.remove(randomTemp);
 
       // refresh explorer
@@ -184,7 +186,7 @@ export class Gpm {
         // run the hooks
         // whatever hook success or fail
         // it still going on
-        await this.runHook(repoDir, Hook.Postadd);
+        await this.runHook(repositoryPath, Hook.Postadd);
       } catch (err) {
         console.error(err);
       }
@@ -200,7 +202,7 @@ export class Gpm {
           await this.open({
             source: gitInfo.source,
             owner: gitInfo.owner,
-            path: repoDir,
+            path: repositoryPath,
             repository: gitInfo.name,
             type: FileType.Repository
           });
@@ -300,7 +302,7 @@ export class Gpm {
     }
 
     // unstar project
-    this.explorer.star.unstar(repository);
+    this.unstar(repository);
 
     const ownerPath: string = path.dirname(repository.path);
     const sourcePath: string = path.dirname(path.dirname(repository.path));
@@ -333,8 +335,12 @@ export class Gpm {
     for (const repository of repositories) {
       const stat = await fs.stat(path.join(owner.path, repository));
       if (stat.isDirectory()) {
-        const repo = createRepository(this.context, owner, repository);
-        await this.remove(repo);
+        const repositoryEntity = createRepository(
+          this.context,
+          owner,
+          repository
+        );
+        await this.remove(repositoryEntity);
       }
     }
 
@@ -380,10 +386,12 @@ export class Gpm {
    * @memberof Gpm
    */
   public async open(repository: IRepository) {
-    const repoSymbol: string = `@${repository.owner}/${repository.repository}`;
+    const repositorySymbol: string = `@${repository.owner}/${
+      repository.repository
+    }`;
 
     const action = await vscode.window.showInformationMessage(
-      `Which way to open ${repoSymbol}?`,
+      `Which way to open ${repositorySymbol}?`,
       OpenAction.CurrentWindow,
       OpenAction.NewWindow,
       OpenAction.Cancel
@@ -495,10 +503,6 @@ export class Gpm {
       return;
     }
 
-    // selectItem
-    // label:"@axetroy/duomi-nodejs"
-    // description:"coding.net"
-
     const repository = repositories.find(
       r =>
         `${r.source}@${r.owner}/${r.repository}` ===
@@ -605,12 +609,12 @@ export class Gpm {
       case SearchBehavior.Unstar:
         return this.explorer.star.unstar(repository);
       case SearchBehavior.Ask:
-        const repoSymbol: string = `@${repository.owner}/${
+        const repositorySymbol: string = `@${repository.owner}/${
           repository.repository
         }`;
 
         const doAction = await vscode.window.showInformationMessage(
-          `What do you want to do about ${repoSymbol}?`,
+          `What do you want to do about ${repositorySymbol}?`,
           SearchAction.Open,
           SearchAction.Remove,
           SearchAction.Cancel

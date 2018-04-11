@@ -209,15 +209,19 @@ export async function activate(
         }
         const gpmRoot = path.join(rootPath, "..", "..", "..");
         if (gpmRoot === config.rootPath) {
-          const repoName = path.basename(rootPath);
+          const repositoryName = path.basename(rootPath);
           const ownerName = path.basename(path.join(rootPath, ".."));
           const sourceName = path.basename(path.join(rootPath, "..", ".."));
 
           const source = createSource(context, sourceName);
           const owner = createOwner(context, source, ownerName);
-          const repo = createRepository(context, owner, repoName);
+          const repositoryEntity = createRepository(
+            context,
+            owner,
+            repositoryName
+          );
 
-          await gpm.star(repo);
+          await gpm.star(repositoryEntity);
         } else {
           vscode.window.showWarningMessage(`Invalid project: '${rootPath}'`);
         }
@@ -305,15 +309,15 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.ListProject2OpenInTerminal,
       async () => {
-        const repo = await gpm.selectRepository(void 0, {
+        const repository = await gpm.selectRepository(void 0, {
           placeHolder: "Select a Project to Open in Terminal"
         });
 
-        if (!repo) {
+        if (!repository) {
           return;
         }
 
-        return gpm.openTerminal(repo);
+        return gpm.openTerminal(repository);
       }
     )
   );
@@ -323,23 +327,23 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.CreateRepository,
       async (owner: IOwner) => {
-        const repoName = await vscode.window.showInputBox({
+        const repositoryName = await vscode.window.showInputBox({
           placeHolder: "Enter a name of project."
         });
 
-        if (!repoName) {
+        if (!repositoryName) {
           return;
         }
 
-        const repoPath = path.join(owner.path, repoName);
+        const repositoryPath = path.join(owner.path, repositoryName);
 
-        const exist: boolean = await fs.pathExists(repoPath);
+        const exist: boolean = await fs.pathExists(repositoryPath);
 
         if (exist) {
           return;
         }
 
-        await fs.ensureDir(repoPath);
+        await fs.ensureDir(repositoryPath);
 
         return gpm.refresh();
       }
