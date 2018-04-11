@@ -5,6 +5,12 @@ import config from "./config";
 
 import { FileType, IFile, ISource, IOwner, IRepository, IStar } from "./type";
 
+/**
+ * Get icon from a given path
+ * @param {vscode.ExtensionContext} context
+ * @param {string[]} paths
+ * @returns
+ */
 function getIcon(context: vscode.ExtensionContext, paths: string[]) {
   return {
     dark: context.asAbsolutePath(path.join("resources", "dark", ...paths)),
@@ -12,10 +18,13 @@ function getIcon(context: vscode.ExtensionContext, paths: string[]) {
   };
 }
 
-function getSourceIcon(context: vscode.ExtensionContext, name: string) {
-  return getIcon(context, ["source", name]);
-}
-
+/**
+ * Create file
+ * @export
+ * @param {vscode.ExtensionContext} context
+ * @param {string} filepath
+ * @returns {IFile}
+ */
 export function createFile(
   context: vscode.ExtensionContext,
   filepath: string
@@ -36,6 +45,13 @@ export function createFile(
   };
 }
 
+/**
+ * Create folder
+ * @export
+ * @param {vscode.ExtensionContext} context
+ * @param {string} filepath
+ * @returns {IFile}
+ */
 export function createFolder(
   context: vscode.ExtensionContext,
   filepath: string
@@ -52,6 +68,13 @@ export function createFolder(
   };
 }
 
+/**
+ * Create source
+ * @export
+ * @param {vscode.ExtensionContext} context
+ * @param {string} sourceName
+ * @returns {ISource}
+ */
 export function createSource(
   context: vscode.ExtensionContext,
   sourceName: string
@@ -91,11 +114,19 @@ export function createSource(
     default:
       icon = "git.svg";
   }
-  item.iconPath = getSourceIcon(context, icon);
+  item.iconPath = getIcon(context, ["source", icon]);
 
   return item;
 }
 
+/**
+ * Create owner
+ * @export
+ * @param {vscode.ExtensionContext} context
+ * @param {ISource} source
+ * @param {string} ownerName
+ * @returns {IOwner}
+ */
 export function createOwner(
   context: vscode.ExtensionContext,
   source: ISource,
@@ -115,6 +146,14 @@ export function createOwner(
   };
 }
 
+/**
+ * Create repository
+ * @export
+ * @param {vscode.ExtensionContext} context
+ * @param {IOwner} owner
+ * @param {string} repositoryName
+ * @returns {IRepository}
+ */
 export function createRepository(
   context: vscode.ExtensionContext,
   owner: IOwner,
@@ -135,6 +174,12 @@ export function createRepository(
   };
 }
 
+/**
+ * Create star
+ * @export
+ * @param {vscode.ExtensionContext} context
+ * @returns {IStar}
+ */
 export function createStar(context: vscode.ExtensionContext): IStar {
   const storageKey: string = "@stars";
   const starList: IRepository[] = context.globalState.get(storageKey) || [];
