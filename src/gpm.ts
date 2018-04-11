@@ -512,7 +512,7 @@ export class Gpm {
    * @param {IFile} file
    * @memberof Gpm
    */
-  public async openTerminal(file: IFile) {
+  public async openTerminal(file: IFile): Promise<void> {
     let terminal: vscode.Terminal;
 
     let name: string;
