@@ -6,6 +6,7 @@ import * as shell from "shelljs";
 const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
+const processExists = require("process-exists");
 import { isLink } from "./utils";
 import config from "./config";
 import { ProjectTreeProvider, createRepo, createOwner } from "./projectTree";
@@ -511,7 +512,7 @@ export class Gpm {
    * @param {IFile} file
    * @memberof Gpm
    */
-  public openTerminal(file: IFile) {
+  public async openTerminal(file: IFile) {
     let terminal: vscode.Terminal;
 
     let name: string;
@@ -541,6 +542,13 @@ export class Gpm {
       this.terminals[file.path] = terminal;
     } else {
       terminal = this.terminals[file.path];
+      const exists = await processExists(await terminal.processId);
+      if (!exists) {
+        // if the terminal have exit or it have been close.
+        delete this.terminals[file.path];
+        // reopen again
+        return this.openTerminal(file);
+      }
     }
 
     terminal.show();
