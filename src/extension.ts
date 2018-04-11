@@ -5,7 +5,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs-extra";
 import { Gpm } from "./gpm";
-import { createRepo, createOwner, createSource } from "./projectTree";
+import { createRepository, createOwner, createSource } from "./projectTree";
 import config from "./config";
 import {
   ConfirmAction,
@@ -18,26 +18,31 @@ import {
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export async function activate(context: vscode.ExtensionContext) {
+export async function activate(
+  context: vscode.ExtensionContext
+): Promise<void> {
   const gpm = new Gpm(context);
 
   await gpm.init();
 
   // open file
   context.subscriptions.push(
-    vscode.commands.registerCommand(Command.OpenFile, async filepath => {
-      try {
-        const statInfo = await fs.stat(filepath);
-        if (statInfo.isFile()) {
-          const openPath = vscode.Uri.file(filepath);
-          vscode.workspace
-            .openTextDocument(openPath)
-            .then(doc => vscode.window.showTextDocument(doc));
+    vscode.commands.registerCommand(
+      Command.OpenFile,
+      async (filepath: string): Promise<void> => {
+        try {
+          const statInfo = await fs.stat(filepath);
+          if (statInfo.isFile()) {
+            const openPath = vscode.Uri.file(filepath);
+            vscode.workspace
+              .openTextDocument(openPath)
+              .then(doc => vscode.window.showTextDocument(doc));
+          }
+        } catch (err) {
+          vscode.window.showErrorMessage(err.message);
         }
-      } catch (err) {
-        vscode.window.showErrorMessage(err.message);
       }
-    })
+    )
   );
 
   // open project in current window
@@ -197,7 +202,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       Command.StarCurrentProject,
-      async (repository: IRepository) => {
+      async (repository: IRepository): Promise<void> => {
         const rootPath = vscode.workspace.rootPath;
         if (!rootPath) {
           return;
@@ -210,7 +215,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
           const source = createSource(context, sourceName);
           const owner = createOwner(context, source, ownerName);
-          const repo = createRepo(context, owner, repoName);
+          const repo = createRepository(context, owner, repoName);
 
           await gpm.star(repo);
         } else {
@@ -274,7 +279,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // toggle tree view
   context.subscriptions.push(
-    vscode.commands.registerCommand(Command.ToggleExplorer, async () => {
+    vscode.commands.registerCommand(Command.ToggleExplorer, async (): Promise<
+      void
+    > => {
       const field = config.select(config.fields.CAN_SHOW_EXPLORER);
       await field.update(!field.get(), vscode.ConfigurationTarget.Global);
       await vscode.commands.executeCommand(
@@ -326,7 +333,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
         const repoPath = path.join(owner.path, repoName);
 
-        const exist = await fs.pathExists(repoPath);
+        const exist: boolean = await fs.pathExists(repoPath);
 
         if (exist) {
           return;

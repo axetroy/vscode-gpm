@@ -9,7 +9,11 @@ const Walker = require("@axetroy/walk");
 const processExists = require("process-exists");
 import { isLink } from "./utils";
 import config from "./config";
-import { ProjectTreeProvider, createRepo, createOwner } from "./projectTree";
+import {
+  ProjectTreeProvider,
+  createRepository,
+  createOwner
+} from "./projectTree";
 import {
   FileType,
   IFile,
@@ -324,12 +328,12 @@ export class Gpm {
    * @memberof Gpm
    */
   public async removeOwner(owner: IOwner) {
-    const repositories = await fs.readdir(owner.path);
+    const repositories: string[] = await fs.readdir(owner.path);
 
     for (const repository of repositories) {
       const stat = await fs.stat(path.join(owner.path, repository));
       if (stat.isDirectory()) {
-        const repo = createRepo(this.context, owner, repository);
+        const repo = createRepository(this.context, owner, repository);
         await this.remove(repo);
       }
     }
@@ -344,7 +348,7 @@ export class Gpm {
    * @memberof Gpm
    */
   public async removeSource(source: ISource) {
-    const owners = await fs.readdir(source.path);
+    const owners: string[] = await fs.readdir(source.path);
 
     for (const ownerName of owners) {
       const stat = await fs.stat(path.join(source.path, ownerName));

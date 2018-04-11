@@ -115,7 +115,7 @@ export function createOwner(
   };
 }
 
-export function createRepo(
+export function createRepository(
   context: vscode.ExtensionContext,
   owner: IOwner,
   repoName: string
@@ -324,7 +324,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         continue;
       }
 
-      const repository = createRepo(this.context, element, file);
+      const repository = createRepository(this.context, element, file);
 
       const staredRepo = this.star.find(repository);
 
