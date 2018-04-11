@@ -605,9 +605,9 @@ export class Gpm {
       case SearchBehavior.Remove:
         return this.remove(repository);
       case SearchBehavior.Star:
-        return this.explorer.star.star(repository);
+        return this.star(repository);
       case SearchBehavior.Unstar:
-        return this.explorer.star.unstar(repository);
+        return this.unstar(repository);
       case SearchBehavior.Ask:
         const repositorySymbol: string = `@${repository.owner}/${
           repository.repository
