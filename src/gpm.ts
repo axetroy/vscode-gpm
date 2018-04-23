@@ -41,7 +41,7 @@ export class Gpm {
   private currentStream: ChildProcess | void = void 0;
   // cache path
   public readonly CachePath: string = this.context.storagePath ||
-    path.join(process.env.HOME as string, ".gpm", "temp");
+  path.join(process.env.HOME as string, ".gpm", "temp");
 
   // project explorer
   public readonly explorer: ProjectTreeProvider = new ProjectTreeProvider(
@@ -59,7 +59,7 @@ export class Gpm {
    */
   public async init() {
     const rootPath = config.rootPath;
-    if (!await fs.pathExists(rootPath)) {
+    if (!(await fs.pathExists(rootPath))) {
       const action = await vscode.window.showInformationMessage(
         `GPM root folder '${rootPath}' not found.`,
         InitAction.Create,
@@ -121,7 +121,7 @@ export class Gpm {
         throw null;
       }
     } catch (err) {
-      vscode.window.showErrorMessage("Make sure you have install git.");
+      vscode.window.showErrorMessage("Make sure git have been installed.");
       return;
     }
 
@@ -149,7 +149,7 @@ export class Gpm {
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
 
-    const repositoryPath = await this.getValidProjectName(
+    const repositoryPath: string | void = await this.getValidProjectName(
       path.join(ownerDir, gitInfo.name)
     );
 
@@ -391,7 +391,7 @@ export class Gpm {
     }`;
 
     const action = await vscode.window.showInformationMessage(
-      `Which way to open ${repositorySymbol}?`,
+      `How to open ${repositorySymbol}?`,
       OpenAction.CurrentWindow,
       OpenAction.NewWindow,
       OpenAction.Cancel
@@ -637,7 +637,7 @@ export class Gpm {
    * @param {IRepository} repository
    * @memberof Gpm
    */
-  public async star(repository: IRepository) {
+  public async star(repository: IRepository): Promise<void> {
     await this.explorer.star.star(repository);
     this.refresh();
   }
@@ -646,7 +646,7 @@ export class Gpm {
    * @param {IRepository} repository
    * @memberof Gpm
    */
-  public async unstar(repository: IRepository) {
+  public async unstar(repository: IRepository): Promise<void> {
     await this.explorer.star.unstar(repository);
     this.refresh();
   }
@@ -663,7 +663,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public clearStars() {
+  public clearStars(): void {
     return this.explorer.star.clear();
   }
   private async runShell(cwd: string, command: string) {
@@ -676,6 +676,8 @@ export class Gpm {
       }) as ChildProcess;
 
       this.currentStream = stream;
+
+      const encoding = "utf8";
 
       const log = (message: string | Buffer | Error) => {
         statusBar.text = message + "";
@@ -704,12 +706,12 @@ export class Gpm {
 
       // not support pipe to process
       stream.stdout
-        .setEncoding("utf8")
+        .setEncoding(encoding)
         .on("data", data => log(data))
         .on("error", data => log(data));
       // not support pipe to process
       stream.stderr
-        .setEncoding("utf8")
+        .setEncoding(encoding)
         .on("data", data => log(data))
         .on("error", data => log(data));
     });
@@ -735,7 +737,6 @@ export class Gpm {
       if (preset.hooks) {
         const cmd = preset.hooks[hookName] || preset.hooks.postadd;
         if (cmd) {
-          vscode.window.showInformationMessage("Running hook: " + cmd);
           await this.runShell(cwd, cmd);
         }
       }
