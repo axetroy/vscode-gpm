@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs-extra";
+import * as os from "os";
 import { ChildProcess } from "child_process";
 import * as shell from "shelljs";
 const gitUrlParse = require("git-url-parse");
@@ -41,7 +42,7 @@ export class Gpm {
   private currentStream: ChildProcess | void = void 0;
   // cache path
   public readonly CachePath: string = this.context.storagePath ||
-  path.join(process.env.HOME as string, ".gpm", "temp");
+  path.join(os.tmpdir(), ".gpm", "temp");
 
   // project explorer
   public readonly explorer: ProjectTreeProvider = new ProjectTreeProvider(
