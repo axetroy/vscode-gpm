@@ -1,3 +1,13 @@
+<a name="0.16.3"></a>
+## [0.16.3](https://github.com/axetroy/vscode-gpm/compare/v0.16.2...v0.16.3) (2018-05-17)
+
+
+### Features
+
+* no more use home dir as temp dir ([c188912](https://github.com/axetroy/vscode-gpm/commit/c188912))
+
+
+
 <a name="0.16.2"></a>
 ## [0.16.2](https://github.com/axetroy/vscode-gpm/compare/v0.16.1...v0.16.2) (2018-04-11)
 
