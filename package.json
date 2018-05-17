@@ -2,7 +2,7 @@
   "name": "vscode-gpm",
   "displayName": "gpm",
   "description": "Git Project Manager",
-  "version": "0.16.2",
+  "version": "0.16.3",
   "publisher": "axetroy",
   "engines": {
     "vscode": "^1.21.0"
