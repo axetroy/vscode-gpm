@@ -22,7 +22,6 @@ import {
   IOwner,
   IRepository,
   IPreset,
-  ConfirmAction,
   InitAction,
   Hook,
   OpenAction,
@@ -54,11 +53,6 @@ export class Gpm {
   // project explorer
   public readonly explorer: ProjectTreeProvider = new ProjectTreeProvider(
     this.context
-  );
-  // status bar
-  private readonly statusBar: vscode.StatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
   );
   constructor(private readonly context: vscode.ExtensionContext) {}
   /**
