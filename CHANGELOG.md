@@ -1,3 +1,13 @@
+<a name="0.17.0"></a>
+# [0.17.0](https://github.com/axetroy/vscode-gpm/compare/v0.16.3...v0.17.0) (2018-05-19)
+
+
+### Features
+
+* pipe process to writable statusbar ([793063c](https://github.com/axetroy/vscode-gpm/commit/793063c))
+
+
+
 <a name="0.16.3"></a>
 ## [0.16.3](https://github.com/axetroy/vscode-gpm/compare/v0.16.2...v0.16.3) (2018-05-17)
 
