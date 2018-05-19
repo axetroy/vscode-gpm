@@ -8,7 +8,7 @@ const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 const processExists = require("process-exists");
-import { isLink } from "./utils";
+import { isLink, Statusbar } from "./utils";
 import config from "./config";
 import {
   ProjectTreeProvider,
@@ -34,12 +34,19 @@ import {
   SearchBehavior
 } from "./type";
 
+interface IProcess {
+  id: string;
+  cwd: string;
+  cmd: string;
+  process: ChildProcess;
+}
+
 export class Gpm {
   public readonly PresetFile: string = ".gpmrc";
   // current opening terminals
   private readonly terminals: { [path: string]: vscode.Terminal } = {};
   // current running command stream
-  private currentStream: ChildProcess | void = void 0;
+  private processes: IProcess[] = [];
   // cache path
   public readonly CachePath: string = this.context.storagePath ||
   path.join(os.tmpdir(), ".gpm", "temp");
@@ -446,25 +453,30 @@ export class Gpm {
    * @memberof Gpm
    */
   public async interruptCommand() {
-    if (this.currentStream) {
-      const confirm = await vscode.window.showWarningMessage(
-        "Do you want to interrupt command?",
-        ConfirmAction.Yes,
-        ConfirmAction.No
-      );
+    const itemList = this.processes.map(v => {
+      return {
+        label: v.cmd,
+        description: v.id
+      };
+    });
 
-      switch (confirm as ConfirmAction) {
-        case ConfirmAction.Yes:
-          this.currentStream.kill();
-          this.currentStream = void 0;
-          if (this.statusBar) {
-            this.statusBar.text = "";
-            this.statusBar.command = "";
-            this.statusBar.hide();
-          }
-          break;
-        default:
-          return;
+    const selectItem = await vscode.window.showQuickPick(itemList, {
+      matchOnDescription: false,
+      matchOnDetail: false,
+      placeHolder: "Select a Process to kill..."
+    });
+
+    if (!selectItem) {
+      return;
+    }
+
+    const process = this.processes.find(v => v.id === selectItem.description);
+
+    if (process && !process.process.killed) {
+      const processIndex = this.processes.findIndex(v => v === process);
+      process.process.kill();
+      if (processIndex > -1) {
+        this.processes.splice(processIndex, 1);
       }
     }
   }
@@ -563,20 +575,6 @@ export class Gpm {
     terminal.show();
   }
   /**
-   * Reset status bar
-   * @private
-   * @memberof Gpm
-   */
-  private resetStatusBar() {
-    const statusBar = this.statusBar;
-    if (statusBar) {
-      statusBar.text = "";
-      statusBar.command = void 0;
-      statusBar.hide();
-      this.currentStream = void 0;
-    }
-  }
-  /**
    * Refresh project
    * @returns
    * @memberof Gpm
@@ -668,53 +666,43 @@ export class Gpm {
     return this.explorer.star.clear();
   }
   private async runShell(cwd: string, command: string) {
-    const statusBar = this.statusBar as vscode.StatusBarItem;
     return new Promise((resolve, reject) => {
       shell.cd(cwd);
 
-      const stream = shell.exec(command, {
+      const process = shell.exec(command, {
         async: true
       }) as ChildProcess;
 
-      this.currentStream = stream;
+      const bar = new Statusbar(Command.InterruptCommand);
 
-      const encoding = "utf8";
+      const processId = process.pid + "";
 
-      const log = (message: string | Buffer | Error) => {
-        statusBar.text = message + "";
-        statusBar.command = Command.InterruptCommand; // set command for cancel clone
-        statusBar.show();
+      this.processes.push({
+        id: processId,
+        cwd,
+        cmd: command,
+        process
+      });
 
-        // if stream have been kill, then reset status bar
-        if (stream.killed) {
-          this.resetStatusBar();
+      const removeProcess = () => {
+        const index = this.processes.findIndex(v => v.id === processId);
+        if (index > -1) {
+          this.processes.splice(index, 1);
         }
       };
 
-      stream
-        .on("error", data => {
-          log(data);
-          this.resetStatusBar();
+      process
+        .on("error", err => {
+          removeProcess();
+          reject(err);
         })
         .on("close", (code: number, signal: string) => {
-          this.resetStatusBar();
-          if (code !== 0) {
-            reject(signal);
-          } else {
-            resolve();
-          }
+          removeProcess();
+          code !== 0 ? reject(signal) : resolve();
         });
 
-      // not support pipe to process
-      stream.stdout
-        .setEncoding(encoding)
-        .on("data", data => log(data))
-        .on("error", data => log(data));
-      // not support pipe to process
-      stream.stderr
-        .setEncoding(encoding)
-        .on("data", data => log(data))
-        .on("error", data => log(data));
+      process.stdout.pipe(bar);
+      process.stderr.pipe(bar);
     });
   }
   /**
