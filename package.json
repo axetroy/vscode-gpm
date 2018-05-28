@@ -33,11 +33,20 @@
   ],
   "contributes": {
     "views": {
-      "explorer": [
+      "GPMExplorer": [
         {
           "id": "GPMExplorer",
           "name": "GPM",
           "when": "showExplorer"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "icon": "resources/light/source/git.svg",
+          "id": "GPMExplorer",
+          "title": "Project Manager"
         }
       ]
     },
