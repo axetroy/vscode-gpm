@@ -44,7 +44,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "icon": "resources/light/source/git.svg",
+          "icon": "resources/icon.svg",
           "id": "GPMExplorer",
           "title": "Project Manager"
         }
