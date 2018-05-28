@@ -1,3 +1,15 @@
+<a name="0.19.0"></a>
+# [0.19.0](https://github.com/axetroy/vscode-gpm/compare/v0.18.0...v0.19.0) (2018-05-28)
+
+
+### Features
+
+* for performance, now gpm will not pre init anymore. only init when you use it. ([24e4563](https://github.com/axetroy/vscode-gpm/commit/24e4563))
+* remove .gpmrc.json associations ([6c36074](https://github.com/axetroy/vscode-gpm/commit/6c36074))
+* remove showExplorer config, now explorer is always show ([0ad91de](https://github.com/axetroy/vscode-gpm/commit/0ad91de))
+
+
+
 <a name="0.18.0"></a>
 # [0.18.0](https://github.com/axetroy/vscode-gpm/compare/v0.17.0...v0.18.0) (2018-05-28)
 
