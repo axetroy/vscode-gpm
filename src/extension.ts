@@ -374,24 +374,6 @@ export async function activate(
   context.subscriptions.push(
     vscode.window.registerTreeDataProvider("GPMExplorer", gpm.explorer)
   );
-
-  // set .gpmrc file to json
-  const fileConfig = vscode.workspace.getConfiguration("files");
-  const associations: any = fileConfig.get("associations") || {};
-
-  if (!associations[gpm.PresetFile]) {
-    // update
-    fileConfig.update(
-      "associations",
-      {
-        ...associations,
-        ...{
-          [gpm.PresetFile]: "json"
-        }
-      },
-      vscode.ConfigurationTarget.Global
-    );
-  }
 }
 
 // this method is called when your extension is deactivated
