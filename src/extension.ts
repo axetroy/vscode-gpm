@@ -23,8 +23,6 @@ export async function activate(
 ): Promise<void> {
   const gpm = new Gpm(context);
 
-  await gpm.init();
-
   // open file
   context.subscriptions.push(
     vscode.commands.registerCommand(
