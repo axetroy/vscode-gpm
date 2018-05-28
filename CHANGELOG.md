@@ -1,3 +1,13 @@
+<a name="0.18.0"></a>
+# [0.18.0](https://github.com/axetroy/vscode-gpm/compare/v0.17.0...v0.18.0) (2018-05-28)
+
+
+### Features
+
+* move explorer to activitybar ([55e45be](https://github.com/axetroy/vscode-gpm/commit/55e45be))
+
+
+
 <a name="0.17.0"></a>
 # [0.17.0](https://github.com/axetroy/vscode-gpm/compare/v0.16.3...v0.17.0) (2018-05-19)
 
