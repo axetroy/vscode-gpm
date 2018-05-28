@@ -36,8 +36,7 @@
       "GPMExplorer": [
         {
           "id": "GPMExplorer",
-          "name": "GPM",
-          "when": "showExplorer"
+          "name": "GPM"
         }
       ]
     },
@@ -162,11 +161,6 @@
           "light": "resources/light/command/search.svg",
           "dark": "resources/dark/command/search.svg"
         }
-      },
-      {
-        "command": "gpm.toggleExplorer",
-        "title": "Toggle the Tree View",
-        "category": "GPM"
       },
       {
         "command": "gpm.openInTerminal",
@@ -392,11 +386,6 @@
             "ask"
           ],
           "description": "Define the behavior of search and select a project."
-        },
-        "gpm.showExplorer": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show the project explorer or not"
         }
       }
     },

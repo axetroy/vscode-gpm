@@ -7,7 +7,6 @@ class Config {
   private extensionField = "gpm";
   public fields = {
     ROOT_PATH: "rootPath",
-    CAN_SHOW_EXPLORER: "showExplorer",
     IS_AUTO_RUN_HOOK: "isAutoRunHook",
     SEARCH_BEHAVIOR: "searchBehavior"
   };
@@ -37,9 +36,6 @@ class Config {
   }
   get isAutoRunHook(): boolean {
     return !!this.select(this.fields.IS_AUTO_RUN_HOOK).get();
-  }
-  get canShowExplorer(): boolean {
-    return !!this.select(this.fields.CAN_SHOW_EXPLORER).get();
   }
   get searchBehavior(): SearchBehavior {
     return this.select(this.fields.SEARCH_BEHAVIOR).get() as SearchBehavior;

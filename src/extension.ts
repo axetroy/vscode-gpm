@@ -281,21 +281,6 @@ export async function activate(
     vscode.commands.registerCommand(Command.Search, gpm.search.bind(gpm))
   );
 
-  // toggle tree view
-  context.subscriptions.push(
-    vscode.commands.registerCommand(Command.ToggleExplorer, async (): Promise<
-      void
-    > => {
-      const field = config.select(config.fields.CAN_SHOW_EXPLORER);
-      await field.update(!field.get(), vscode.ConfigurationTarget.Global);
-      await vscode.commands.executeCommand(
-        "setContext",
-        config.fields.CAN_SHOW_EXPLORER,
-        !!field.get()
-      );
-    })
-  );
-
   // open project in terminal
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -310,7 +295,7 @@ export async function activate(
       Command.ListProject2OpenInTerminal,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: "Select a Project to Open in Terminal"
+          placeHolder: "Select a Project to Open in Terminal."
         });
 
         if (!repository) {
@@ -385,12 +370,6 @@ export async function activate(
         gpm.refresh();
       }
     })
-  );
-
-  vscode.commands.executeCommand(
-    "setContext",
-    config.fields.CAN_SHOW_EXPLORER,
-    config.canShowExplorer
   );
 
   // tree view

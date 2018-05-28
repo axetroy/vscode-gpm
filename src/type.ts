@@ -115,7 +115,6 @@ export enum Command {
   StarCurrentProject = "gpm.starCurrent",
   InterruptCommand = "gpm.interruptCommand",
   Search = "gpm.search",
-  ToggleExplorer = "gpm.toggleExplorer",
   OpenInTerminal = "gpm.openInTerminal",
   // create
   CreateRepository = "gpm.createRepository",
