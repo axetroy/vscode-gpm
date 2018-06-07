@@ -170,8 +170,6 @@ export class Gpm {
 
     await fs.ensureDir(randomTemp);
 
-    vscode.window.showInformationMessage("cloning...");
-
     try {
       await this.runShell(
         randomTemp,
