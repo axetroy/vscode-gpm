@@ -2,7 +2,7 @@
   "name": "vscode-gpm",
   "displayName": "gpm",
   "description": "Git Project Manager",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "publisher": "axetroy",
   "engines": {
     "vscode": "^1.21.0"
@@ -365,7 +365,9 @@
       "title": "GPM",
       "properties": {
         "gpm.rootPath": {
-          "type": ["string"],
+          "type": [
+            "string"
+          ],
           "default": [
             "$HOME/gpm"
           ],
