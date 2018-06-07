@@ -47,8 +47,8 @@ export class Gpm {
   // current running command stream
   private processes: IProcess[] = [];
   // cache path
-  public readonly CachePath: string = this.context.storagePath ||
-  path.join(os.tmpdir(), ".gpm", "temp");
+  public readonly CachePath: string =
+    this.context.storagePath || path.join(os.tmpdir(), ".gpm", "temp");
 
   // project explorer
   public readonly explorer: ProjectTreeProvider = new ProjectTreeProvider(
@@ -60,21 +60,22 @@ export class Gpm {
    * @memberof Gpm
    */
   public async init() {
-    const rootPath = config.rootPath;
-    if (!(await fs.pathExists(rootPath))) {
-      const action = await vscode.window.showInformationMessage(
-        `GPM root folder '${rootPath}' not found.`,
-        InitAction.Create,
-        InitAction.Cancel
-      );
-      switch (action as InitAction) {
-        case InitAction.Create:
-          await fs.ensureDir(rootPath);
-          break;
-        default:
+    for (const rootPath of config.rootPath) {
+      console.log(rootPath);
+      if (!(await fs.pathExists(rootPath))) {
+        const action = await vscode.window.showInformationMessage(
+          `GPM root folder '${rootPath}' not found.`,
+          InitAction.Create,
+          InitAction.Cancel
+        );
+        switch (action as InitAction) {
+          case InitAction.Create:
+            await fs.ensureDir(rootPath);
+            break;
+          default:
+        }
       }
     }
-
     this.explorer.traverse();
   }
   private async getValidProjectName(
@@ -147,7 +148,15 @@ export class Gpm {
 
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
-    const baseDir: string = config.rootPath;
+    // select a root path
+    const baseDir = await vscode.window.showQuickPick(config.rootPath, {
+      placeHolder: "Select a root path to clone"
+    });
+
+    if (!baseDir) {
+      return;
+    }
+
     const sourceDir: string = path.join(baseDir, gitInfo.source);
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
 

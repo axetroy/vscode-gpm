@@ -21,6 +21,13 @@ import {
 export async function activate(
   context: vscode.ExtensionContext
 ): Promise<void> {
+  if (typeof config.rootPath === "string") {
+    // if rootPath still set in string
+    // change it to array
+    const rootPath = config.select("rootPath");
+    await rootPath.update([rootPath.get()], vscode.ConfigurationTarget.Global);
+  }
+
   const gpm = new Gpm(context);
 
   // open file
@@ -201,17 +208,20 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.StarCurrentProject,
       async (repository: IRepository): Promise<void> => {
+        // 当前项目的路径
         const rootPath = vscode.workspace.rootPath;
         if (!rootPath) {
           return;
         }
         const gpmRoot = path.join(rootPath, "..", "..", "..");
-        if (gpmRoot === config.rootPath) {
+
+        // 如果存在的话
+        if (config.rootPath.indexOf(gpmRoot) >= 0) {
           const repositoryName = path.basename(rootPath);
           const ownerName = path.basename(path.join(rootPath, ".."));
           const sourceName = path.basename(path.join(rootPath, "..", ".."));
 
-          const source = createSource(context, sourceName);
+          const source = createSource(context, sourceName, gpmRoot);
           const owner = createOwner(context, source, ownerName);
           const repositoryEntity = createRepository(
             context,

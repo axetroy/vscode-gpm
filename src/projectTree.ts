@@ -77,9 +77,9 @@ export function createFolder(
  */
 export function createSource(
   context: vscode.ExtensionContext,
-  sourceName: string
+  sourceName: string,
+  rootPath: string
 ): ISource {
-  const rootPath: string = config.rootPath;
   const item: ISource = {
     label: sourceName,
     contextValue: "source",
@@ -315,26 +315,27 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   private async getSources() {
     const children: IFile[] = [];
 
-    const GPM_ROOT_PATH = config.rootPath;
-
-    const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(
-      file => !/^\./.test(file)
-    );
-
     // concat with star
     if (this.star.list().length) {
       children.push(this.star);
     }
 
-    for (const file of files) {
-      const statInfo = await fs.stat(path.join(GPM_ROOT_PATH, file));
+    for (const GPM_ROOT_PATH of config.rootPath) {
+      const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(
+        file => !/^\./.test(file)
+      );
 
-      if (statInfo.isFile()) {
-        continue;
+      for (const file of files) {
+        const statInfo = await fs.stat(path.join(GPM_ROOT_PATH, file));
+
+        if (statInfo.isFile()) {
+          continue;
+        }
+
+        children.push(createSource(this.context, file, GPM_ROOT_PATH));
       }
-
-      children.push(createSource(this.context, file));
     }
+
     return children;
   }
   private async getOwner(element: ISource): Promise<IOwner[]> {

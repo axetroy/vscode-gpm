@@ -23,15 +23,17 @@ class Config {
    * @readonly
    * @memberof Config
    */
-  get rootPath(): string {
-    return path.normalize(
-      (this.select(this.fields.ROOT_PATH).get() as string)
-        .replace(/^~/, process.env.HOME as string)
-        .replace("$HOME", os.homedir())
-        .replace(
-          /\$\w+/,
-          (word: string) => process.env[word.replace(/^\$/, "")] as string
-        )
+  get rootPath(): string[] {
+    return (this.select(this.fields.ROOT_PATH).get() as any).map((v: any) =>
+      path.normalize(
+        v
+          .replace(/^~/, process.env.HOME as string)
+          .replace("$HOME", os.homedir())
+          .replace(
+            /\$\w+/,
+            (word: string) => process.env[word.replace(/^\$/, "")] as string
+          )
+      )
     );
   }
   get isAutoRunHook(): boolean {
