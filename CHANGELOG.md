@@ -1,3 +1,14 @@
+<a name="0.20.0"></a>
+# [0.20.0](https://github.com/axetroy/vscode-gpm/compare/v0.19.0...v0.20.0) (2018-06-07)
+
+
+### Features
+
+* no more show cloning message when add project ([984eba2](https://github.com/axetroy/vscode-gpm/commit/984eba2))
+* support multiple rootPath close [#12](https://github.com/axetroy/vscode-gpm/issues/12) ([a92f7b7](https://github.com/axetroy/vscode-gpm/commit/a92f7b7))
+
+
+
 <a name="0.19.0"></a>
 # [0.19.0](https://github.com/axetroy/vscode-gpm/compare/v0.18.0...v0.19.0) (2018-05-28)
 
