@@ -192,8 +192,20 @@ export async function activate(
       const repository = await gpm.selectRepository(void 0, {
         placeHolder: "Select a Project to Remove."
       });
-      if (repository) {
-        return gpm.remove(repository);
+
+      if (!repository) return;
+
+      const action = await vscode.window.showInformationMessage(
+        `[Irrevocable] Are you sure to remove project @${repository.owner}/${
+          repository.repository
+        }?`,
+        ConfirmAction.Yes,
+        ConfirmAction.No
+      );
+
+      switch (action as ConfirmAction) {
+        case ConfirmAction.Yes:
+          return gpm.remove(repository);
       }
     })
   );
