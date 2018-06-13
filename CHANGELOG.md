@@ -1,3 +1,13 @@
+<a name="0.20.1"></a>
+## [0.20.1](https://github.com/axetroy/vscode-gpm/compare/v0.20.0...v0.20.1) (2018-06-13)
+
+
+### Features
+
+* list project to remove before you confirm ([f8588e1](https://github.com/axetroy/vscode-gpm/commit/f8588e1))
+
+
+
 <a name="0.20.0"></a>
 # [0.20.0](https://github.com/axetroy/vscode-gpm/compare/v0.19.0...v0.20.0) (2018-06-07)
 
