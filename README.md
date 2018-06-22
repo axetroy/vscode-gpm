@@ -16,7 +16,7 @@ vscode-gpm is a extension to manage project.
 
 ## Support
 
-* [ ] Windows (Not test on windows)
+* [x] Windows
 * [x] Mac OS
 * [x] Linux
 
@@ -54,10 +54,9 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 
 ```json
 {
-  "gpm.rootPath": "$HOME/gpm",
+  "gpm.rootPath": ["$HOME/gpm"],
   "gpm.isAutoRunHook": false,
-  "gpm.searchBehavior": "openInNewWindow",
-  "gpm.showExplorer": true
+  "gpm.searchBehavior": "openInNewWindow"
 }
 ```
 
