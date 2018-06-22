@@ -193,7 +193,9 @@ export async function activate(
         placeHolder: "Select a Project to Remove."
       });
 
-      if (!repository) return;
+      if (!repository) {
+        return;
+      }
 
       const action = await vscode.window.showInformationMessage(
         `[Irrevocable] Are you sure to remove project @${repository.owner}/${
