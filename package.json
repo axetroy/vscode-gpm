@@ -26,7 +26,7 @@
   "categories": [
     "Other"
   ],
-  "icon": "resources/icon.png",
+  "icon": "resources/logo.png",
   "main": "./out/extension",
   "activationEvents": [
     "onView:GPMExplorer",
@@ -67,7 +67,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "icon": "resources/icon.svg",
+          "icon": "resources/activity-bar.svg",
           "id": "GPMExplorer",
           "title": "Project Manager"
         }
