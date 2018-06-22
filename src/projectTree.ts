@@ -111,6 +111,12 @@ export function createSource(
     case "googlesource.com":
       icon = "google.svg";
       break;
+    case "go4.org":
+    case "golang":
+    case "golang.org":
+    case "gopkg.in":
+      icon = "golang.svg"
+      break;
     default:
       icon = "git.svg";
   }
