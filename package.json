@@ -365,13 +365,14 @@
       "title": "GPM",
       "properties": {
         "gpm.rootPath": {
-          "type": [
-            "string"
-          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "default": [
             "$HOME/gpm"
           ],
-          "description": "Git Package Root Path, default: $HOME/gpm, support other environment variables, eb. $GOPATH"
+          "description": "Git Package Root Path, default: [$HOME/gpm], support other environment variables, eb. $GOPATH"
         },
         "gpm.isAutoRunHook": {
           "type": "boolean",
