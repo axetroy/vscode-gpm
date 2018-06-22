@@ -1,3 +1,20 @@
+<a name="0.21.0"></a>
+# [0.21.0](https://github.com/axetroy/vscode-gpm/compare/v0.20.1...v0.21.0) (2018-06-22)
+
+
+### Bug Fixes
+
+* fix type for configuration property rootPath ([c3b4a99](https://github.com/axetroy/vscode-gpm/commit/c3b4a99))
+
+
+### Features
+
+* change logo ([23b4f95](https://github.com/axetroy/vscode-gpm/commit/23b4f95))
+* no more active extension by default ([376e4b8](https://github.com/axetroy/vscode-gpm/commit/376e4b8))
+* support golang icon in tree view ([376abea](https://github.com/axetroy/vscode-gpm/commit/376abea))
+
+
+
 <a name="0.20.1"></a>
 ## [0.20.1](https://github.com/axetroy/vscode-gpm/compare/v0.20.0...v0.20.1) (2018-06-13)
 
