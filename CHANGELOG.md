@@ -1,3 +1,13 @@
+<a name="0.21.1"></a>
+## [0.21.1](https://github.com/axetroy/vscode-gpm/compare/v0.21.0...v0.21.1) (2018-07-05)
+
+
+### Bug Fixes
+
+* rootPath promble in old version ([868b4b0](https://github.com/axetroy/vscode-gpm/commit/868b4b0))
+
+
+
 <a name="0.21.0"></a>
 # [0.21.0](https://github.com/axetroy/vscode-gpm/compare/v0.20.1...v0.21.0) (2018-06-22)
 
