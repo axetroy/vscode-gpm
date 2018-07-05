@@ -24,7 +24,15 @@ class Config {
    * @memberof Config
    */
   get rootPath(): string[] {
-    return (this.select(this.fields.ROOT_PATH).get() as any).map((v: any) =>
+    // 由于历史原因，读出来的可能是字符串而不是数组
+    const rootPath = this.select(this.fields.ROOT_PATH).get() as
+      | string
+      | string[];
+
+    const rootPathArray: string[] = Array.isArray(rootPath)
+      ? rootPath
+      : rootPath.split(",");
+    return rootPathArray.map((v: any) =>
       path.normalize(
         v
           .replace(/^~/, process.env.HOME as string)
