@@ -1,3 +1,13 @@
+<a name="0.21.2"></a>
+## [0.21.2](https://github.com/axetroy/vscode-gpm/compare/v0.21.1...v0.21.2) (2018-07-05)
+
+
+### Bug Fixes
+
+* fix rootPath can not container space when use string as it ([8d4f3ae](https://github.com/axetroy/vscode-gpm/commit/8d4f3ae))
+
+
+
 <a name="0.21.1"></a>
 ## [0.21.1](https://github.com/axetroy/vscode-gpm/compare/v0.21.0...v0.21.1) (2018-07-05)
 
