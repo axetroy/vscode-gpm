@@ -32,9 +32,10 @@ class Config {
     const rootPathArray: string[] = Array.isArray(rootPath)
       ? rootPath
       : rootPath.split(",");
-    return rootPathArray.map((v: any) =>
+    return rootPathArray.map((v: string) =>
       path.normalize(
         v
+          .trim()
           .replace(/^~/, process.env.HOME as string)
           .replace("$HOME", os.homedir())
           .replace(
