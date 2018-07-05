@@ -31,7 +31,7 @@ class Config {
 
     const rootPathArray: string[] = Array.isArray(rootPath)
       ? rootPath
-      : rootPath.split(",");
+      : rootPath.split(",").map(v => v.trim());
     return rootPathArray.map((v: string) =>
       path.normalize(
         v
