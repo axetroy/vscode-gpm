@@ -8,7 +8,7 @@
   "cmd.clear.title": "清除缓存",
   "cmd.add.title": "添加项目",
   "cmd.openInCurrentWindow.title": "当前窗口打开",
-  "cmd.openInNewWindow.title": "新窗口打开",
+  "cmd.openInNewWindow.title": "在新窗口打开",
   "cmd.prune.title": "清除项目无用文件",
   "cmd.star.title": "收藏",
   "cmd.starCurrent.title": "收藏当前项目",
