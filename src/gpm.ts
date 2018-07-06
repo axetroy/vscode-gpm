@@ -22,8 +22,8 @@ import {
   IOwner,
   IRepository,
   IPreset,
-  InitAction,
   Hook,
+  InitAction,
   OpenAction,
   SearchAction,
   PruneAction,
@@ -32,6 +32,7 @@ import {
   Command,
   SearchBehavior
 } from "./type";
+import localize from "./localize";
 
 interface IProcess {
   id: string;
@@ -64,12 +65,12 @@ export class Gpm {
       console.log(rootPath);
       if (!(await fs.pathExists(rootPath))) {
         const action = await vscode.window.showInformationMessage(
-          `GPM root folder '${rootPath}' not found.`,
-          InitAction.Create,
-          InitAction.Cancel
+          localize("err.notFoundRootPath", "未发现根目录", [rootPath]),
+          localize(InitAction.Create),
+          localize(InitAction.Cancel)
         );
         switch (action as InitAction) {
-          case InitAction.Create:
+          case localize(InitAction.Create):
             await fs.ensureDir(rootPath);
             break;
           default:
@@ -83,18 +84,21 @@ export class Gpm {
   ): Promise<string | void> {
     if (await fs.pathExists(repositoryPath)) {
       const actionName = await vscode.window.showWarningMessage(
-        "Project already exists.",
-        ProjectExistAction.Overwrite,
-        ProjectExistAction.Rename,
-        ProjectExistAction.Cancel
+        localize("tip.message.projectExist", "项目已存在"),
+        localize(ProjectExistAction.Overwrite),
+        localize(ProjectExistAction.Rename),
+        localize(ProjectExistAction.Cancel)
       );
 
       switch (actionName as ProjectExistAction) {
-        case ProjectExistAction.Overwrite:
+        case localize(ProjectExistAction.Overwrite):
           return repositoryPath;
-        case ProjectExistAction.Rename:
+        case localize(ProjectExistAction.Rename):
           const newName = await vscode.window.showInputBox({
-            prompt: "Enter a new name of project."
+            prompt: localize(
+              "tip.placeholder.requireNewRepo",
+              "请输入新的项目名字"
+            )
           });
 
           if (!newName) {
@@ -124,13 +128,15 @@ export class Gpm {
         throw null;
       }
     } catch (err) {
-      vscode.window.showErrorMessage("Make sure git have been installed.");
+      vscode.window.showErrorMessage(
+        localize("err.gitNotInstall", "请确保Git已经安装")
+      );
       return;
     }
 
     const gitProjectAddress = await vscode.window.showInputBox({
-      placeHolder: "e.g. https://github.com/eggjs/egg.git",
-      prompt: "Enter public git project https/ssh address."
+      placeHolder: localize("tip.placeholder.addressExample", "例如 xxx"),
+      prompt: localize("tip.placeholder.enterAddress", "请输入git地址")
     });
 
     if (!gitProjectAddress) {
@@ -141,7 +147,9 @@ export class Gpm {
 
     // invalid git address
     if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
-      return vscode.window.showErrorMessage("Invalid git address.");
+      return vscode.window.showErrorMessage(
+        localize("err.invalidGitAddress", "无效的 Git 地址")
+      );
     }
 
     const randomTemp: string = path.join(this.CachePath, uniqueString());
@@ -150,7 +158,7 @@ export class Gpm {
 
     // select a root path
     const baseDir = await vscode.window.showQuickPick(config.rootPath, {
-      placeHolder: "Select a root path to clone"
+      placeHolder: localize("tip.placeholder.selectRootPath", "选择一个根目录")
     });
 
     if (!baseDir) {
@@ -201,13 +209,16 @@ export class Gpm {
       }
 
       const action: string | void = await vscode.window.showInformationMessage(
-        `@${gitInfo.owner}/${gitInfo.name} have been cloned.`,
-        ProjectPostAddAction.Open,
-        ProjectPostAddAction.Cancel
+        localize("tip.message.cloned", "克隆成功", [
+          gitInfo.owner,
+          gitInfo.name
+        ]),
+        localize(ProjectPostAddAction.Open),
+        localize(ProjectPostAddAction.Cancel)
       );
 
       switch (action as ProjectPostAddAction) {
-        case ProjectPostAddAction.Open:
+        case localize(ProjectPostAddAction.Open):
           await this.open({
             source: gitInfo.source,
             owner: gitInfo.owner,
@@ -235,13 +246,13 @@ export class Gpm {
    */
   public async prune() {
     const action = await vscode.window.showWarningMessage(
-      "prune will remove all node_modules folder, will you continue?",
-      PruneAction.Continue,
-      PruneAction.Cancel
+      localize("tip.message.pruneWarning", "移除警告"),
+      localize(PruneAction.Continue),
+      localize(PruneAction.Cancel)
     );
 
     switch (action as PruneAction) {
-      case PruneAction.Continue:
+      case localize(PruneAction.Continue):
         break;
       default:
         return;
@@ -272,14 +283,18 @@ export class Gpm {
       }
     });
 
-    vscode.window.showInformationMessage("pruning... wait for a moment");
+    vscode.window.showInformationMessage(localize("tip.message.pruneWait"));
 
     await walker.walk();
 
     await Promise.all(done);
 
     vscode.window.showInformationMessage(
-      `Find ${files} file， ${directory} directories, delete ${removeDirCount} node_modules`
+      localize("tip.message.pruneReport", "报告", [
+        files,
+        directory,
+        removeDirCount
+      ])
     );
     this.refresh();
   }
@@ -383,7 +398,9 @@ export class Gpm {
   public async cleanCache() {
     try {
       await fs.remove(this.CachePath);
-      await vscode.window.showInformationMessage("Cache have been cleaned.");
+      await vscode.window.showInformationMessage(
+        localize("tip.message.clearReport", "清理完毕")
+      );
     } catch (err) {
       await vscode.window.showErrorMessage(err.message);
     }
@@ -400,16 +417,16 @@ export class Gpm {
     }`;
 
     const action = await vscode.window.showInformationMessage(
-      `How to open ${repositorySymbol}?`,
-      OpenAction.CurrentWindow,
-      OpenAction.NewWindow,
-      OpenAction.Cancel
+      localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
+      localize(OpenAction.CurrentWindow),
+      localize(OpenAction.NewWindow),
+      localize(OpenAction.Cancel)
     );
 
     switch (action as OpenAction) {
-      case OpenAction.CurrentWindow:
+      case localize(OpenAction.CurrentWindow):
         return this.openInCurrentWindow(repository);
-      case OpenAction.NewWindow:
+      case localize(OpenAction.NewWindow):
         return this.openInNewWindow(repository);
       default:
         return;
@@ -464,7 +481,10 @@ export class Gpm {
     const selectItem = await vscode.window.showQuickPick(itemList, {
       matchOnDescription: false,
       matchOnDetail: false,
-      placeHolder: "Select a Process to kill..."
+      placeHolder: localize(
+        "tip.placeholder.selectProcessAndKill",
+        "选择一个进程然后kill掉"
+      )
     });
 
     if (!selectItem) {
@@ -508,7 +528,7 @@ export class Gpm {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
-        placeHolder: "Select a Project..."
+        placeHolder: localize("tip.placeholder.selectProject", "请选择一个项目")
       },
       ...(options || {})
     });
@@ -614,16 +634,16 @@ export class Gpm {
         }`;
 
         const doAction = await vscode.window.showInformationMessage(
-          `What do you want to do about ${repositorySymbol}?`,
-          SearchAction.Open,
-          SearchAction.Remove,
-          SearchAction.Cancel
+          localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
+          localize(SearchAction.Open),
+          localize(SearchAction.Remove),
+          localize(SearchAction.Cancel)
         );
 
         switch (doAction as SearchAction) {
-          case SearchAction.Open:
+          case localize(SearchAction.Open):
             return this.open(repository);
-          case SearchAction.Remove:
+          case localize(SearchAction.Remove):
             return this.remove(repository);
           default:
             return;

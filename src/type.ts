@@ -45,24 +45,24 @@ export interface IPreset {
 }
 
 export enum InitAction {
-  Create = "Create",
-  Cancel = "Cancel"
+  Create = "action.create",
+  Cancel = "action.cancel"
 }
 
 export enum ProjectExistAction {
-  Overwrite = "Overwrite",
-  Rename = "Rename",
-  Cancel = "Cancel"
+  Overwrite = "action.overwrite",
+  Rename = "action.rename",
+  Cancel = "action.cancel"
 }
 
 export enum ProjectPostAddAction {
-  Open = "Open",
-  Cancel = "Cancel"
+  Open = "action.open",
+  Cancel = "action.cancel"
 }
 
 export enum PruneAction {
-  Continue = "Continue",
-  Cancel = "Cancel"
+  Continue = "action.continue",
+  Cancel = "action.cancel"
 }
 
 export enum Hook {
@@ -73,26 +73,26 @@ export enum Hook {
 }
 
 export enum SearchAction {
-  Open = "Open",
-  Remove = "Remove",
-  Cancel = "Cancel"
+  Open = "action.open",
+  Remove = "action.remove",
+  Cancel = "action.cancel"
 }
 
 export enum OpenAction {
-  CurrentWindow = "Current Window",
-  NewWindow = "New Window",
-  Cancel = "Cancel"
+  CurrentWindow = "action.currentWindow",
+  NewWindow = "action.newWindow",
+  Cancel = "action.cancel"
 }
 
 export enum ConfirmAction {
-  Yes = "Yes",
-  No = "No"
+  Yes = "action.yes",
+  No = "action.no"
 }
 
 export enum SearchBehavior {
   OpenInNewWindow = "openInNewWindow",
   OpenInCurrentWindow = "openInCurrentWindow",
-  Remove = "remove",
+  Remove = "action.remove",
   Star = "star",
   Unstar = "unstar",
   Ask = "ask"

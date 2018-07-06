@@ -16,6 +16,8 @@ import {
   Command
 } from "./type";
 
+import localize from "./localize";
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(
@@ -64,7 +66,7 @@ export async function activate(
       Command.ListProject2OpenInCurrentWindow,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: "Select a Project to Open in Current Window."
+          placeHolder: localize("tip.placeholder.list2open", "新窗口打开项目")
         });
 
         if (repository) {
@@ -87,7 +89,7 @@ export async function activate(
       Command.ListProject2OpenInNewWindow,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: "Select a Project to Open in New Window."
+          placeHolder: localize("tip.placeholder.list2openInNew", "新窗口打开")
         });
 
         if (repository) {
@@ -126,15 +128,16 @@ export async function activate(
       Command.RemoveProject,
       async (repository: IRepository) => {
         const action = await vscode.window.showInformationMessage(
-          `[Irrevocable] Are you sure to remove project @${repository.owner}/${
+          localize("tip.message.beforeRemove", "你确定要删除吗", [
+            repository.owner,
             repository.repository
-          }?`,
-          ConfirmAction.Yes,
-          ConfirmAction.No
+          ]),
+          localize(ConfirmAction.Yes),
+          localize(ConfirmAction.No)
         );
 
         switch (action as ConfirmAction) {
-          case ConfirmAction.Yes:
+          case localize(ConfirmAction.Yes):
             await gpm.remove(repository);
             break;
         }
@@ -148,15 +151,15 @@ export async function activate(
       Command.RemoveOwner,
       async (owner: IOwner) => {
         const action = await vscode.window.showInformationMessage(
-          `[Irrevocable] Are you sure to remove all project of @${
+          localize("tip.message.beforeRemoveOwner", "你确定要删除吗", [
             owner.owner
-          }?`,
-          ConfirmAction.Yes,
-          ConfirmAction.No
+          ]),
+          localize(ConfirmAction.Yes),
+          localize(ConfirmAction.No)
         );
 
         switch (action as ConfirmAction) {
-          case ConfirmAction.Yes:
+          case localize(ConfirmAction.Yes):
             await gpm.removeOwner(owner);
             break;
         }
@@ -170,15 +173,15 @@ export async function activate(
       Command.RemoveSource,
       async (source: ISource) => {
         const action = await vscode.window.showInformationMessage(
-          `[Irrevocable] Are you sure to remove all project of ${
+          localize("tip.message.beforeRemoveSource", "你确定要删除吗", [
             source.source
-          }?`,
-          ConfirmAction.Yes,
-          ConfirmAction.No
+          ]),
+          localize(ConfirmAction.Yes),
+          localize(ConfirmAction.No)
         );
 
         switch (action as ConfirmAction) {
-          case ConfirmAction.Yes:
+          case localize(ConfirmAction.Yes):
             await gpm.removeSource(source);
             break;
         }
@@ -190,7 +193,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2Remove, async () => {
       const repository = await gpm.selectRepository(void 0, {
-        placeHolder: "Select a Project to Remove."
+        placeHolder: localize("tip.placeholder.list2remove", "请选择项目")
       });
 
       if (!repository) {
@@ -198,15 +201,16 @@ export async function activate(
       }
 
       const action = await vscode.window.showInformationMessage(
-        `[Irrevocable] Are you sure to remove project @${repository.owner}/${
+        localize("tip.message.beforeRemove", "你确定要删除吗", [
+          repository.owner,
           repository.repository
-        }?`,
-        ConfirmAction.Yes,
-        ConfirmAction.No
+        ]),
+        localize(ConfirmAction.Yes),
+        localize(ConfirmAction.No)
       );
 
       switch (action as ConfirmAction) {
-        case ConfirmAction.Yes:
+        case localize(ConfirmAction.Yes):
           return gpm.remove(repository);
       }
     })
@@ -245,7 +249,9 @@ export async function activate(
 
           await gpm.star(repositoryEntity);
         } else {
-          vscode.window.showWarningMessage(`Invalid project: '${rootPath}'`);
+          vscode.window.showWarningMessage(
+            localize("err.invalidProject", "无效的项目", [rootPath])
+          );
         }
       }
     )
@@ -255,7 +261,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2Star, async () => {
       const repository = await gpm.selectRepository(void 0, {
-        placeHolder: "Select a Project to Star."
+        placeHolder: localize("tip.placeholder.list2star", "请选择项目")
       });
 
       if (repository) {
@@ -273,7 +279,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2UnStar, async () => {
       const repository = await gpm.selectRepository(gpm.starList(), {
-        placeHolder: "Select a Project to Unstar."
+        placeHolder: localize("tip.placeholder.list2star", "请选择项目")
       });
 
       if (repository) {
@@ -317,7 +323,10 @@ export async function activate(
       Command.ListProject2OpenInTerminal,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: "Select a Project to Open in Terminal."
+          placeHolder: localize(
+            "tip.placeholder.list2OpenInTerminal",
+            "请选择项目然后在终端打开"
+          )
         });
 
         if (!repository) {
@@ -335,7 +344,10 @@ export async function activate(
       Command.CreateRepository,
       async (owner: IOwner) => {
         const repositoryName = await vscode.window.showInputBox({
-          placeHolder: "Enter a name of project."
+          placeHolder: localize(
+            "tip.placeholder.requireProject",
+            "请输入项目名称"
+          )
         });
 
         if (!repositoryName) {
@@ -363,7 +375,10 @@ export async function activate(
       Command.CreateOwner,
       async (source: ISource) => {
         const ownerName = await vscode.window.showInputBox({
-          placeHolder: "Enter a name of owner."
+          placeHolder: localize(
+            "tip.placeholder.requireOwner",
+            "请输入所有者名称"
+          )
         });
 
         if (!ownerName) {

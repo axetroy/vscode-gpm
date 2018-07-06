@@ -69,14 +69,14 @@
         {
           "icon": "resources/activity-bar.svg",
           "id": "GPMExplorer",
-          "title": "Project Manager"
+          "title": "%ext.view.title%"
         }
       ]
     },
     "commands": [
       {
         "command": "gpm.refresh",
-        "title": "Refresh Project",
+        "title": "%cmd.refresh.title%",
         "category": "GPM",
         "icon": {
           "light": "resources/light/command/refresh.svg",
@@ -85,12 +85,12 @@
       },
       {
         "command": "gpm.clearCache",
-        "title": "Clear Cache",
+        "title": "%cmd.clear.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.add",
-        "title": "Add Project",
+        "title": "%cmd.add.title%",
         "category": "GPM",
         "icon": {
           "light": "resources/light/command//add.svg",
@@ -99,87 +99,87 @@
       },
       {
         "command": "gpm.openInCurrentWindow",
-        "title": "Open in Current Window",
+        "title": "%cmd.openInCurrentWindow.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.openInNewWindow",
-        "title": "Open in New Window",
+        "title": "%cmd.openInNewWindow.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.prune",
-        "title": "Prune Project",
+        "title": "%cmd.prune.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.star",
-        "title": "Star",
+        "title": "%cmd.star.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.starCurrent",
-        "title": "Star Current Project",
+        "title": "%cmd.starCurrent.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.list2star",
-        "title": "List Project to Star",
+        "title": "%cmd.list2star.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.unstar",
-        "title": "Unstar",
+        "title": "%cmd.unstar.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.list2unstar",
-        "title": "List Project to Unstar",
+        "title": "%cmd.list2unstar.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.clearStars",
-        "title": "Clear Stars",
+        "title": "%cmd.clearStars.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.remove",
-        "title": "Remove",
+        "title": "%cmd.remove.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.removeOwner",
-        "title": "Remove",
+        "title": "%cmd.removeOwner.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.removeSource",
-        "title": "Remove",
+        "title": "%cmd.removeSource.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.interruptCommand",
-        "title": "Interrupt Current Running Command",
+        "title": "%cmd.interruptCommand.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.list2remove",
-        "title": "List Project to Remove",
+        "title": "%cmd.list2remove.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.list2open",
-        "title": "List Project to Open",
+        "title": "%cmd.list2open.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.list2openNew",
-        "title": "List Project to Open in New Window",
+        "title": "%cmd.list2openNew.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.search",
-        "title": "Search Project",
+        "title": "%cmd.search.title%",
         "category": "GPM",
         "icon": {
           "light": "resources/light/command/search.svg",
@@ -188,22 +188,22 @@
       },
       {
         "command": "gpm.openInTerminal",
-        "title": "Open in Terminal",
+        "title": "%cmd.openInTerminal.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.list2openInTerminal",
-        "title": "List Project to Open in Terminal",
+        "title": "%cmd.list2openInTerminal.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.createRepository",
-        "title": "Create Project",
+        "title": "%cmd.createRepository.title%",
         "category": "GPM"
       },
       {
         "command": "gpm.createOwner",
-        "title": "Create Owner",
+        "title": "%cmd.createOwner.title%",
         "category": "GPM"
       }
     ],
@@ -396,12 +396,12 @@
           "default": [
             "$HOME/gpm"
           ],
-          "description": "Git Package Root Path, default: [$HOME/gpm], support other environment variables, eb. $GOPATH"
+          "description": "%ext.config.rootPath%"
         },
         "gpm.isAutoRunHook": {
           "type": "boolean",
           "default": false,
-          "description": "WARNING: custom hook may be dangerous. risk on your own."
+          "description": "%ext.config.isAutoRunHook%"
         },
         "gpm.searchBehavior": {
           "type": "string",
@@ -414,7 +414,7 @@
             "unstar",
             "ask"
           ],
-          "description": "Define the behavior of search and select a project."
+          "description": "%ext.config.searchBehavior%"
         }
       }
     },

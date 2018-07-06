@@ -4,6 +4,7 @@ import * as path from "path";
 import config from "./config";
 
 import { FileType, IFile, ISource, IOwner, IRepository, IStar } from "./type";
+import localize from "./localize";
 
 /**
  * Get icon from a given path
@@ -115,7 +116,7 @@ export function createSource(
     case "golang":
     case "golang.org":
     case "gopkg.in":
-      icon = "golang.svg"
+      icon = "golang.svg";
       break;
     default:
       icon = "git.svg";
@@ -201,11 +202,11 @@ export function createStar(context: vscode.ExtensionContext): IStar {
   }
 
   return {
-    label: "Your stars",
+    label: localize("ext.view.star", "你的收藏"),
     contextValue: "star",
     collapsibleState: 2,
     iconPath: getIcon(context, ["star.svg"]),
-    tooltip: "The project you stared",
+    tooltip: localize("ext.view.stared", "你的收藏的项目"),
     // customer property
     type: FileType.Star,
     path: "", // empty path
