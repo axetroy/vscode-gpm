@@ -1,3 +1,19 @@
+<a name="0.23.0"></a>
+# [0.23.0](https://github.com/axetroy/vscode-gpm/compare/v0.22.0...v0.23.0) (2018-07-06)
+
+
+### Bug Fixes
+
+* compile error ([961281d](https://github.com/axetroy/vscode-gpm/commit/961281d))
+
+
+### Features
+
+* confirm project name before you remove it. ([14e4844](https://github.com/axetroy/vscode-gpm/commit/14e4844))
+* update chinese translate ([31bca3e](https://github.com/axetroy/vscode-gpm/commit/31bca3e))
+
+
+
 <a name="0.22.0"></a>
 # [0.22.0](https://github.com/axetroy/vscode-gpm/compare/v0.21.3...v0.22.0) (2018-07-06)
 
