@@ -127,20 +127,28 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.RemoveProject,
       async (repository: IRepository) => {
-        const action = await vscode.window.showInformationMessage(
-          localize("tip.message.beforeRemove", "你确定要删除吗", [
-            repository.owner,
+        const input = await vscode.window.showInputBox({
+          placeHolder: localize("tip.message.irrevocable", "不能被撤销哦"),
+          prompt: localize("tip.message.beforeRemove", "请输入名字", [
             repository.repository
-          ]),
-          localize(ConfirmAction.Yes),
-          localize(ConfirmAction.No)
-        );
+          ])
+        });
 
-        switch (action as ConfirmAction) {
-          case localize(ConfirmAction.Yes):
-            await gpm.remove(repository);
-            break;
+        if (!input) {
+          return;
         }
+
+        if (input !== repository.repository) {
+          vscode.window.showErrorMessage(
+            localize("err.invalidRepoName", "输入不正确", [
+              input,
+              repository.repository
+            ])
+          );
+          return;
+        }
+
+        await gpm.remove(repository);
       }
     )
   );
@@ -150,19 +158,25 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.RemoveOwner,
       async (owner: IOwner) => {
-        const action = await vscode.window.showInformationMessage(
-          localize("tip.message.beforeRemoveOwner", "你确定要删除吗", [
+        const input = await vscode.window.showInputBox({
+          placeHolder: localize("tip.message.irrevocable", "不能被撤销哦"),
+          prompt: localize("tip.message.beforeRemoveOwner", "请输入名字", [
             owner.owner
-          ]),
-          localize(ConfirmAction.Yes),
-          localize(ConfirmAction.No)
-        );
+          ])
+        });
 
-        switch (action as ConfirmAction) {
-          case localize(ConfirmAction.Yes):
-            await gpm.removeOwner(owner);
-            break;
+        if (!input) {
+          return;
         }
+
+        if (input !== owner.owner) {
+          vscode.window.showErrorMessage(
+            localize("err.invalidOwnerName", "输入不正确", [input, owner.owner])
+          );
+          return;
+        }
+
+        await gpm.removeOwner(owner);
       }
     )
   );
@@ -172,19 +186,28 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.RemoveSource,
       async (source: ISource) => {
-        const action = await vscode.window.showInformationMessage(
-          localize("tip.message.beforeRemoveSource", "你确定要删除吗", [
+        const input = await vscode.window.showInputBox({
+          placeHolder: localize("tip.message.irrevocable", "不能被撤销哦"),
+          prompt: localize("tip.message.beforeRemoveSource", "请输入名字", [
             source.source
-          ]),
-          localize(ConfirmAction.Yes),
-          localize(ConfirmAction.No)
-        );
+          ])
+        });
 
-        switch (action as ConfirmAction) {
-          case localize(ConfirmAction.Yes):
-            await gpm.removeSource(source);
-            break;
+        if (!input) {
+          return;
         }
+
+        if (input !== source.source) {
+          vscode.window.showErrorMessage(
+            localize("err.invalidSourceName", "输入不正确", [
+              input,
+              source.source
+            ])
+          );
+          return;
+        }
+
+        await gpm.removeSource(source);
       }
     )
   );
