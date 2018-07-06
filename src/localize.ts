@@ -8,7 +8,7 @@ interface IConfig {
 export class Localize {
   private bundle = this.resolveLanguagePack();
   constructor(private config: IConfig = {}) {}
-  localize(key: string, comment: string = "", args: any[] = []) {
+  public localize(key: string, comment: string = "", args: any[] = []) {
     // 返回翻译后的内容
     const languagePack = this.bundle;
     const message = languagePack[key];
@@ -19,8 +19,8 @@ export class Localize {
     if (args.length === 0) {
       result = message;
     } else {
-      result = message.replace(/\{(\d+)\}/g, (match, rest) => {
-        let index = rest[0];
+      result = message.replace(/\{(\d+)\}/g, (match, rest: any[]) => {
+        const index = rest[0];
         return typeof args[index] !== "undefined" ? args[index] : match;
       });
     }
@@ -65,6 +65,8 @@ export class Localize {
   }
 }
 
-const instance = new Localize(JSON.parse((process.env as any).VSCODE_NLS_CONFIG));
+const instance = new Localize(
+  JSON.parse((process.env as any).VSCODE_NLS_CONFIG)
+);
 
 export default instance.localize.bind(instance);
