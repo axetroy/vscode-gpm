@@ -1,3 +1,23 @@
+<a name="0.22.0"></a>
+# [0.22.0](https://github.com/axetroy/vscode-gpm/compare/v0.21.3...v0.22.0) (2018-07-06)
+
+
+### Features
+
+* 增加i18n的支持 close [#2](https://github.com/axetroy/vscode-gpm/issues/2) ([720055e](https://github.com/axetroy/vscode-gpm/commit/720055e))
+
+
+
+<a name="0.21.3"></a>
+## [0.21.3](https://github.com/axetroy/vscode-gpm/compare/v0.21.2...v0.21.3) (2018-07-05)
+
+
+### Bug Fixes
+
+* bug ([833966b](https://github.com/axetroy/vscode-gpm/commit/833966b))
+
+
+
 <a name="0.21.2"></a>
 ## [0.21.2](https://github.com/axetroy/vscode-gpm/compare/v0.21.1...v0.21.2) (2018-07-05)
 
