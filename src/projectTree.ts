@@ -255,6 +255,10 @@ function isVisiblePath(name: string): boolean {
   return !/^\./.test(name);
 }
 
+function flatten(array: any[]) {
+  return array.reduce((a: any[], b: any[]) => a.concat(b), []);
+}
+
 const type = {
   isSource: (o: any): o is ISource => o && o.type === FileType.Source,
   isOwner: (o: any): o is IOwner => o && o.type === FileType.Owner,
@@ -274,27 +278,13 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   constructor(public context: vscode.ExtensionContext) {}
 
   public traverse(): Promise<IRepository[]> {
-    function flatten(array: any[]) {
-      return array.reduce((a: any[], b: any[]) => {
-        return a.concat(b);
-      }, []);
-    }
-
     return this.getChildren()
       .then(sources => {
-        const promiseList: Array<Promise<IFile[]>> = [];
-        for (const source of sources) {
-          promiseList.push(this.getChildren(source));
-        }
-        return Promise.all(promiseList);
+        return Promise.all(sources.map(source => this.getChildren(source)));
       })
       .then(list => {
         const owners: IOwner[] = flatten(list);
-        const promiseList: Array<Promise<IFile[]>> = [];
-        for (const owner of owners) {
-          promiseList.push(this.getChildren(owner));
-        }
-        return Promise.all(promiseList);
+        return Promise.all(owners.map(owner => this.getChildren(owner)));
       })
       .then(list => {
         const repositories: IRepository[] = (flatten(list) as IFile[]).filter(

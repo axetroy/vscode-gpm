@@ -63,13 +63,14 @@ export class Gpm {
   public async init() {
     for (const rootPath of config.rootPath) {
       if (!(await fs.pathExists(rootPath))) {
+        const create = localize(InitAction.Create);
         const action = await vscode.window.showInformationMessage(
           localize("err.notFoundRootPath", "未发现根目录", [rootPath]),
-          localize(InitAction.Create),
+          create,
           localize(InitAction.Cancel)
         );
         switch (action as InitAction) {
-          case localize(InitAction.Create):
+          case create:
             await fs.ensureDir(rootPath);
             break;
           default:
@@ -82,17 +83,19 @@ export class Gpm {
     repositoryPath: string
   ): Promise<string | void> {
     if (await fs.pathExists(repositoryPath)) {
+      const overwrite = localize(ProjectExistAction.Overwrite);
+      const rename = localize(ProjectExistAction.Rename);
       const actionName = await vscode.window.showWarningMessage(
         localize("tip.message.projectExist", "项目已存在"),
-        localize(ProjectExistAction.Overwrite),
-        localize(ProjectExistAction.Rename),
+        overwrite,
+        rename,
         localize(ProjectExistAction.Cancel)
       );
 
       switch (actionName as ProjectExistAction) {
-        case localize(ProjectExistAction.Overwrite):
+        case overwrite:
           return repositoryPath;
-        case localize(ProjectExistAction.Rename):
+        case rename:
           const newName = await vscode.window.showInputBox({
             prompt: localize(
               "tip.placeholder.requireNewRepo",
@@ -207,17 +210,19 @@ export class Gpm {
         console.error(err);
       }
 
+      const open = localize(ProjectPostAddAction.Open);
+
       const action: string | void = await vscode.window.showInformationMessage(
         localize("tip.message.cloned", "克隆成功", [
           gitInfo.owner,
           gitInfo.name
         ]),
-        localize(ProjectPostAddAction.Open),
+        open,
         localize(ProjectPostAddAction.Cancel)
       );
 
       switch (action as ProjectPostAddAction) {
-        case localize(ProjectPostAddAction.Open):
+        case open:
           await this.open({
             source: gitInfo.source,
             owner: gitInfo.owner,
@@ -244,14 +249,15 @@ export class Gpm {
    * @memberof Gpm
    */
   public async prune() {
+    const Continue = localize(PruneAction.Continue);
     const action = await vscode.window.showWarningMessage(
       localize("tip.message.pruneWarning", "移除警告"),
-      localize(PruneAction.Continue),
+      Continue,
       localize(PruneAction.Cancel)
     );
 
     switch (action as PruneAction) {
-      case localize(PruneAction.Continue):
+      case Continue:
         break;
       default:
         return;
@@ -415,17 +421,20 @@ export class Gpm {
       repository.repository
     }`;
 
+    const currentWindow = localize(OpenAction.CurrentWindow);
+    const newWindow = localize(OpenAction.NewWindow);
+
     const action = await vscode.window.showInformationMessage(
       localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
-      localize(OpenAction.CurrentWindow),
-      localize(OpenAction.NewWindow),
+      currentWindow,
+      newWindow,
       localize(OpenAction.Cancel)
     );
 
     switch (action as OpenAction) {
-      case localize(OpenAction.CurrentWindow):
+      case currentWindow:
         return this.openInCurrentWindow(repository);
-      case localize(OpenAction.NewWindow):
+      case newWindow:
         return this.openInNewWindow(repository);
       default:
         return;
@@ -632,17 +641,20 @@ export class Gpm {
           repository.repository
         }`;
 
+        const open = localize(SearchAction.Open);
+        const remove = localize(SearchAction.Remove);
+
         const doAction = await vscode.window.showInformationMessage(
           localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
-          localize(SearchAction.Open),
-          localize(SearchAction.Remove),
+          open,
+          remove,
           localize(SearchAction.Cancel)
         );
 
         switch (doAction as SearchAction) {
-          case localize(SearchAction.Open):
+          case open:
             return this.open(repository);
-          case localize(SearchAction.Remove):
+          case remove:
             return this.remove(repository);
           default:
             return;
@@ -718,6 +730,7 @@ export class Gpm {
         })
         .on("close", (code: number, signal: string) => {
           removeProcess();
+          console.log(`运行命令完成`);
           code !== 0 ? reject(signal) : resolve();
         });
 
