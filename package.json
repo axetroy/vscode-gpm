@@ -441,6 +441,7 @@
     "@types/node": "^10.5.2",
     "@types/shelljs": "^0.8.0",
     "conventional-changelog-cli": "^2.0.1",
+    "p-map": "^1.2.0",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.14.0",
     "typescript": "^2.9.2",

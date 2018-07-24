@@ -3,8 +3,18 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import config from "./config";
 
-import { FileType, IFile, ISource, IOwner, IRepository, IStar } from "./type";
+import {
+  FileType,
+  IFile,
+  ISource,
+  IOwner,
+  IRepository,
+  IStar,
+  Command
+} from "./type";
 import localize from "./localize";
+
+const promiseMap = require('p-map');
 
 /**
  * Get icon from a given path
@@ -36,7 +46,7 @@ export function createFile(
     collapsibleState: 0,
     command: {
       title: "Open file",
-      command: "gpm.open",
+      command: Command.OpenFile,
       arguments: [filepath]
     },
     iconPath: vscode.ThemeIcon.File,
@@ -399,7 +409,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     const files: string[] = await fs.readdir(element.path);
 
-    for (const file of files) {
+    const mapper = async (file:string) => {
       const stat = await fs.stat(path.join((element as IFile).path, file));
       if (stat.isDirectory()) {
         dirList.push(file);
@@ -407,6 +417,8 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         fileList.push(file);
       }
     }
+
+    await promiseMap(files, mapper, {concurrency: 10});
 
     dirList
       .map(dir => createFolder(this.context, path.join(element.path, dir)))
