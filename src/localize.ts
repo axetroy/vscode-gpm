@@ -55,8 +55,6 @@ export class Localize {
 
     const languageFilePath = path.join(file + resolvedLanguage);
 
-    console.log(languageFilePath);
-
     if (!fs.existsSync(languageFilePath)) {
       return {};
     }

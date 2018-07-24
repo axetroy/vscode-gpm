@@ -62,7 +62,6 @@ export class Gpm {
    */
   public async init() {
     for (const rootPath of config.rootPath) {
-      console.log(rootPath);
       if (!(await fs.pathExists(rootPath))) {
         const action = await vscode.window.showInformationMessage(
           localize("err.notFoundRootPath", "未发现根目录", [rootPath]),
