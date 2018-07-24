@@ -448,8 +448,8 @@
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.0",
-    "fs-extra": "^5.0.0",
-    "git-url-parse": "^8.3.1",
+    "fs-extra": "^7.0.0",
+    "git-url-parse": "^10.0.1",
     "process-exists": "^3.1.0",
     "shelljs": "^0.8.1",
     "unique-string": "^1.0.0"
