@@ -223,17 +223,19 @@ export async function activate(
         return;
       }
 
+      const yes = localize(ConfirmAction.Yes);
+
       const action = await vscode.window.showInformationMessage(
         localize("tip.message.beforeRemove", "你确定要删除吗", [
           repository.owner,
           repository.repository
         ]),
-        localize(ConfirmAction.Yes),
+        yes,
         localize(ConfirmAction.No)
       );
 
       switch (action as ConfirmAction) {
-        case localize(ConfirmAction.Yes):
+        case yes:
           return gpm.remove(repository);
       }
     })
