@@ -1,3 +1,23 @@
+<a name="0.23.1"></a>
+## [0.23.1](https://github.com/axetroy/vscode-gpm/compare/v0.23.0...v0.23.1) (2018-07-24)
+
+
+### Bug Fixes
+
+* tree view item's id duplicate [#13](https://github.com/axetroy/vscode-gpm/issues/13) ([1838f64](https://github.com/axetroy/vscode-gpm/commit/1838f64))
+
+
+### Features
+
+* update fs-extra@7.0.7 and git-url-parse@10.0.1 ([796880b](https://github.com/axetroy/vscode-gpm/commit/796880b))
+
+
+### Performance Improvements
+
+* add p-map for better performance file exploer ([f7d58e9](https://github.com/axetroy/vscode-gpm/commit/f7d58e9))
+
+
+
 <a name="0.23.0"></a>
 # [0.23.0](https://github.com/axetroy/vscode-gpm/compare/v0.22.0...v0.23.0) (2018-07-06)
 
