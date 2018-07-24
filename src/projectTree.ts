@@ -14,7 +14,7 @@ import {
 } from "./type";
 import localize from "./localize";
 
-const promiseMap = require('p-map');
+const promiseMap = require("p-map");
 
 /**
  * Get icon from a given path
@@ -344,15 +344,15 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         isVisiblePath
       );
 
-      for (const file of files) {
+      const mapper = async (file: string) => {
         const statInfo = await fs.stat(path.join(GPM_ROOT_PATH, file));
 
-        if (statInfo.isFile()) {
-          continue;
+        if (statInfo.isDirectory()) {
+          children.push(createSource(this.context, file, GPM_ROOT_PATH));
         }
+      };
 
-        children.push(createSource(this.context, file, GPM_ROOT_PATH));
-      }
+      await promiseMap(files, mapper, { concurrency: 10 });
     }
 
     return children;
@@ -364,15 +364,16 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       isVisiblePath
     );
 
-    for (const file of files) {
+    const mapper = async (file: string) => {
       const statInfo = await fs.stat(path.join(element.path, file));
 
-      if (statInfo.isFile()) {
-        continue;
+      if (statInfo.isDirectory()) {
+        children.push(createOwner(this.context, element, file));
       }
+    };
 
-      children.push(createOwner(this.context, element, file));
-    }
+    await promiseMap(files, mapper, { concurrency: 10 });
+
     return children;
   }
   private async getRepository(element: IOwner): Promise<IRepository[]> {
@@ -382,23 +383,24 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       isVisiblePath
     );
 
-    for (const file of files) {
+    const mapper = async (file: string) => {
       const statInfo = await fs.stat(path.join(element.path, file));
 
-      if (statInfo.isFile()) {
-        continue;
+      if (statInfo.isDirectory()) {
+        const repository = createRepository(this.context, element, file);
+
+        const staredRepository = this.star.find(repository);
+
+        if (staredRepository) {
+          repository.contextValue = FileType.RepositoryStared;
+        }
+
+        children.push(repository);
       }
+    };
 
-      const repository = createRepository(this.context, element, file);
+    await promiseMap(files, mapper, { concurrency: 10 });
 
-      const staredRepository = this.star.find(repository);
-
-      if (staredRepository) {
-        repository.contextValue = FileType.RepositoryStared;
-      }
-
-      children.push(repository);
-    }
     return children;
   }
 
@@ -409,16 +411,16 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     const files: string[] = await fs.readdir(element.path);
 
-    const mapper = async (file:string) => {
+    const mapper = async (file: string) => {
       const stat = await fs.stat(path.join((element as IFile).path, file));
       if (stat.isDirectory()) {
         dirList.push(file);
       } else {
         fileList.push(file);
       }
-    }
+    };
 
-    await promiseMap(files, mapper, {concurrency: 10});
+    await promiseMap(files, mapper, { concurrency: 10 });
 
     dirList
       .map(dir => createFolder(this.context, path.join(element.path, dir)))
