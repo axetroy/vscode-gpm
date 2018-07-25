@@ -723,16 +723,18 @@ export class Gpm {
         }
       };
 
+      function handler(code: number, signal: string): void {
+        removeProcess();
+        code !== 0 ? reject(signal) : resolve();
+      }
+
       process
         .on("error", err => {
           removeProcess();
           reject(err);
         })
-        .on("close", (code: number, signal: string) => {
-          removeProcess();
-          console.log(`运行命令完成`);
-          code !== 0 ? reject(signal) : resolve();
-        });
+        .on("exit", handler)
+        .on("close", handler);
 
       process.stdout.pipe(bar);
       process.stderr.pipe(bar);

@@ -26,9 +26,9 @@ export class Statusbar extends Writable {
   ) {
     super();
     this.statusbar = window.createStatusBarItem(alignment, priority);
-    this.on("finish", () => this.hide());
-    this.on("error", () => this.hide());
-    this.on("close", () => this.hide());
+    this.on("finish", this.hide.bind(this));
+    this.on("error", this.hide.bind(this));
+    this.on("close", this.hide.bind(this));
   }
   private show(message: string) {
     this.statusbar.text = message;
