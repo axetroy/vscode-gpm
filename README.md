@@ -1,6 +1,10 @@
 # vscode-gpm
 
-vscode-gpm is a extension to manage project.
+a cross-platform VSCode extension for managing your Git projects.
+
+Support almost git address. including Github/Gitlab/Bitbucket/Coding...
+
+**TIP: Not support private repository with https protocol, please use ssh protocol instead of https**
 
 ## Features
 
@@ -14,17 +18,7 @@ vscode-gpm is a extension to manage project.
 
 ## [CHANGELOG](https://github.com/axetroy/vscode-gpm/blob/master/CHANGELOG.md)
 
-## Support
-
-* [x] Windows
-* [x] Mac OS
-* [x] Linux
-
-Support almost git address. including Github/Gitlab/Bitbucket/Coding...
-
-**TIP: Not support private repository with https protocol, please use ssh protocol instead of https**
-
-## Screen shot
+## Screenshot
 
 ### Add project
 
@@ -38,17 +32,13 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 
 ![open project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/open.gif)
 
-### Star project
-
-![star project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/star.gif)
-
 ### Search project
 
 ![search project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/search.gif)
 
-### List project to open
+### Star project
 
-![list project to open](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/list2open.gif)
+![star project](https://github.com/axetroy/vscode-gpm/raw/master/resources/screenshot/star.gif)
 
 ## Configuration
 
@@ -62,7 +52,7 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 
 ## Custom Hooks
 
-Make sure the file `.gpmrc` have exist in the target project.
+Make sure the file `.gpmrc` have existed in the target project.
 
 ```json
 {
@@ -92,7 +82,7 @@ A: No, vscode-gpm is an independent package.
 
 Q: How to interrupt `git clone` command if you got bad network?
 
-A: Clone progress will print in status bar. click status bar and show an dialog to confirm interrupt it.
+A: Clone progress will print in the status bar. click status bar and show a dialog to confirm interrupt it.
 
 Q: Where are the project be cloned?
 
