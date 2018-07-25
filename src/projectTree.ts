@@ -114,6 +114,9 @@ export function createSource(
     case "coding.net":
       icon = "coding.svg";
       break;
+    case "gitee.com":
+      icon = "gitee.svg";
+      break;
     case "bitbucket.org":
       icon = "bitbucket.svg";
       break;
