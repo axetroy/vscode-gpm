@@ -703,7 +703,8 @@ export class Gpm {
    * @memberof Gpm
    */
   public clearStars(): void {
-    return this.explorer.star.clear();
+    this.explorer.star.clear();
+    this.refresh();
   }
   private async runShell(cwd: string, command: string) {
     return new Promise((resolve, reject) => {
