@@ -100,7 +100,8 @@ export class Gpm {
             prompt: localize(
               "tip.placeholder.requireNewRepo",
               "请输入新的项目名字"
-            )
+            ),
+            ignoreFocusOut: true
           });
 
           if (!newName) {
@@ -138,7 +139,8 @@ export class Gpm {
 
     const gitProjectAddress = await vscode.window.showInputBox({
       placeHolder: localize("tip.placeholder.addressExample", "例如 xxx"),
-      prompt: localize("tip.placeholder.enterAddress", "请输入git地址")
+      prompt: localize("tip.placeholder.enterAddress", "请输入git地址"),
+      ignoreFocusOut: true
     });
 
     if (!gitProjectAddress) {
@@ -160,7 +162,8 @@ export class Gpm {
 
     // select a root path
     const baseDir = await vscode.window.showQuickPick(config.rootPath, {
-      placeHolder: localize("tip.placeholder.selectRootPath", "选择一个根目录")
+      placeHolder: localize("tip.placeholder.selectRootPath", "选择一个根目录"),
+      ignoreFocusOut: true
     });
 
     if (!baseDir) {
@@ -492,7 +495,8 @@ export class Gpm {
       placeHolder: localize(
         "tip.placeholder.selectProcessAndKill",
         "选择一个进程然后kill掉"
-      )
+      ),
+      ignoreFocusOut: true
     });
 
     if (!selectItem) {
@@ -536,7 +540,11 @@ export class Gpm {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
-        placeHolder: localize("tip.placeholder.selectProject", "请选择一个项目")
+        placeHolder: localize(
+          "tip.placeholder.selectProject",
+          "请选择一个项目"
+        ),
+        ignoreFocusOut: true
       },
       ...(options || {})
     });
