@@ -1,3 +1,28 @@
+<a name="0.23.3"></a>
+## [0.23.3](https://github.com/axetroy/vscode-gpm/compare/v0.23.2...v0.23.3) (2018-07-25)
+
+
+### Bug Fixes
+
+* can not close stream ([eec0051](https://github.com/axetroy/vscode-gpm/commit/eec0051))
+
+
+### Features
+
+* now will not close input box when focus out ([70f4def](https://github.com/axetroy/vscode-gpm/commit/70f4def))
+
+
+
+<a name="0.23.2"></a>
+## [0.23.2](https://github.com/axetroy/vscode-gpm/compare/v0.23.1...v0.23.2) (2018-07-24)
+
+
+### Bug Fixes
+
+* deps ([e4b1b66](https://github.com/axetroy/vscode-gpm/commit/e4b1b66))
+
+
+
 <a name="0.23.1"></a>
 ## [0.23.1](https://github.com/axetroy/vscode-gpm/compare/v0.23.0...v0.23.1) (2018-07-24)
 
