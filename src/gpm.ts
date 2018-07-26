@@ -160,17 +160,28 @@ export class Gpm {
 
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
+    const PREFIX = "$(location)";
+
     // select a root path
-    const baseDir = await vscode.window.showQuickPick(config.rootPath, {
-      placeHolder: localize("tip.placeholder.selectRootPath", "选择一个根目录"),
-      ignoreFocusOut: true
-    });
+    const baseDir = await vscode.window.showQuickPick(
+      config.rootPath.map(rootpath => `${PREFIX}  ${rootpath}`),
+      {
+        placeHolder: localize(
+          "tip.placeholder.selectRootPath",
+          "选择一个根目录"
+        ),
+        ignoreFocusOut: true
+      }
+    );
 
     if (!baseDir) {
       return;
     }
 
-    const sourceDir: string = path.join(baseDir, gitInfo.source);
+    const sourceDir: string = path.join(
+      baseDir.replace(PREFIX, "").trim(),
+      gitInfo.source
+    );
     const ownerDir: string = path.join(sourceDir, gitInfo.owner);
 
     const repositoryPath: string | void = await this.getValidProjectName(
@@ -484,12 +495,14 @@ export class Gpm {
   public async interruptCommand() {
     const itemList = this.processes.map(v => {
       return {
-        label: v.cmd,
-        description: v.id
+        label: "$(dashboard) " + v.cmd,
+        description: v.id,
+        pid: v.id,
+        ppid: process.pid
       };
     });
 
-    const selectItem = await vscode.window.showQuickPick(itemList, {
+    const processSelected = await vscode.window.showQuickPick(itemList, {
       matchOnDescription: false,
       matchOnDetail: false,
       placeHolder: localize(
@@ -499,17 +512,20 @@ export class Gpm {
       ignoreFocusOut: true
     });
 
-    if (!selectItem) {
+    if (!processSelected) {
       return;
     }
 
-    const process = this.processes.find(v => v.id === selectItem.description);
+    const currentProcessIndex = this.processes.findIndex(
+      v => v.id === processSelected.pid
+    );
 
-    if (process && !process.process.killed) {
-      const processIndex = this.processes.findIndex(v => v === process);
-      process.process.kill();
-      if (processIndex > -1) {
-        this.processes.splice(processIndex, 1);
+    if (currentProcessIndex >= 0) {
+      const currentProcess = this.processes[currentProcessIndex];
+
+      if (currentProcess && !currentProcess.process.killed) {
+        currentProcess.process.kill("SIGKILL");
+        this.processes.splice(currentProcessIndex, 1);
       }
     }
   }
@@ -530,13 +546,14 @@ export class Gpm {
 
     const itemList = repositories.map(r => {
       return {
-        label: `@${r.owner}/${r.repository}`,
-        description: r.source
+        label: `$(repo)  ${r.owner}/${r.repository}`,
+        description: r.source,
+        path: r.path
         // detail: r.path
       };
     });
 
-    const selectItem = await vscode.window.showQuickPick(itemList, {
+    const itemSelected = await vscode.window.showQuickPick(itemList, {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
@@ -549,21 +566,11 @@ export class Gpm {
       ...(options || {})
     });
 
-    if (!selectItem) {
+    if (!itemSelected) {
       return;
     }
 
-    const repository = repositories.find(
-      r =>
-        `${r.source}@${r.owner}/${r.repository}` ===
-        selectItem.description + selectItem.label
-    );
-
-    if (!repository) {
-      return;
-    }
-
-    return repository;
+    return repositories.find(v => v.path === itemSelected.path);
   }
   /**
    * Open file/folder in terminal
@@ -734,7 +741,7 @@ export class Gpm {
 
       function handler(code: number, signal: string): void {
         removeProcess();
-        code !== 0 ? reject(signal) : resolve();
+        code !== 0 ? reject(new Error(signal || `Exit with code ${code}`)) : resolve();
       }
 
       process
