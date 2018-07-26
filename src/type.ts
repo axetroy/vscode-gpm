@@ -117,6 +117,7 @@ export enum Command {
   InterruptCommand = "gpm.interruptCommand",
   Search = "gpm.search",
   OpenInTerminal = "gpm.openInTerminal",
+  CopyPath = "gpm.copyPath",
   // create
   CreateRepository = "gpm.createRepository",
   CreateOwner = "gpm.createOwner",

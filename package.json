@@ -205,6 +205,11 @@
         "command": "gpm.createOwner",
         "title": "%cmd.createOwner.title%",
         "category": "GPM"
+      },
+      {
+        "command": "gpm.copyPath",
+        "title": "%cmd.copyPath.title%",
+        "category": "GPM"
       }
     ],
     "menus": {
@@ -340,6 +345,11 @@
           "command": "gpm.createOwner",
           "group": "context",
           "when": "view == GPMExplorer && viewItem == source"
+        },
+        {
+          "command": "gpm.copyPath",
+          "group": "context",
+          "when": "view == GPMExplorer"
         }
       ],
       "commandPalette": [
@@ -381,6 +391,10 @@
         },
         {
           "command": "gpm.createOwner",
+          "when": "never"
+        },
+        {
+          "command": "gpm.copyPath",
           "when": "never"
         }
       ]
@@ -448,6 +462,7 @@
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.0",
+    "clipboardy": "^1.2.3",
     "fs-extra": "^7.0.0",
     "git-url-parse": "^10.0.1",
     "p-map": "^1.2.0",

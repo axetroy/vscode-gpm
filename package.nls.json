@@ -29,6 +29,7 @@
   "cmd.list2openInTerminal.title": "List project to open in terminal",
   "cmd.createRepository.title": "Create repository",
   "cmd.createOwner.title": "Create owner",
+  "cmd.copyPath.title": "Copy path",
   "tip.placeholder.list2open": "Select a project to open in current window.",
   "tip.placeholder.list2openInNew": "Select a project to open in new window.",
   "tip.placeholder.list2remove": "Select a project and remove.",

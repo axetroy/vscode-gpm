@@ -49,6 +49,21 @@ export async function activate(
     )
   );
 
+  // copy path
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.CopyPath,
+      async (file: IFile): Promise<void> => {
+        const clipboardy = require('clipboardy');
+        try {
+          await clipboardy.write(file.path);
+        } catch (err) {
+          vscode.window.showErrorMessage(err.message);
+        }
+      }
+    )
+  );
+
   // open project in current window
   context.subscriptions.push(
     vscode.commands.registerCommand(
