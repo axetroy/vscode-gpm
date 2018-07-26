@@ -38,13 +38,10 @@ export async function activate(
       Command.OpenFile,
       async (filepath: string): Promise<void> => {
         try {
-          const statInfo = await fs.stat(filepath);
-          if (statInfo.isFile()) {
-            const openPath = vscode.Uri.file(filepath);
-            vscode.workspace
-              .openTextDocument(openPath)
-              .then(doc => vscode.window.showTextDocument(doc));
-          }
+          await vscode.commands.executeCommand(
+            "vscode.open",
+            vscode.Uri.file(filepath)
+          );
         } catch (err) {
           vscode.window.showErrorMessage(err.message);
         }
