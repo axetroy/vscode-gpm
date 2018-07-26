@@ -429,8 +429,8 @@ export class Gpm {
 
     const action = await vscode.window.showInformationMessage(
       localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
-      currentWindow,
       newWindow,
+      currentWindow,
       localize(OpenAction.Cancel)
     );
 
