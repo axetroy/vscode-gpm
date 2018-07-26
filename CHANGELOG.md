@@ -1,3 +1,38 @@
+<a name="0.24.0"></a>
+# [0.24.0](https://github.com/axetroy/vscode-gpm/compare/v0.23.5...v0.24.0) (2018-07-26)
+
+
+### Bug Fixes
+
+* do not alert error when process be terminated. always remove temp file ([1f7cf01](https://github.com/axetroy/vscode-gpm/commit/1f7cf01))
+* open file behavior not same with native ([817489d](https://github.com/axetroy/vscode-gpm/commit/817489d))
+
+
+### Features
+
+* add copy file path menu ([d2da24b](https://github.com/axetroy/vscode-gpm/commit/d2da24b))
+* add gitee icon ([8f952a8](https://github.com/axetroy/vscode-gpm/commit/8f952a8))
+* add icon for item pick ([880658c](https://github.com/axetroy/vscode-gpm/commit/880658c))
+* add icon for pick item ([15225a8](https://github.com/axetroy/vscode-gpm/commit/15225a8))
+* update english translation ([160737f](https://github.com/axetroy/vscode-gpm/commit/160737f))
+
+
+
+<a name="0.23.5"></a>
+## [0.23.5](https://github.com/axetroy/vscode-gpm/compare/v0.23.4...v0.23.5) (2018-07-25)
+
+
+### Bug Fixes
+
+* clear all stared project will not refresh ([b3595c6](https://github.com/axetroy/vscode-gpm/commit/b3595c6))
+
+
+
+<a name="0.23.4"></a>
+## [0.23.4](https://github.com/axetroy/vscode-gpm/compare/v0.23.3...v0.23.4) (2018-07-25)
+
+
+
 <a name="0.23.3"></a>
 ## [0.23.3](https://github.com/axetroy/vscode-gpm/compare/v0.23.2...v0.23.3) (2018-07-25)
 
