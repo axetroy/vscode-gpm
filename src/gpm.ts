@@ -210,7 +210,6 @@ export class Gpm {
       }
       await fs.remove(repositoryPath);
       await fs.move(tempDir, repositoryPath);
-      await fs.remove(randomTemp);
 
       // refresh explorer
       this.refresh();
@@ -252,9 +251,14 @@ export class Gpm {
       // refresh explorer
       this.refresh();
     } catch (err) {
+      await fs.remove(randomTemp);
       // refresh explorer
       this.refresh();
-      throw err;
+      if (err.message === "SIGKILL") {
+        // do nothing
+      } else {
+        vscode.window.showErrorMessage(err.message);
+      }
     }
   }
   /**
@@ -741,7 +745,9 @@ export class Gpm {
 
       function handler(code: number, signal: string): void {
         removeProcess();
-        code !== 0 ? reject(new Error(signal || `Exit with code ${code}`)) : resolve();
+        code !== 0
+          ? reject(new Error(signal || `Exit with code ${code}`))
+          : resolve();
       }
 
       process
