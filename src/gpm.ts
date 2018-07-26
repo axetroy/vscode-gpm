@@ -451,7 +451,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  private openFile(filepath: string, ...res: any[]) {
+  private openFolder(filepath: string, ...res: any[]) {
     return vscode.commands.executeCommand(
       "vscode.openFolder",
       vscode.Uri.file(filepath),
@@ -465,7 +465,7 @@ export class Gpm {
    * @memberof Gpm
    */
   public async openInCurrentWindow(file: IFile) {
-    return this.openFile(file.path);
+    return this.openFolder(file.path);
   }
   /**
    * Open file in new window
@@ -474,7 +474,7 @@ export class Gpm {
    * @memberof Gpm
    */
   public async openInNewWindow(file: IFile) {
-    return this.openFile(file.path, true);
+    return this.openFolder(file.path, true);
   }
   /**
    * interrupt current running command
