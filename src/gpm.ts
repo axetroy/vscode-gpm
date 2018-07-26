@@ -161,10 +161,16 @@ export class Gpm {
     const tempDir: string = path.join(randomTemp, gitInfo.name);
 
     // select a root path
-    const baseDir = await vscode.window.showQuickPick(config.rootPath, {
-      placeHolder: localize("tip.placeholder.selectRootPath", "选择一个根目录"),
-      ignoreFocusOut: true
-    });
+    const baseDir = await vscode.window.showQuickPick(
+      config.rootPath.map(v => "$(location)" + v),
+      {
+        placeHolder: localize(
+          "tip.placeholder.selectRootPath",
+          "选择一个根目录"
+        ),
+        ignoreFocusOut: true
+      }
+    );
 
     if (!baseDir) {
       return;
@@ -484,7 +490,7 @@ export class Gpm {
   public async interruptCommand() {
     const itemList = this.processes.map(v => {
       return {
-        label: v.cmd,
+        label: "$(dashboard) " + v.cmd,
         description: v.id
       };
     });
@@ -530,7 +536,7 @@ export class Gpm {
 
     const itemList = repositories.map(r => {
       return {
-        label: `@${r.owner}/${r.repository}`,
+        label: "$(repo)  " + `${r.owner}/${r.repository}`,
         description: r.source
         // detail: r.path
       };
