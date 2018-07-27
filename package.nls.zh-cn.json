@@ -56,6 +56,7 @@
   "tip.message.doWhat": "你想对 {0} 做哪些操作?",
   "tip.message.irrevocable": "请谨慎操作，该操作不能撤销",
   "err.notFoundRootPath": "项目根目录 {0} 不存在，请确保你的配置文件正确",
+  "err.requireRootPath": "请至少设置一个 root path 来指定项目的存储位置",
   "err.gitNotInstall": "请确保你已经安装了 Git",
   "err.invalidGitAddress": "无效的 Git 地址",
   "err.invalidProject": "无效的项目 {0}",

@@ -56,7 +56,8 @@
   "tip.message.how2open": "How to open {0}?",
   "tip.message.doWhat": "What do you want to do about {0}?",
   "tip.message.irrevocable": "Please be cautious, this operation cannot be undone",
-  "err.notFoundRootPath": "The GPM root path {0} is not exist, please make sure your configuration right",
+  "err.notFoundRootPath": "The GPM root path {0} is not exist, please make sure your configuration is right",
+  "err.requireRootPath": "Please set at least one rootPath to specify the storage location of the project.",
   "err.gitNotInstall": "Make sure Git have been installed.",
   "err.invalidGitAddress": "Invalid git address",
   "err.invalidProject": "Invalid project {0}",
@@ -69,8 +70,8 @@
   "action.rename": "Rename",
   "action.open": "Open",
   "action.continue": "Continue",
-  "action.currentWindow": "Current window",
-  "action.newWindow": "New window",
+  "action.currentWindow": "Current Window",
+  "action.newWindow": "New Window",
   "action.yes": "Yes",
   "action.no": "No"
 }

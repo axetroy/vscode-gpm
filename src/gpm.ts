@@ -162,17 +162,26 @@ export class Gpm {
 
     const PREFIX = "$(location)";
 
+    const rootPaths = config.rootPath.map(rootpath => `${PREFIX}  ${rootpath}`);
+
+    if (!rootPaths.length) {
+      vscode.window.showErrorMessage(
+        localize("err.requireRootPath", "请至少设置一个 rootPath")
+      );
+      return;
+    }
+
     // select a root path
-    const baseDir = await vscode.window.showQuickPick(
-      config.rootPath.map(rootpath => `${PREFIX}  ${rootpath}`),
-      {
-        placeHolder: localize(
-          "tip.placeholder.selectRootPath",
-          "选择一个根目录"
-        ),
-        ignoreFocusOut: true
-      }
-    );
+    const baseDir =
+      rootPaths.length > 1
+        ? await vscode.window.showQuickPick(rootPaths, {
+            placeHolder: localize(
+              "tip.placeholder.selectRootPath",
+              "选择一个根目录"
+            ),
+            ignoreFocusOut: true
+          })
+        : rootPaths.shift();
 
     if (!baseDir) {
       return;
