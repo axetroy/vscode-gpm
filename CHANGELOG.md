@@ -1,3 +1,13 @@
+<a name="0.26.0"></a>
+# [0.26.0](https://github.com/axetroy/vscode-gpm/compare/v0.25.0...v0.26.0) (2018-07-27)
+
+
+### Features
+
+* When there is only one rootPath, no pop-up window selection ([6d4f8e3](https://github.com/axetroy/vscode-gpm/commit/6d4f8e3))
+
+
+
 <a name="0.25.0"></a>
 # [0.25.0](https://github.com/axetroy/vscode-gpm/compare/v0.24.0...v0.25.0) (2018-07-27)
 
