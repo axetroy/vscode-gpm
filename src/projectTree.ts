@@ -268,8 +268,8 @@ function isVisiblePath(name: string): boolean {
   return !/^\./.test(name);
 }
 
-function flatten(array: any[]) {
-  return array.reduce((a: any[], b: any[]) => a.concat(b), []);
+function flatten<T>(array: T[][]): T[] {
+  return array.reduce((a: T[], b: T[]) => a.concat(b), []);
 }
 
 const type = {
@@ -291,18 +291,22 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   constructor(public context: vscode.ExtensionContext) {}
 
   public traverse(): Promise<IRepository[]> {
-    return this.getChildren()
+    return (this.getChildren() as Promise<ISource[]>)
       .then(sources => {
-        return Promise.all(sources.map(source => this.getChildren(source)));
+        return Promise.all(
+          sources.map(source => this.getChildren(source) as Promise<IOwner[]>)
+        );
       })
       .then(list => {
         const owners: IOwner[] = flatten(list);
-        return Promise.all(owners.map(owner => this.getChildren(owner)));
+        return Promise.all(
+          owners.map(owner => this.getChildren(owner) as Promise<IRepository[]>)
+        );
       })
       .then(list => {
-        const repositories: IRepository[] = (flatten(list) as IFile[]).filter(
-          type.isRepository
-        );
+        const repositories: IRepository[] = (flatten(list) as IFile[])
+          .filter(type.isRepository)
+          .sort((a, b) => (a.owner as any) - (b.owner as any));
         return Promise.resolve(repositories);
       });
   }
