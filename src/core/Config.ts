@@ -1,9 +1,11 @@
-import * as vscode from "vscode";
-import * as path from "path";
 import * as os from "os";
-import { SearchBehavior } from "./type";
+import * as path from "path";
+import { Service } from "typedi";
+import * as vscode from "vscode";
+import { SearchBehavior } from "../type";
 
-class Config {
+@Service()
+export class Config {
   private extensionField = "gpm";
   public fields = {
     ROOT_PATH: "rootPath",
@@ -72,5 +74,3 @@ class Config {
     };
   }
 }
-
-export default new Config();

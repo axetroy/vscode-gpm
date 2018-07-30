@@ -1,36 +1,31 @@
 "use strict";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
-import * as path from "path";
 import * as fs from "fs-extra";
-import { Gpm } from "./gpm";
-import { createRepository, createOwner, createSource } from "./projectTree";
-import config from "./config";
+import * as path from "path";
+import "reflect-metadata";
+import * as vscode from "vscode";
+import { Container } from "typedi";
+import { Gpm } from "./core/gpm";
 import {
+  Command,
   ConfirmAction,
   IFile,
-  ISource,
   IOwner,
   IRepository,
-  Command
+  ISource
 } from "./type";
-
-import localize from "./localize";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(
   context: vscode.ExtensionContext
 ): Promise<void> {
-  if (typeof config.rootPath === "string") {
-    // if rootPath still set in string
-    // change it to array
-    const rootPath = config.select("rootPath");
-    await rootPath.update([rootPath.get()], vscode.ConfigurationTarget.Global);
-  }
+  Container.set("context", context);
 
-  const gpm = new Gpm(context);
+  const gpm = Container.get(Gpm);
+  const i18n = gpm.i18n;
+  const resource = gpm.resource;
 
   // open file
   context.subscriptions.push(
@@ -54,7 +49,7 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.CopyPath,
       async (file: IFile): Promise<void> => {
-        const clipboardy = require('clipboardy');
+        const clipboardy = require("clipboardy");
         try {
           await clipboardy.write(file.path);
         } catch (err) {
@@ -78,7 +73,10 @@ export async function activate(
       Command.ListProject2OpenInCurrentWindow,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: localize("tip.placeholder.list2open", "新窗口打开项目")
+          placeHolder: i18n.localize(
+            "tip.placeholder.list2open",
+            "新窗口打开项目"
+          )
         });
 
         if (repository) {
@@ -101,7 +99,10 @@ export async function activate(
       Command.ListProject2OpenInNewWindow,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: localize("tip.placeholder.list2openInNew", "新窗口打开")
+          placeHolder: i18n.localize(
+            "tip.placeholder.list2openInNew",
+            "新窗口打开"
+          )
         });
 
         if (repository) {
@@ -140,8 +141,8 @@ export async function activate(
       Command.RemoveProject,
       async (repository: IRepository) => {
         const input = await vscode.window.showInputBox({
-          placeHolder: localize("tip.message.irrevocable", "不能被撤销哦"),
-          prompt: localize("tip.message.beforeRemove", "请输入名字", [
+          placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
+          prompt: i18n.localize("tip.message.beforeRemove", "请输入名字", [
             repository.repository
           ])
         });
@@ -152,7 +153,7 @@ export async function activate(
 
         if (input !== repository.repository) {
           vscode.window.showErrorMessage(
-            localize("err.invalidRepoName", "输入不正确", [
+            i18n.localize("err.invalidRepoName", "输入不正确", [
               input,
               repository.repository
             ])
@@ -171,8 +172,8 @@ export async function activate(
       Command.RemoveOwner,
       async (owner: IOwner) => {
         const input = await vscode.window.showInputBox({
-          placeHolder: localize("tip.message.irrevocable", "不能被撤销哦"),
-          prompt: localize("tip.message.beforeRemoveOwner", "请输入名字", [
+          placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
+          prompt: i18n.localize("tip.message.beforeRemoveOwner", "请输入名字", [
             owner.owner
           ])
         });
@@ -183,7 +184,10 @@ export async function activate(
 
         if (input !== owner.owner) {
           vscode.window.showErrorMessage(
-            localize("err.invalidOwnerName", "输入不正确", [input, owner.owner])
+            i18n.localize("err.invalidOwnerName", "输入不正确", [
+              input,
+              owner.owner
+            ])
           );
           return;
         }
@@ -199,10 +203,12 @@ export async function activate(
       Command.RemoveSource,
       async (source: ISource) => {
         const input = await vscode.window.showInputBox({
-          placeHolder: localize("tip.message.irrevocable", "不能被撤销哦"),
-          prompt: localize("tip.message.beforeRemoveSource", "请输入名字", [
-            source.source
-          ])
+          placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
+          prompt: i18n.localize(
+            "tip.message.beforeRemoveSource",
+            "请输入名字",
+            [source.source]
+          )
         });
 
         if (!input) {
@@ -211,7 +217,7 @@ export async function activate(
 
         if (input !== source.source) {
           vscode.window.showErrorMessage(
-            localize("err.invalidSourceName", "输入不正确", [
+            i18n.localize("err.invalidSourceName", "输入不正确", [
               input,
               source.source
             ])
@@ -228,22 +234,22 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2Remove, async () => {
       const repository = await gpm.selectRepository(void 0, {
-        placeHolder: localize("tip.placeholder.list2remove", "请选择项目")
+        placeHolder: i18n.localize("tip.placeholder.list2remove", "请选择项目")
       });
 
       if (!repository) {
         return;
       }
 
-      const yes = localize(ConfirmAction.Yes);
+      const yes = i18n.localize(ConfirmAction.Yes);
 
       const action = await vscode.window.showInformationMessage(
-        localize("tip.message.beforeRemove", "你确定要删除吗", [
+        i18n.localize("tip.message.beforeRemove", "你确定要删除吗", [
           repository.owner,
           repository.repository
         ]),
         yes,
-        localize(ConfirmAction.No)
+        i18n.localize(ConfirmAction.No)
       );
 
       switch (action as ConfirmAction) {
@@ -271,15 +277,14 @@ export async function activate(
         const gpmRoot = path.join(rootPath, "..", "..", "..");
 
         // 如果存在的话
-        if (config.rootPath.indexOf(gpmRoot) >= 0) {
+        if (gpm.config.rootPath.indexOf(gpmRoot) >= 0) {
           const repositoryName = path.basename(rootPath);
           const ownerName = path.basename(path.join(rootPath, ".."));
           const sourceName = path.basename(path.join(rootPath, "..", ".."));
 
-          const source = createSource(context, sourceName, gpmRoot);
-          const owner = createOwner(context, source, ownerName);
-          const repositoryEntity = createRepository(
-            context,
+          const source = resource.createSource(sourceName, gpmRoot);
+          const owner = resource.createOwner(source, ownerName);
+          const repositoryEntity = resource.createRepository(
             owner,
             repositoryName
           );
@@ -287,7 +292,7 @@ export async function activate(
           await gpm.star(repositoryEntity);
         } else {
           vscode.window.showWarningMessage(
-            localize("err.invalidProject", "无效的项目", [rootPath])
+            i18n.localize("err.invalidProject", "无效的项目", [rootPath])
           );
         }
       }
@@ -298,7 +303,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2Star, async () => {
       const repository = await gpm.selectRepository(void 0, {
-        placeHolder: localize("tip.placeholder.list2star", "请选择项目")
+        placeHolder: i18n.localize("tip.placeholder.list2star", "请选择项目")
       });
 
       if (repository) {
@@ -316,7 +321,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2UnStar, async () => {
       const repository = await gpm.selectRepository(gpm.starList(), {
-        placeHolder: localize("tip.placeholder.list2star", "请选择项目")
+        placeHolder: i18n.localize("tip.placeholder.list2star", "请选择项目")
       });
 
       if (repository) {
@@ -360,7 +365,7 @@ export async function activate(
       Command.ListProject2OpenInTerminal,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
-          placeHolder: localize(
+          placeHolder: i18n.localize(
             "tip.placeholder.list2OpenInTerminal",
             "请选择项目然后在终端打开"
           )
@@ -381,7 +386,7 @@ export async function activate(
       Command.CreateRepository,
       async (owner: IOwner) => {
         const repositoryName = await vscode.window.showInputBox({
-          placeHolder: localize(
+          placeHolder: i18n.localize(
             "tip.placeholder.requireProject",
             "请输入项目名称"
           )
@@ -412,7 +417,7 @@ export async function activate(
       Command.CreateOwner,
       async (source: ISource) => {
         const ownerName = await vscode.window.showInputBox({
-          placeHolder: localize(
+          placeHolder: i18n.localize(
             "tip.placeholder.requireOwner",
             "请输入所有者名称"
           )
@@ -458,7 +463,7 @@ export async function deactivate(
 ): Promise<void> {
   // when disable extension
   // clear cache
-  const gpm = new Gpm(context);
+  const gpm = Container.get(Gpm);
   try {
     await fs.remove(gpm.CachePath);
   } catch (err) {

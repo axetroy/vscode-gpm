@@ -1,13 +1,17 @@
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
+import { Service } from "typedi";
 
 interface IConfig {
   locale?: string;
 }
 
+@Service()
 export class Localize {
   private bundle = this.resolveLanguagePack();
-  constructor(private config: IConfig = {}) {}
+  constructor(
+    private config: IConfig = JSON.parse((process.env as any).VSCODE_NLS_CONFIG)
+  ) {}
   public localize(key: string, comment: string = "", args: any[] = []) {
     // 返回翻译后的内容
     const languagePack = this.bundle;
@@ -62,9 +66,3 @@ export class Localize {
     return require(languageFilePath);
   }
 }
-
-const instance = new Localize(
-  JSON.parse((process.env as any).VSCODE_NLS_CONFIG)
-);
-
-export default instance.localize.bind(instance);

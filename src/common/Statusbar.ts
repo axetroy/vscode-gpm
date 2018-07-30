@@ -1,21 +1,6 @@
-import * as fs from "fs-extra";
 import { Writable } from "stream";
 import { window, StatusBarAlignment, StatusBarItem } from "vscode";
-import { Command } from "./type";
-
-/**
- * 判断是否是link
- * @param path
- * @returns {Promise<boolean>}
- */
-export async function isLink(path: string): Promise<boolean> {
-  try {
-    await fs.readlink(path);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
+import { Command } from "../type";
 
 export class Statusbar extends Writable {
   private statusbar: StatusBarItem;

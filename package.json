@@ -467,7 +467,9 @@
     "git-url-parse": "^10.0.1",
     "p-map": "^1.2.0",
     "process-exists": "^3.1.0",
+    "reflect-metadata": "^0.1.12",
     "shelljs": "^0.8.1",
+    "typedi": "^0.8.0",
     "unique-string": "^1.0.0"
   }
 }

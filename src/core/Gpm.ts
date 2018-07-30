@@ -1,38 +1,36 @@
-import * as vscode from "vscode";
-import * as path from "path";
+import { ChildProcess } from "child_process";
 import * as fs from "fs-extra";
 import * as os from "os";
-import { ChildProcess } from "child_process";
+import * as path from "path";
 import * as shell from "shelljs";
+import { Inject, Service, Container } from "typedi";
+import * as vscode from "vscode";
+import { Localize } from "../common/localize";
+import { Resource } from "./Resource";
+import { Statusbar } from "../common/statusbar";
+import {
+  Command,
+  FileType,
+  Hook,
+  IFile,
+  IOwner,
+  IPreset,
+  IRepository,
+  ISource,
+  OpenAction,
+  ProjectExistAction,
+  ProjectPostAddAction,
+  PruneAction,
+  SearchAction,
+  SearchBehavior
+} from "../type";
+import { isLink } from "../util/isLink";
+import { Config } from "./Config";
+import { ProjectTreeProvider } from "./TreeView";
 const gitUrlParse = require("git-url-parse");
 const uniqueString = require("unique-string");
 const Walker = require("@axetroy/walk");
 const processExists = require("process-exists");
-import { isLink, Statusbar } from "./utils";
-import config from "./config";
-import {
-  ProjectTreeProvider,
-  createRepository,
-  createOwner
-} from "./projectTree";
-import {
-  FileType,
-  IFile,
-  ISource,
-  IOwner,
-  IRepository,
-  IPreset,
-  Hook,
-  InitAction,
-  OpenAction,
-  SearchAction,
-  PruneAction,
-  ProjectExistAction,
-  ProjectPostAddAction,
-  Command,
-  SearchBehavior
-} from "./type";
-import localize from "./localize";
 
 interface IProcess {
   id: string;
@@ -41,55 +39,31 @@ interface IProcess {
   process: ChildProcess;
 }
 
+@Service()
 export class Gpm {
   public readonly PresetFile: string = ".gpmrc";
   // current opening terminals
   private readonly terminals: { [path: string]: vscode.Terminal } = {};
   // current running command stream
   private processes: IProcess[] = [];
-  // cache path
+  private readonly context: vscode.ExtensionContext = Container.get("context");
+  @Inject() public config!: Config;
+  @Inject() public explorer!: ProjectTreeProvider;
+  @Inject() public i18n!: Localize;
+  @Inject() public resource!: Resource;
   public readonly CachePath: string =
     this.context.storagePath || path.join(os.tmpdir(), ".gpm", "temp");
-
-  // project explorer
-  public readonly explorer: ProjectTreeProvider = new ProjectTreeProvider(
-    this.context
-  );
-  constructor(private readonly context: vscode.ExtensionContext) {}
-  /**
-   * Init gpm, check the gpm root path exist or not
-   * @memberof Gpm
-   */
-  public async init() {
-    for (const rootPath of config.rootPath) {
-      if (!(await fs.pathExists(rootPath))) {
-        const create = localize(InitAction.Create);
-        const action = await vscode.window.showInformationMessage(
-          localize("err.notFoundRootPath", "未发现根目录", [rootPath]),
-          create,
-          localize(InitAction.Cancel)
-        );
-        switch (action as InitAction) {
-          case create:
-            await fs.ensureDir(rootPath);
-            break;
-          default:
-        }
-      }
-    }
-    this.explorer.traverse();
-  }
   private async getValidProjectName(
     repositoryPath: string
   ): Promise<string | void> {
     if (await fs.pathExists(repositoryPath)) {
-      const overwrite = localize(ProjectExistAction.Overwrite);
-      const rename = localize(ProjectExistAction.Rename);
+      const overwrite = this.i18n.localize(ProjectExistAction.Overwrite);
+      const rename = this.i18n.localize(ProjectExistAction.Rename);
       const actionName = await vscode.window.showWarningMessage(
-        localize("tip.message.projectExist", "项目已存在"),
+        this.i18n.localize("tip.message.projectExist", "项目已存在"),
         overwrite,
         rename,
-        localize(ProjectExistAction.Cancel)
+        this.i18n.localize(ProjectExistAction.Cancel)
       );
 
       switch (actionName as ProjectExistAction) {
@@ -97,7 +71,7 @@ export class Gpm {
           return repositoryPath;
         case rename:
           const newName = await vscode.window.showInputBox({
-            prompt: localize(
+            prompt: this.i18n.localize(
               "tip.placeholder.requireNewRepo",
               "请输入新的项目名字"
             ),
@@ -132,14 +106,20 @@ export class Gpm {
       }
     } catch (err) {
       vscode.window.showErrorMessage(
-        localize("err.gitNotInstall", "请确保Git已经安装")
+        this.i18n.localize("err.gitNotInstall", "请确保Git已经安装")
       );
       return;
     }
 
     const gitProjectAddress = await vscode.window.showInputBox({
-      placeHolder: localize("tip.placeholder.addressExample", "例如 xxx"),
-      prompt: localize("tip.placeholder.enterAddress", "请输入git地址"),
+      placeHolder: this.i18n.localize(
+        "tip.placeholder.addressExample",
+        "例如 xxx"
+      ),
+      prompt: this.i18n.localize(
+        "tip.placeholder.enterAddress",
+        "请输入git地址"
+      ),
       ignoreFocusOut: true
     });
 
@@ -152,7 +132,7 @@ export class Gpm {
     // invalid git address
     if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
       return vscode.window.showErrorMessage(
-        localize("err.invalidGitAddress", "无效的 Git 地址")
+        this.i18n.localize("err.invalidGitAddress", "无效的 Git 地址")
       );
     }
 
@@ -162,11 +142,13 @@ export class Gpm {
 
     const PREFIX = "$(location)";
 
-    const rootPaths = config.rootPath.map(rootpath => `${PREFIX}  ${rootpath}`);
+    const rootPaths = this.config.rootPath.map(
+      rootpath => `${PREFIX}  ${rootpath}`
+    );
 
     if (!rootPaths.length) {
       vscode.window.showErrorMessage(
-        localize("err.requireRootPath", "请至少设置一个 rootPath")
+        this.i18n.localize("err.requireRootPath", "请至少设置一个 rootPath")
       );
       return;
     }
@@ -175,7 +157,7 @@ export class Gpm {
     const baseDir =
       rootPaths.length > 1
         ? await vscode.window.showQuickPick(rootPaths, {
-            placeHolder: localize(
+            placeHolder: this.i18n.localize(
               "tip.placeholder.selectRootPath",
               "选择一个根目录"
             ),
@@ -232,15 +214,15 @@ export class Gpm {
         console.error(err);
       }
 
-      const open = localize(ProjectPostAddAction.Open);
+      const open = this.i18n.localize(ProjectPostAddAction.Open);
 
       const action: string | void = await vscode.window.showInformationMessage(
-        localize("tip.message.cloned", "克隆成功", [
+        this.i18n.localize("tip.message.cloned", "克隆成功", [
           gitInfo.owner,
           gitInfo.name
         ]),
         open,
-        localize(ProjectPostAddAction.Cancel)
+        this.i18n.localize(ProjectPostAddAction.Cancel)
       );
 
       switch (action as ProjectPostAddAction) {
@@ -276,11 +258,11 @@ export class Gpm {
    * @memberof Gpm
    */
   public async prune() {
-    const Continue = localize(PruneAction.Continue);
+    const Continue = this.i18n.localize(PruneAction.Continue);
     const action = await vscode.window.showWarningMessage(
-      localize("tip.message.pruneWarning", "移除警告"),
+      this.i18n.localize("tip.message.pruneWarning", "移除警告"),
       Continue,
-      localize(PruneAction.Cancel)
+      this.i18n.localize(PruneAction.Cancel)
     );
 
     switch (action as PruneAction) {
@@ -290,7 +272,7 @@ export class Gpm {
         return;
     }
 
-    const walker = new Walker(config.rootPath);
+    const walker = new Walker(this.config.rootPath);
 
     let files = 0;
     let directory = 0;
@@ -315,14 +297,16 @@ export class Gpm {
       }
     });
 
-    vscode.window.showInformationMessage(localize("tip.message.pruneWait"));
+    vscode.window.showInformationMessage(
+      this.i18n.localize("tip.message.pruneWait")
+    );
 
     await walker.walk();
 
     await Promise.all(done);
 
     vscode.window.showInformationMessage(
-      localize("tip.message.pruneReport", "报告", [
+      this.i18n.localize("tip.message.pruneReport", "报告", [
         files,
         directory,
         removeDirCount
@@ -391,8 +375,7 @@ export class Gpm {
     for (const repository of repositories) {
       const stat = await fs.stat(path.join(owner.path, repository));
       if (stat.isDirectory()) {
-        const repositoryEntity = createRepository(
-          this.context,
+        const repositoryEntity = this.resource.createRepository(
           owner,
           repository
         );
@@ -415,7 +398,7 @@ export class Gpm {
     for (const ownerName of owners) {
       const stat = await fs.stat(path.join(source.path, ownerName));
       if (stat.isDirectory()) {
-        const owner = createOwner(this.context, source, ownerName);
+        const owner = this.resource.createOwner(source, ownerName);
         await this.removeOwner(owner);
       }
     }
@@ -431,7 +414,7 @@ export class Gpm {
     try {
       await fs.remove(this.CachePath);
       await vscode.window.showInformationMessage(
-        localize("tip.message.clearReport", "清理完毕")
+        this.i18n.localize("tip.message.clearReport", "清理完毕")
       );
     } catch (err) {
       await vscode.window.showErrorMessage(err.message);
@@ -448,14 +431,16 @@ export class Gpm {
       repository.repository
     }`;
 
-    const currentWindow = localize(OpenAction.CurrentWindow);
-    const newWindow = localize(OpenAction.NewWindow);
+    const currentWindow = this.i18n.localize(OpenAction.CurrentWindow);
+    const newWindow = this.i18n.localize(OpenAction.NewWindow);
 
     const action = await vscode.window.showInformationMessage(
-      localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
+      this.i18n.localize("tip.message.how2open", "选择打开方式", [
+        repositorySymbol
+      ]),
       newWindow,
       currentWindow,
-      localize(OpenAction.Cancel)
+      this.i18n.localize(OpenAction.Cancel)
     );
 
     switch (action as OpenAction) {
@@ -518,7 +503,7 @@ export class Gpm {
     const processSelected = await vscode.window.showQuickPick(itemList, {
       matchOnDescription: false,
       matchOnDetail: false,
-      placeHolder: localize(
+      placeHolder: this.i18n.localize(
         "tip.placeholder.selectProcessAndKill",
         "选择一个进程然后kill掉"
       ),
@@ -570,7 +555,7 @@ export class Gpm {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
-        placeHolder: localize(
+        placeHolder: this.i18n.localize(
           "tip.placeholder.selectProject",
           "请选择一个项目"
         ),
@@ -651,7 +636,7 @@ export class Gpm {
       return;
     }
 
-    const behavior = config.searchBehavior;
+    const behavior = this.config.searchBehavior;
 
     switch (behavior) {
       case SearchBehavior.OpenInNewWindow:
@@ -669,14 +654,16 @@ export class Gpm {
           repository.repository
         }`;
 
-        const open = localize(SearchAction.Open);
-        const remove = localize(SearchAction.Remove);
+        const open = this.i18n.localize(SearchAction.Open);
+        const remove = this.i18n.localize(SearchAction.Remove);
 
         const doAction = await vscode.window.showInformationMessage(
-          localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
+          this.i18n.localize("tip.message.doWhat", "你想干嘛?", [
+            repositorySymbol
+          ]),
           open,
           remove,
-          localize(SearchAction.Cancel)
+          this.i18n.localize(SearchAction.Cancel)
         );
 
         switch (doAction as SearchAction) {
@@ -780,7 +767,7 @@ export class Gpm {
    */
   public async runHook(cwd: string, hookName: Hook) {
     // if user disable auto run hook
-    if (!config.isAutoRunHook) {
+    if (!this.config.isAutoRunHook) {
       return;
     }
 
