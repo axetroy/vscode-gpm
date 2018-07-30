@@ -1,18 +1,27 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import { Service } from "typedi";
+import * as vscode from "vscode";
+import { Service, Container } from "typedi";
 
 interface IConfig {
   locale?: string;
 }
 
+interface ILocalePack {
+  [k: string]: string;
+}
+
 @Service()
 export class Localize {
-  private bundle = this.resolveLanguagePack();
+  private bundle!: ILocalePack;
+  private context!: vscode.ExtensionContext;
   constructor(
     private config: IConfig = JSON.parse((process.env as any).VSCODE_NLS_CONFIG)
-  ) {}
-  public localize(key: string, comment: string = "", args: any[] = []) {
+  ) {
+    this.context = Container.get("context");
+    this.bundle = this.resolveLanguagePack();
+  }
+  public localize(key: string, comment: string = "", args: any[] = []): string {
     // 返回翻译后的内容
     const languagePack = this.bundle;
     const message = languagePack[key];
@@ -31,9 +40,9 @@ export class Localize {
     return result;
   }
   // 获取语言包
-  private resolveLanguagePack(): { [k: string]: string } {
+  private resolveLanguagePack(): ILocalePack {
     let resolvedLanguage: string = "";
-    const file = path.join(__dirname, "..", "package");
+    const file = this.context.asAbsolutePath("./package");
     const options = this.config;
 
     if (!options.locale) {
@@ -59,10 +68,10 @@ export class Localize {
 
     const languageFilePath = path.join(file + resolvedLanguage);
 
-    if (!fs.existsSync(languageFilePath)) {
+    try {
+      return require(languageFilePath);
+    } catch (err) {
       return {};
     }
-
-    return require(languageFilePath);
   }
 }
