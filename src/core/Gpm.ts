@@ -1,11 +1,11 @@
 import * as Walker from "@axetroy/walk";
 import * as fs from "fs-extra";
 import * as path from "path";
-import * as processExists from "process-exists";
 import { Container, Inject, Service } from "typedi";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";
+import { Terminal } from "../common/Terminal";
 import {
   FileType,
   Hook,
@@ -28,8 +28,6 @@ import { ProjectTreeProvider } from "./TreeView";
 @Service()
 export class Gpm {
   // current opening terminals
-  private readonly terminals: { [path: string]: vscode.Terminal } = {};
-  private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() public config!: Config;
   @Inject() public explorer!: ProjectTreeProvider;
   @Inject() public i18n!: Localize;
@@ -37,6 +35,7 @@ export class Gpm {
   @Inject() public git!: Git;
   @Inject() public shell!: Shell;
   @Inject() public hook!: Hooker;
+  @Inject() public terminal!: Terminal;
   /**
    * Add project
    * @returns
@@ -447,45 +446,7 @@ export class Gpm {
    * @memberof Gpm
    */
   public async openTerminal(file: IFile): Promise<void> {
-    let terminal: vscode.Terminal;
-
-    let name: string;
-
-    switch (file.type) {
-      case FileType.Repository:
-        name = (file as IRepository).repository;
-        break;
-      case FileType.Owner:
-        name = (file as IOwner).owner;
-        break;
-      case FileType.Source:
-        name = (file as ISource).source;
-        break;
-      default:
-        name = "undefined";
-    }
-
-    if (!this.terminals[file.path]) {
-      terminal = vscode.window.createTerminal({
-        name: "[GPM]: " + name,
-        cwd: file.path,
-        env: process.env as any
-      });
-
-      this.context.subscriptions.push(terminal);
-      this.terminals[file.path] = terminal;
-    } else {
-      terminal = this.terminals[file.path];
-      const exists = await processExists(await terminal.processId);
-      if (!exists) {
-        // if the terminal have exit or it have been close.
-        delete this.terminals[file.path];
-        // reopen again
-        return this.openTerminal(file);
-      }
-    }
-
-    terminal.show();
+    await this.terminal.open(file.path);
   }
   /**
    * Refresh project
