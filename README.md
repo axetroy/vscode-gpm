@@ -1,5 +1,7 @@
 # vscode-gpm
 
+[![Build Status](https://travis-ci.org/axetroy/vscode-gpm.svg?branch=master)](https://travis-ci.org/axetroy/vscode-gpm)
+
 a cross-platform VSCode extension for managing your Git projects.
 
 Support almost git address. including Github/Gitlab/Bitbucket/Coding...
@@ -52,7 +54,7 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 
 ## Custom Hooks
 
-Make sure the file `.gpmrc` have existed in the target project.
+Make sure the file `.gpmrc` has existed in the target project.
 
 ```json
 {
