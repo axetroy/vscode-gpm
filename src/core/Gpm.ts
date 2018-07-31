@@ -278,6 +278,10 @@ export class Gpm {
     let directory = 0;
     let removeDirCount = 0;
 
+    vscode.window.showInformationMessage(
+      this.i18n.localize("tip.message.pruneWait")
+    );
+
     for (const rootPath of this.config.rootPath) {
       const walker = new Walker(rootPath);
 
@@ -297,10 +301,6 @@ export class Gpm {
           );
         }
       });
-
-      vscode.window.showInformationMessage(
-        this.i18n.localize("tip.message.pruneWait")
-      );
 
       await walker.walk();
     }
