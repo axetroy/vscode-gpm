@@ -1,7 +1,7 @@
 import * as path from "path";
 import { Container, Service, Inject } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
+import { Localize } from "../common/localize";
 import {
   Command,
   FileType,

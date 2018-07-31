@@ -6,10 +6,10 @@ import * as shell from "shelljs";
 import { Container, Inject, Service } from "typedi";
 import * as uniqueString from "unique-string";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
+import { Localize } from "../common/localize";
 import { Shell } from "../common/Shell";
 import { ProjectExistAction } from "../type";
-import { isLink } from "../util/isLink";
+import { isLink } from "../util/is-link";
 
 interface IClone {
   source: string;

@@ -5,7 +5,7 @@ import { Container, Inject, Service } from "typedi";
 import * as vscode from "vscode";
 import { FileType, IFile, IOwner, IRepository, ISource, IStar } from "../type";
 import { flatten } from "../util/flatten";
-import { isVisiblePath } from "../util/isVisiblePath";
+import { isVisiblePath } from "../util/is-visiblePath";
 import { Config } from "./Config";
 import { Resource } from "./Resource";
 

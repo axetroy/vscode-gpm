@@ -1,5 +1,5 @@
 import * as shell from "shelljs";
-import { Statusbar } from "./Statusbar";
+import { Statusbar } from "./statusbar";
 import { ChildProcess } from "child_process";
 import { Command } from "../type";
 import { Service } from "typedi";
