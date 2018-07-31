@@ -461,7 +461,7 @@
     "vscode": "^1.1.18"
   },
   "dependencies": {
-    "@axetroy/walk": "^0.1.0",
+    "@axetroy/walk": "^0.1.1",
     "clipboardy": "^1.2.3",
     "fs-extra": "^7.0.0",
     "git-url-parse": "^10.0.1",
