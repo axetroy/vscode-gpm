@@ -14,11 +14,8 @@ import {
 
 @Service()
 export class Resource {
-  private context: vscode.ExtensionContext;
+  private context: vscode.ExtensionContext = Container.get("context");
   @Inject() private i18n!: Localize;
-  constructor() {
-    this.context = Container.get("context");
-  }
   public createFile(filepath: string): IFile {
     return {
       label: path.basename(filepath),

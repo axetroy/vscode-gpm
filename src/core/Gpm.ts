@@ -723,7 +723,7 @@ export class Gpm {
         async: true
       }) as ChildProcess;
 
-      const bar = new Statusbar(Command.InterruptCommand);
+      const statusbar = new Statusbar(Command.InterruptCommand);
 
       const processId = process.pid + "";
 
@@ -756,8 +756,8 @@ export class Gpm {
         .on("exit", handler)
         .on("close", handler);
 
-      process.stdout.pipe(bar);
-      process.stderr.pipe(bar);
+      process.stdout.pipe(statusbar);
+      process.stderr.pipe(statusbar);
     });
   }
   /**

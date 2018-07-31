@@ -13,14 +13,9 @@ interface ILocalePack {
 
 @Service()
 export class Localize {
-  private bundle!: ILocalePack;
-  private context!: vscode.ExtensionContext;
-  constructor(
-    private config: IConfig = JSON.parse((process.env as any).VSCODE_NLS_CONFIG)
-  ) {
-    this.context = Container.get("context");
-    this.bundle = this.resolveLanguagePack();
-  }
+  private context: vscode.ExtensionContext = Container.get("context");
+  private config: IConfig = JSON.parse((process.env as any).VSCODE_NLS_CONFIG);
+  private bundle: ILocalePack = this.resolveLanguagePack();
   public localize(key: string, comment: string = "", args: any[] = []): string {
     // 返回翻译后的内容
     const languagePack = this.bundle;

@@ -12,8 +12,8 @@ import { Resource } from "./Resource";
 @Service()
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   @Inject() private config!: Config;
-  @Inject() private resource!: Resource;
-  public star: IStar;
+  @Inject() private resource: Resource = Container.get(Resource);
+  public star: IStar = this.resource.createStar();
 
   // tree view event
   private privateOnDidChangeTreeData: vscode.EventEmitter<
@@ -21,12 +21,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   > = new vscode.EventEmitter<IFile | undefined>();
   public readonly onDidChangeTreeData: vscode.Event<IFile | undefined> = this
     .privateOnDidChangeTreeData.event;
-
-  constructor() {
-    // FIXME: why inject fail?
-    this.resource = Container.get(Resource);
-    this.star = this.resource.createStar();
-  }
 
   public traverse(): Promise<IRepository[]> {
     return (this.getChildren() as Promise<ISource[]>)
