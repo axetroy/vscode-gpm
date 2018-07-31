@@ -1,14 +1,13 @@
 import * as fs from "fs-extra";
+import * as promiseMap from "p-map";
 import * as path from "path";
-import { Inject, Service, Container } from "typedi";
+import { Container, Inject, Service } from "typedi";
 import * as vscode from "vscode";
 import { FileType, IFile, IOwner, IRepository, ISource, IStar } from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/isVisiblePath";
 import { Config } from "./Config";
 import { Resource } from "./Resource";
-
-const promiseMap = require("p-map");
 
 @Service()
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {

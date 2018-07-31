@@ -1,12 +1,14 @@
 import { ChildProcess } from "child_process";
 import * as fs from "fs-extra";
+import * as gitUrlParse from "git-url-parse";
 import * as os from "os";
 import * as path from "path";
+import * as processExists from "process-exists";
 import * as shell from "shelljs";
-import { Inject, Service, Container } from "typedi";
+import { Container, Inject, Service } from "typedi";
+import * as uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/localize";
-import { Resource } from "./Resource";
 import { Statusbar } from "../common/statusbar";
 import {
   Command,
@@ -26,11 +28,9 @@ import {
 } from "../type";
 import { isLink } from "../util/isLink";
 import { Config } from "./Config";
+import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
-const gitUrlParse = require("git-url-parse");
-const uniqueString = require("unique-string");
-const Walker = require("@axetroy/walk");
-const processExists = require("process-exists");
+import * as Walker from "@axetroy/walk";
 
 interface IProcess {
   id: string;
@@ -272,36 +272,38 @@ export class Gpm {
         return;
     }
 
-    const walker = new Walker(this.config.rootPath);
+    const done: Array<Promise<any>> = [];
 
     let files = 0;
     let directory = 0;
-
-    walker.on("file", (filepath: string) => {
-      files++;
-    });
-
-    const done: Array<Promise<any>> = [];
     let removeDirCount = 0;
 
-    walker.on("directory", (filepath: string) => {
-      directory++;
-      const name = path.basename(filepath);
-      if (name === "node_modules") {
-        done.push(
-          fs
-            .remove(filepath)
-            .then(() => removeDirCount++)
-            .catch(err => Promise.resolve())
-        );
-      }
-    });
+    for (const rootPath of this.config.rootPath) {
+      const walker = new Walker(rootPath);
 
-    vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.pruneWait")
-    );
+      walker.on("file", (filepath: string) => {
+        files++;
+      });
 
-    await walker.walk();
+      walker.on("directory", (filepath: string) => {
+        directory++;
+        const name = path.basename(filepath);
+        if (name === "node_modules") {
+          done.push(
+            fs
+              .remove(filepath)
+              .then(() => removeDirCount++)
+              .catch(err => Promise.resolve())
+          );
+        }
+      });
+
+      vscode.window.showInformationMessage(
+        this.i18n.localize("tip.message.pruneWait")
+      );
+
+      await walker.walk();
+    }
 
     await Promise.all(done);
 
