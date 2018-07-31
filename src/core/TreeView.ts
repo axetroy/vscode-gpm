@@ -1,4 +1,5 @@
 import * as fs from "fs-extra";
+import * as _ from "lodash";
 import * as promiseMap from "p-map";
 import * as path from "path";
 import { Inject, Service } from "typedi";
@@ -79,6 +80,8 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       children.push(this.star);
     }
 
+    const sources: ISource[] = [];
+
     for (const GPM_ROOT_PATH of this.config.rootPath) {
       const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(
         isVisiblePath
@@ -88,14 +91,14 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         const statInfo = await fs.stat(path.join(GPM_ROOT_PATH, file));
 
         if (statInfo.isDirectory()) {
-          children.push(this.resource.createSource(file, GPM_ROOT_PATH));
+          sources.push(this.resource.createSource(file, GPM_ROOT_PATH));
         }
       };
 
       await promiseMap(files, mapper, { concurrency: 10 });
     }
 
-    return children;
+    return children.concat(_.sortBy(sources, v => _.lowerCase(v.source)));
   }
   private async getOwner(element: ISource): Promise<IOwner[]> {
     const children: IOwner[] = [];
@@ -114,7 +117,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     await promiseMap(files, mapper, { concurrency: 10 });
 
-    return children;
+    return _.sortBy(children, v => _.lowerCase(v.owner));
   }
   private async getRepository(element: IOwner): Promise<IRepository[]> {
     const children: IRepository[] = [];
@@ -141,7 +144,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     await promiseMap(files, mapper, { concurrency: 10 });
 
-    return children;
+    return _.sortBy(children, v => _.lowerCase(v.repository));
   }
 
   private async getExplorer(element: IFile): Promise<IFile[]> {
