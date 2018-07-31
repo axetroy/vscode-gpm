@@ -8,7 +8,8 @@ import {
   IOwner,
   IRepository,
   ISource,
-  IStar
+  IStar,
+  ISegmentation
 } from "../type";
 
 @Service()
@@ -147,5 +148,8 @@ export class Resource {
   }
   public isStar(o: any): o is IStar {
     return o && o.type === FileType.Star;
+  }
+  public isSegmentation(o: any): o is ISegmentation {
+    return o && o.type === FileType.Segmentation;
   }
 }

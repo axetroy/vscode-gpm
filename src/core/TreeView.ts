@@ -4,7 +4,14 @@ import * as promiseMap from "p-map";
 import * as path from "path";
 import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
-import { FileType, IFile, IOwner, IRepository, ISource } from "../type";
+import {
+  FileType,
+  IFile,
+  IOwner,
+  IRepository,
+  ISource,
+  ISegmentation
+} from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/is-visiblePath";
 import { Config } from "./Config";
@@ -62,6 +69,10 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       return element.list();
     }
 
+    if (this.resource.isSegmentation(element)) {
+      return [];
+    }
+
     if (this.resource.isSource(element)) {
       return this.getOwner(element);
     }
@@ -98,7 +109,33 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       await promiseMap(files, mapper, { concurrency: 10 });
     }
 
-    return children.concat(_.sortBy(sources, v => _.lowerCase(v.source)));
+    const separation: ISegmentation = {
+      label: "————————",
+      type: FileType.Segmentation,
+      contextValue: FileType.Segmentation,
+      collapsibleState: 0,
+      path: "",
+      rootPath: "",
+      source: "",
+      segmentation: true
+    };
+
+    const array = _(sources)
+      .sortBy(v => _.lowerCase(v.source))
+      .groupBy(v => v.rootPath)
+      .values()
+      .value();
+
+    const dist: ISource[][] = [];
+
+    for (let i = 0; i < array.length; i++) {
+      dist.push(array[i]);
+      if (i % 2 === 0 && i !== array.length - 1) {
+        dist.push([separation]);
+      }
+    }
+
+    return _.concat(children, _.flatten(dist));
   }
   private async getOwner(element: ISource): Promise<IOwner[]> {
     const children: IOwner[] = [];

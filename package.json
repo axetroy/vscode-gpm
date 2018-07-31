@@ -349,7 +349,7 @@
         {
           "command": "gpm.copyPath",
           "group": "context",
-          "when": "view == GPMExplorer"
+          "when": "view == GPMExplorer && viewItem != segmentation"
         }
       ],
       "commandPalette": [

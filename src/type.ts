@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 export enum FileType {
+  Segmentation = "segmentation",
   File = "file",
   Folder = "folder",
   Star = "star",
@@ -13,6 +14,15 @@ export enum FileType {
 export interface IFile extends vscode.TreeItem {
   type: FileType;
   path: string;
+}
+
+export interface ISource extends IFile {
+  rootPath: string;
+  source: string;
+}
+
+export interface ISegmentation extends ISource {
+  segmentation: true;
 }
 
 export interface IStar extends IFile {

@@ -124,7 +124,8 @@ export class Gpm {
           owner: res.owner,
           path: res.path,
           repository: res.name,
-          type: FileType.Repository
+          type: FileType.Repository,
+          rootPath: ""
         });
         break;
       default:
