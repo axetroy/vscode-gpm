@@ -1,8 +1,8 @@
-import * as shell from "shelljs";
-import { Statusbar } from "./Statusbar";
 import { ChildProcess } from "child_process";
-import { Command } from "../type";
+import * as shell from "shelljs";
 import { Service } from "typedi";
+import { Command } from "../type";
+import { Statusbar } from "./Statusbar";
 
 interface IProcess {
   id: string;

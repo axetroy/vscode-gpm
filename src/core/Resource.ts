@@ -1,7 +1,6 @@
 import * as path from "path";
-import { Container, Service, Inject } from "typedi";
+import { Container, Service } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
 import {
   Command,
   FileType,
@@ -15,7 +14,6 @@ import {
 @Service()
 export class Resource {
   private context: vscode.ExtensionContext = Container.get("context");
-  @Inject() private i18n!: Localize;
   public createFile(filepath: string): IFile {
     return {
       label: path.basename(filepath),
@@ -122,68 +120,6 @@ export class Resource {
       repository: repositoryName,
       type: FileType.Repository,
       path: path.join(owner.path, repositoryName)
-    };
-  }
-  public createStar(): IStar {
-    const context = this.context;
-    const i18n = this.i18n;
-    const storageKey: string = "@stars";
-    const staredSuffix = "@stared";
-
-    const starList: IRepository[] = context.globalState.get(storageKey) || [];
-
-    function findIndex(repository: IRepository): number {
-      return starList.findIndex(r => {
-        return repository.path === r.path;
-      });
-    }
-
-    function update(value: IRepository[] = starList) {
-      context.globalState.update(storageKey, value);
-    }
-
-    return {
-      label: i18n.localize("ext.view.star", "你的收藏"),
-      contextValue: FileType.Star,
-      collapsibleState: 2,
-      iconPath: this.getIcon("star.svg"),
-      tooltip: i18n.localize("ext.view.stared", "你的收藏的项目"),
-      // customer property
-      type: FileType.Star,
-      path: "", // empty path
-      list() {
-        return starList;
-      },
-      find(repository: IRepository): IRepository | void {
-        const index = findIndex(repository);
-        if (index >= 0) {
-          return starList[index];
-        }
-      },
-      async star(repository: IRepository) {
-        if (findIndex(repository) < 0) {
-          const newRepository = { ...repository };
-          newRepository.id = repository.id + staredSuffix;
-          newRepository.contextValue = FileType.RepositoryStared;
-          starList.push(newRepository);
-          update();
-        }
-      },
-      async unstar(repository: IRepository) {
-        const index = findIndex(repository);
-        if (index >= 0) {
-          repository.contextValue = FileType.Repository;
-          starList.splice(index, 1);
-          update();
-        }
-      },
-      clear() {
-        for (const repository of starList) {
-          repository.contextValue = FileType.Repository;
-        }
-        starList.splice(0, starList.length);
-        update();
-      }
     };
   }
   public getIcon(...paths: string[]) {

@@ -1,19 +1,20 @@
 import * as fs from "fs-extra";
 import * as promiseMap from "p-map";
 import * as path from "path";
-import { Container, Inject, Service } from "typedi";
+import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
-import { FileType, IFile, IOwner, IRepository, ISource, IStar } from "../type";
+import { FileType, IFile, IOwner, IRepository, ISource } from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/is-visiblePath";
 import { Config } from "./Config";
 import { Resource } from "./Resource";
+import { Star } from "./Star";
 
 @Service()
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   @Inject() private config!: Config;
-  @Inject() private resource: Resource = Container.get(Resource);
-  public star: IStar = this.resource.createStar();
+  @Inject() private resource!: Resource;
+  @Inject() public star!: Star;
 
   // tree view event
   private privateOnDidChangeTreeData: vscode.EventEmitter<

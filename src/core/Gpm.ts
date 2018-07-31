@@ -29,8 +29,8 @@ import { ProjectTreeProvider } from "./TreeView";
 export class Gpm {
   // current opening terminals
   @Inject() public config!: Config;
-  @Inject() public explorer!: ProjectTreeProvider;
   @Inject() public i18n!: Localize;
+  @Inject() public explorer!: ProjectTreeProvider;
   @Inject() public resource!: Resource;
   @Inject() public git!: Git;
   @Inject() public shell!: Shell;
