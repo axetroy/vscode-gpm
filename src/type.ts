@@ -7,7 +7,7 @@ export enum FileType {
   Source = "source",
   Owner = "owner",
   Repository = "repository",
-  RepositoryStared = "repository.stared",
+  RepositoryStared = "repository.stared"
 }
 
 export interface IFile extends vscode.TreeItem {
@@ -25,6 +25,7 @@ export interface IStar extends IFile {
 }
 
 export interface ISource extends IFile {
+  rootPath: string;
   source: string;
 }
 

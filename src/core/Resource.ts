@@ -25,6 +25,7 @@ export class Resource {
         arguments: [filepath]
       },
       iconPath: vscode.ThemeIcon.File,
+      tooltip: filepath,
       // customer property
       type: FileType.File,
       path: filepath
@@ -50,10 +51,12 @@ export class Resource {
       collapsibleState: 1,
       command: void 0,
       iconPath: "",
+      tooltip: `${rootPath}/${sourceName}`,
       // customer property
       source: sourceName,
       type: FileType.Source,
-      path: path.join(rootPath, sourceName)
+      path: path.join(rootPath, sourceName),
+      rootPath
     };
     let icon: string = "";
     switch (sourceName) {
@@ -99,11 +102,13 @@ export class Resource {
       collapsibleState: 1,
       command: void 0,
       iconPath: this.getIcon("user.svg"),
+      tooltip: `${source.source}/${ownerName}`,
       // customer property
       source: source.source,
       owner: ownerName,
       type: FileType.Owner,
-      path: path.join(source.path, ownerName)
+      path: path.join(source.path, ownerName),
+      rootPath: source.rootPath
     };
   }
   public createRepository(owner: IOwner, repositoryName: string): IRepository {
@@ -114,12 +119,14 @@ export class Resource {
       collapsibleState: 1,
       command: void 0,
       iconPath: this.getIcon("repository.svg"),
+      tooltip: `${owner.source}/${owner.owner}/${repositoryName}`,
       // customer property
       source: owner.source,
       owner: owner.owner,
       repository: repositoryName,
       type: FileType.Repository,
-      path: path.join(owner.path, repositoryName)
+      path: path.join(owner.path, repositoryName),
+      rootPath: owner.rootPath
     };
   }
   public getIcon(...paths: string[]) {
