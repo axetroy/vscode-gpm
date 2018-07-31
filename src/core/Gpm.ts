@@ -1,12 +1,10 @@
+import * as Walker from "@axetroy/walk";
 import { ChildProcess } from "child_process";
 import * as fs from "fs-extra";
-import * as gitUrlParse from "git-url-parse";
-import * as os from "os";
 import * as path from "path";
 import * as processExists from "process-exists";
 import * as shell from "shelljs";
 import { Container, Inject, Service } from "typedi";
-import * as uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/localize";
 import { Statusbar } from "../common/statusbar";
@@ -20,17 +18,15 @@ import {
   IRepository,
   ISource,
   OpenAction,
-  ProjectExistAction,
   ProjectPostAddAction,
   PruneAction,
   SearchAction,
   SearchBehavior
 } from "../type";
-import { isLink } from "../util/isLink";
 import { Config } from "./Config";
+import { Git } from "./Git";
 import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
-import * as Walker from "@axetroy/walk";
 
 interface IProcess {
   id: string;
@@ -51,66 +47,13 @@ export class Gpm {
   @Inject() public explorer!: ProjectTreeProvider;
   @Inject() public i18n!: Localize;
   @Inject() public resource!: Resource;
-  public readonly CachePath: string =
-    this.context.storagePath || path.join(os.tmpdir(), ".gpm", "temp");
-  private async getValidProjectName(
-    repositoryPath: string
-  ): Promise<string | void> {
-    if (await fs.pathExists(repositoryPath)) {
-      const overwrite = this.i18n.localize(ProjectExistAction.Overwrite);
-      const rename = this.i18n.localize(ProjectExistAction.Rename);
-      const actionName = await vscode.window.showWarningMessage(
-        this.i18n.localize("tip.message.projectExist", "项目已存在"),
-        overwrite,
-        rename,
-        this.i18n.localize(ProjectExistAction.Cancel)
-      );
-
-      switch (actionName as ProjectExistAction) {
-        case overwrite:
-          return repositoryPath;
-        case rename:
-          const newName = await vscode.window.showInputBox({
-            prompt: this.i18n.localize(
-              "tip.placeholder.requireNewRepo",
-              "请输入新的项目名字"
-            ),
-            ignoreFocusOut: true
-          });
-
-          if (!newName) {
-            return;
-          }
-
-          return this.getValidProjectName(
-            path.join(path.dirname(repositoryPath), newName)
-          );
-        default:
-          return;
-      }
-    } else {
-      return repositoryPath;
-    }
-  }
+  @Inject() public git!: Git;
   /**
    * Add project
    * @returns
    * @memberof Gpm
    */
   public async add() {
-    // make sure git instsalled
-    try {
-      const r = shell.which("git");
-      if (!r) {
-        throw null;
-      }
-    } catch (err) {
-      vscode.window.showErrorMessage(
-        this.i18n.localize("err.gitNotInstall", "请确保Git已经安装")
-      );
-      return;
-    }
-
     const gitProjectAddress = await vscode.window.showInputBox({
       placeHolder: this.i18n.localize(
         "tip.placeholder.addressExample",
@@ -127,19 +70,6 @@ export class Gpm {
       return;
     }
 
-    const gitInfo = gitUrlParse(gitProjectAddress);
-
-    // invalid git address
-    if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
-      return vscode.window.showErrorMessage(
-        this.i18n.localize("err.invalidGitAddress", "无效的 Git 地址")
-      );
-    }
-
-    const randomTemp: string = path.join(this.CachePath, uniqueString());
-
-    const tempDir: string = path.join(randomTemp, gitInfo.name);
-
     const PREFIX = "$(location)";
 
     const rootPaths = this.config.rootPath.map(
@@ -154,7 +84,7 @@ export class Gpm {
     }
 
     // select a root path
-    const baseDir =
+    let baseDir =
       rootPaths.length > 1
         ? await vscode.window.showQuickPick(rootPaths, {
             placeHolder: this.i18n.localize(
@@ -169,87 +99,48 @@ export class Gpm {
       return;
     }
 
-    const sourceDir: string = path.join(
-      baseDir.replace(PREFIX, "").trim(),
-      gitInfo.source
-    );
-    const ownerDir: string = path.join(sourceDir, gitInfo.owner);
+    baseDir = baseDir.replace(PREFIX, "").trim();
 
-    const repositoryPath: string | void = await this.getValidProjectName(
-      path.join(ownerDir, gitInfo.name)
-    );
+    const res = await this.git.clone(gitProjectAddress, baseDir);
 
-    if (!repositoryPath) {
+    this.refresh();
+
+    if (!res) {
       return;
     }
 
-    await fs.ensureDir(randomTemp);
-
     try {
-      await this.runShell(
-        randomTemp,
-        `git clone ${gitProjectAddress as string} --progress -v`
-      );
-
-      await fs.ensureDir(baseDir);
-      await fs.ensureDir(sourceDir);
-      await fs.ensureDir(ownerDir);
-
-      // if it's a link, then unlink first
-      if (await isLink(repositoryPath)) {
-        await fs.unlink(repositoryPath);
-      }
-      await fs.remove(repositoryPath);
-      await fs.move(tempDir, repositoryPath);
-
-      // refresh explorer
-      this.refresh();
-
-      try {
-        // run the hooks
-        // whatever hook success or fail
-        // it still going on
-        await this.runHook(repositoryPath, Hook.Postadd);
-      } catch (err) {
-        console.error(err);
-      }
-
-      const open = this.i18n.localize(ProjectPostAddAction.Open);
-
-      const action: string | void = await vscode.window.showInformationMessage(
-        this.i18n.localize("tip.message.cloned", "克隆成功", [
-          gitInfo.owner,
-          gitInfo.name
-        ]),
-        open,
-        this.i18n.localize(ProjectPostAddAction.Cancel)
-      );
-
-      switch (action as ProjectPostAddAction) {
-        case open:
-          await this.open({
-            source: gitInfo.source,
-            owner: gitInfo.owner,
-            path: repositoryPath,
-            repository: gitInfo.name,
-            type: FileType.Repository
-          });
-          break;
-        default:
-        // do nothing
-      }
-
-      // refresh explorer
-      this.refresh();
+      // run the hooks
+      // whatever hook success or fail
+      // it still going on
+      await this.runHook(res.path, Hook.Postadd);
     } catch (err) {
-      await fs.remove(randomTemp);
-      // refresh explorer
-      this.refresh();
-      if (err.message === "SIGKILL") {
-        // do nothing
-      } else {
-        vscode.window.showErrorMessage(err.message);
-      }
+      console.error(err);
+    }
+
+    const open = this.i18n.localize(ProjectPostAddAction.Open);
+
+    const action: string | void = await vscode.window.showInformationMessage(
+      this.i18n.localize("tip.message.cloned", "克隆成功", [
+        res.owner,
+        res.name
+      ]),
+      open,
+      this.i18n.localize(ProjectPostAddAction.Cancel)
+    );
+
+    switch (action as ProjectPostAddAction) {
+      case open:
+        await this.open({
+          source: res.source,
+          owner: res.owner,
+          path: res.path,
+          repository: res.name,
+          type: FileType.Repository
+        });
+        break;
+      default:
+      // do nothing
     }
   }
   /**
@@ -414,7 +305,7 @@ export class Gpm {
    */
   public async cleanCache() {
     try {
-      await fs.remove(this.CachePath);
+      await this.git.clean();
       await vscode.window.showInformationMessage(
         this.i18n.localize("tip.message.clearReport", "清理完毕")
       );
