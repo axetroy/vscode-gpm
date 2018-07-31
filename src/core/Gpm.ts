@@ -3,13 +3,11 @@ import { ChildProcess } from "child_process";
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as processExists from "process-exists";
-import * as shell from "shelljs";
 import { Container, Inject, Service } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/localize";
-import { Statusbar } from "../common/statusbar";
+import { Localize } from "../common/Localize";
+import { Shell } from "../common/Shell";
 import {
-  Command,
   FileType,
   Hook,
   IFile,
@@ -40,14 +38,13 @@ export class Gpm {
   public readonly PresetFile: string = ".gpmrc";
   // current opening terminals
   private readonly terminals: { [path: string]: vscode.Terminal } = {};
-  // current running command stream
-  private processes: IProcess[] = [];
   private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() public config!: Config;
   @Inject() public explorer!: ProjectTreeProvider;
   @Inject() public i18n!: Localize;
   @Inject() public resource!: Resource;
   @Inject() public git!: Git;
+  @Inject() public shell!: Shell;
   /**
    * Add project
    * @returns
@@ -384,7 +381,7 @@ export class Gpm {
    * @memberof Gpm
    */
   public async interruptCommand() {
-    const itemList = this.processes.map(v => {
+    const itemList = this.shell.processes.map(v => {
       return {
         label: "$(dashboard) " + v.cmd,
         description: v.id,
@@ -407,18 +404,7 @@ export class Gpm {
       return;
     }
 
-    const currentProcessIndex = this.processes.findIndex(
-      v => v.id === processSelected.pid
-    );
-
-    if (currentProcessIndex >= 0) {
-      const currentProcess = this.processes[currentProcessIndex];
-
-      if (currentProcess && !currentProcess.process.killed) {
-        currentProcess.process.kill("SIGKILL");
-        this.processes.splice(currentProcessIndex, 1);
-      }
-    }
+    return this.shell.interrupt(processSelected.pid);
   }
   /**
    * Select a repository from repositories
@@ -606,51 +592,6 @@ export class Gpm {
     this.explorer.star.clear();
     this.refresh();
   }
-  private async runShell(cwd: string, command: string) {
-    return new Promise((resolve, reject) => {
-      shell.cd(cwd);
-
-      const process = shell.exec(command, {
-        async: true
-      }) as ChildProcess;
-
-      const statusbar = new Statusbar(Command.InterruptCommand);
-
-      const processId = process.pid + "";
-
-      this.processes.push({
-        id: processId,
-        cwd,
-        cmd: command,
-        process
-      });
-
-      const removeProcess = () => {
-        const index = this.processes.findIndex(v => v.id === processId);
-        if (index > -1) {
-          this.processes.splice(index, 1);
-        }
-      };
-
-      function handler(code: number, signal: string): void {
-        removeProcess();
-        code !== 0
-          ? reject(new Error(signal || `Exit with code ${code}`))
-          : resolve();
-      }
-
-      process
-        .on("error", err => {
-          removeProcess();
-          reject(err);
-        })
-        .on("exit", handler)
-        .on("close", handler);
-
-      process.stdout.pipe(statusbar);
-      process.stderr.pipe(statusbar);
-    });
-  }
   /**
    * Run hook in the path if it exist
    * @param {string} cwd
@@ -672,7 +613,7 @@ export class Gpm {
       if (preset.hooks) {
         const cmd = preset.hooks[hookName] || preset.hooks.postadd;
         if (cmd) {
-          await this.runShell(cwd, cmd);
+          await this.shell.run(cwd, cmd);
         }
       }
     }

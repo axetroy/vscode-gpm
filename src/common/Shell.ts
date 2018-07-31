@@ -4,9 +4,22 @@ import { ChildProcess } from "child_process";
 import { Command } from "../type";
 import { Service } from "typedi";
 
+interface IProcess {
+  id: string;
+  cwd: string;
+  cmd: string;
+  process: ChildProcess;
+}
+
 @Service()
 export class Shell {
-  private processes: any[] = [];
+  // current running processes
+  public processes: IProcess[] = [];
+  /**
+   * Run shell command
+   * @param cwd
+   * @param command
+   */
   public async run(cwd: string, command: string): Promise<any> {
     return new Promise((resolve, reject) => {
       shell.cd(cwd);
@@ -51,5 +64,18 @@ export class Shell {
       process.stdout.pipe(statusbar);
       process.stderr.pipe(statusbar);
     });
+  }
+  /**
+   * Interrupt the process
+   * @param pid
+   */
+  public async interrupt(pid: string) {
+    const index = this.processes.findIndex(v => v.id === pid);
+
+    if (index >= 0) {
+      const process = this.processes[index];
+      process.process.kill("SIGKILL");
+      this.processes.splice(index, 1);
+    }
   }
 }
