@@ -1,3 +1,24 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/axetroy/vscode-gpm/compare/v0.26.0...v1.0.0) (2018-07-31)
+
+
+### Bug Fixes
+
+* deactivate and clean cache ([959da9a](https://github.com/axetroy/vscode-gpm/commit/959da9a))
+* fix prune not work like expect ([b406c0f](https://github.com/axetroy/vscode-gpm/commit/b406c0f))
+* i18n not work ([61a75a4](https://github.com/axetroy/vscode-gpm/commit/61a75a4))
+
+
+### Features
+
+* add d.ts file for 3th party lib ([a0cacb3](https://github.com/axetroy/vscode-gpm/commit/a0cacb3))
+* add tooltip ([3d6b87d](https://github.com/axetroy/vscode-gpm/commit/3d6b87d))
+* group source by rootPath ([1813bad](https://github.com/axetroy/vscode-gpm/commit/1813bad))
+* sort source/owner/repo ([b3d13d5](https://github.com/axetroy/vscode-gpm/commit/b3d13d5))
+* update en/cn translation ([307c728](https://github.com/axetroy/vscode-gpm/commit/307c728))
+
+
+
 <a name="0.26.0"></a>
 # [0.26.0](https://github.com/axetroy/vscode-gpm/compare/v0.25.0...v0.26.0) (2018-07-27)
 
