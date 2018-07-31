@@ -465,7 +465,7 @@ export async function deactivate(
   // clear cache
   const gpm = Container.get(Gpm);
   try {
-    await fs.remove(gpm.CachePath);
+    await gpm.cleanCache();
   } catch (err) {
     console.error(err);
   }

@@ -1,7 +1,7 @@
 import * as Walker from "@axetroy/walk";
 import * as fs from "fs-extra";
 import * as path from "path";
-import { Container, Inject, Service } from "typedi";
+import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";
