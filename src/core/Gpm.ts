@@ -3,7 +3,7 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/localize";
+import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";
 import { Terminal } from "../common/Terminal";
 import {

@@ -6,7 +6,7 @@ import * as path from "path";
 import "reflect-metadata";
 import * as vscode from "vscode";
 import { Container } from "typedi";
-import { Gpm } from "./core/gpm";
+import { Gpm } from "./core/Gpm";
 import {
   Command,
   ConfirmAction,
