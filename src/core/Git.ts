@@ -10,7 +10,6 @@ import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/isLink";
-import { Config } from "./Config";
 
 interface IClone {
   source: string;
@@ -23,7 +22,6 @@ interface IClone {
 export class Git {
   private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() private i18n!: Localize;
-  @Inject() private config!: Config;
   @Inject() private Shell!: Shell;
   // the cache dir that project will be clone.
   private CACHE_PATH: string =

@@ -1,5 +1,4 @@
 import * as Walker from "@axetroy/walk";
-import { ChildProcess } from "child_process";
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as processExists from "process-exists";
@@ -12,7 +11,6 @@ import {
   Hook,
   IFile,
   IOwner,
-  IPreset,
   IRepository,
   ISource,
   OpenAction,
@@ -23,19 +21,12 @@ import {
 } from "../type";
 import { Config } from "./Config";
 import { Git } from "./Git";
+import { Hooker } from "./Hook";
 import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
 
-interface IProcess {
-  id: string;
-  cwd: string;
-  cmd: string;
-  process: ChildProcess;
-}
-
 @Service()
 export class Gpm {
-  public readonly PresetFile: string = ".gpmrc";
   // current opening terminals
   private readonly terminals: { [path: string]: vscode.Terminal } = {};
   private readonly context: vscode.ExtensionContext = Container.get("context");
@@ -45,6 +36,7 @@ export class Gpm {
   @Inject() public resource!: Resource;
   @Inject() public git!: Git;
   @Inject() public shell!: Shell;
+  @Inject() public hook!: Hooker;
   /**
    * Add project
    * @returns
@@ -110,7 +102,7 @@ export class Gpm {
       // run the hooks
       // whatever hook success or fail
       // it still going on
-      await this.runHook(res.path, Hook.Postadd);
+      await this.hook.run(res.path, Hook.Postadd);
     } catch (err) {
       console.error(err);
     }
@@ -214,7 +206,7 @@ export class Gpm {
     // whatever hook success or fail
     // it still going on
     try {
-      await this.runHook(repository.path, Hook.Preremove);
+      await this.hook.run(repository.path, Hook.Preremove);
     } catch (err) {
       console.error(err);
     }
@@ -226,7 +218,7 @@ export class Gpm {
     // whatever hook success or fail
     // it still going on
     try {
-      await this.runHook(path.dirname(repository.path), Hook.Postremove);
+      await this.hook.run(path.dirname(repository.path), Hook.Postremove);
     } catch (err) {
       console.error(err);
     }
@@ -591,31 +583,5 @@ export class Gpm {
   public clearStars(): void {
     this.explorer.star.clear();
     this.refresh();
-  }
-  /**
-   * Run hook in the path if it exist
-   * @param {string} cwd
-   * @param {Hook} hookName
-   * @returns
-   * @memberof Gpm
-   */
-  public async runHook(cwd: string, hookName: Hook) {
-    // if user disable auto run hook
-    if (!this.config.isAutoRunHook) {
-      return;
-    }
-
-    const gpmrcPath = path.join(cwd, this.PresetFile);
-    // run the hooks
-    if (await fs.pathExists(gpmrcPath)) {
-      // if .gpmrc file exist
-      const preset: IPreset = await fs.readJson(gpmrcPath);
-      if (preset.hooks) {
-        const cmd = preset.hooks[hookName] || preset.hooks.postadd;
-        if (cmd) {
-          await this.shell.run(cwd, cmd);
-        }
-      }
-    }
   }
 }
