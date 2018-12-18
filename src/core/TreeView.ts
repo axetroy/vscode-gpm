@@ -39,6 +39,11 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         );
       })
       .then(list => {
+        // if show project flattens
+        // so no owner struct
+        if (this.config.isFlattenProjects) {
+          return list as any
+        }
         const owners: IOwner[] = flatten(list);
         return Promise.all(
           owners.map(owner => this.getChildren(owner) as Promise<IRepository[]>)
