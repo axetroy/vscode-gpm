@@ -74,7 +74,25 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
     }
 
     if (this.resource.isSource(element)) {
-      return this.getOwner(element);
+      // flatten projects
+      if (this.config.isFlattenProjects === false) {
+        return this.getOwner(element)
+      } else {
+        const owners = await this.getOwner(element);
+        const flatList:IRepository[][] = []
+
+        const mapper =  async (owner: IOwner) => {
+          flatList.push(
+            await this.getRepository(owner, true)
+          )
+        }
+
+        await promiseMap(owners, mapper, { concurrency: 10 });
+
+        const result =  flatten(flatList)
+
+        return _.sortBy(result, v => _.lowerCase(v.label));
+      }
     }
 
     if (this.resource.isOwner(element)) {
@@ -156,7 +174,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     return _.sortBy(children, v => _.lowerCase(v.owner));
   }
-  private async getRepository(element: IOwner): Promise<IRepository[]> {
+  private async getRepository(element: IOwner, isFlattenOwner:boolean = false): Promise<IRepository[]> {
     const children: IRepository[] = [];
 
     const files: string[] = (await fs.readdir(element.path)).filter(
@@ -167,7 +185,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       const statInfo = await fs.stat(path.join(element.path, file));
 
       if (statInfo.isDirectory()) {
-        const repository = this.resource.createRepository(element, file);
+        const repository = this.resource.createRepository(element, file, isFlattenOwner);
 
         const staredRepository = this.star.find(repository);
 

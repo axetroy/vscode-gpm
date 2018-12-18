@@ -429,6 +429,11 @@
             "ask"
           ],
           "description": "%ext.config.searchBehavior%"
+        },
+        "gpm.flattenProjects": {
+          "type": "boolean",
+          "default": false,
+          "description": "%ext.config.flattenProjects%"
         }
       }
     },

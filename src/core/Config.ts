@@ -10,7 +10,8 @@ export class Config {
   public fields = {
     ROOT_PATH: "rootPath",
     IS_AUTO_RUN_HOOK: "isAutoRunHook",
-    SEARCH_BEHAVIOR: "searchBehavior"
+    SEARCH_BEHAVIOR: "searchBehavior",
+    IS_FLATTEN_PROJECTS: "flattenProjects",
   };
   /**
    * Get configuration of this extension
@@ -52,6 +53,9 @@ export class Config {
   }
   get searchBehavior(): SearchBehavior {
     return this.select(this.fields.SEARCH_BEHAVIOR).get() as SearchBehavior;
+  }
+  get isFlattenProjects(): boolean {
+    return !!this.select(this.fields.IS_FLATTEN_PROJECTS).get();
   }
   /**
    * select a field

@@ -445,8 +445,14 @@ export async function activate(
   // watch config change and refresh
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(e => {
-      if (e.affectsConfiguration("gpm.rootPath")) {
-        gpm.refresh();
+      const refreshConfigs = [
+        "gpm.rootPath",
+        "gpm.flattenProjects"
+      ]
+      for (const config of refreshConfigs) {
+        if (e.affectsConfiguration(config)) {
+          gpm.refresh();
+        }
       }
     })
   );

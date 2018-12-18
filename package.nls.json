@@ -5,6 +5,7 @@
   "ext.config.rootPath": "GPM root path, default: [$HOME/gpm], support other environment variables, eb. $GOPATH",
   "ext.config.isAutoRunHook": "Run custom hook automatically. WARNING: it may be dangerous. risk on your own.",
   "ext.config.searchBehavior": "Define the behavior of search and select a project.",
+  "ext.config.flattenProjects": "Show flatten project. eg owner_name/project_name",
   "cmd.refresh.title": "Refresh",
   "cmd.clear.title": "Clear Cache",
   "cmd.add.title": "Add Project",

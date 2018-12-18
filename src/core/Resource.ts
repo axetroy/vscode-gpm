@@ -112,10 +112,10 @@ export class Resource {
       rootPath: source.rootPath
     };
   }
-  public createRepository(owner: IOwner, repositoryName: string): IRepository {
+  public createRepository(owner: IOwner, repositoryName: string, isFlattenOwner: boolean = false): IRepository {
     return {
       id: `${owner.id}/${repositoryName}`,
-      label: repositoryName,
+      label: isFlattenOwner ? owner.owner + '/' + repositoryName : repositoryName,
       contextValue: FileType.Repository,
       collapsibleState: 1,
       command: void 0,
