@@ -1,3 +1,19 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/axetroy/vscode-gpm/compare/v1.0.0...v1.1.0) (2018-12-18)
+
+
+### Bug Fixes
+
+* fix searchBehavior config enum ([12de9fd](https://github.com/axetroy/vscode-gpm/commit/12de9fd))
+* fix travers in flatten mode ([55f5c7b](https://github.com/axetroy/vscode-gpm/commit/55f5c7b))
+
+
+### Features
+
+* add flatten option to show flat project in tree view, closed [#20](https://github.com/axetroy/vscode-gpm/issues/20) ([c0be31e](https://github.com/axetroy/vscode-gpm/commit/c0be31e))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/axetroy/vscode-gpm/compare/v0.26.0...v1.0.0) (2018-07-31)
 
