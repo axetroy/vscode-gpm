@@ -420,7 +420,7 @@
         "gpm.searchBehavior": {
           "type": "string",
           "default": "openInNewWindow",
-          "oneOf": [
+          "enum": [
             "openInNewWindow",
             "openInCurrentWindow",
             "remove",
