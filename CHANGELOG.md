@@ -1,4 +1,14 @@
-<a name="1.1.0"></a>
+## [1.1.1](https://github.com/axetroy/vscode-gpm/compare/v1.1.0...v1.1.1) (2019-01-27)
+
+
+### Features
+
+* improve error messages ([e416b4e](https://github.com/axetroy/vscode-gpm/commit/e416b4e))
+* support clone with submodules ([9fecfd6](https://github.com/axetroy/vscode-gpm/commit/9fecfd6))
+* upgrade deps ([628c43a](https://github.com/axetroy/vscode-gpm/commit/628c43a))
+
+
+
 # [1.1.0](https://github.com/axetroy/vscode-gpm/compare/v1.0.0...v1.1.0) (2018-12-18)
 
 
@@ -14,7 +24,6 @@
 
 
 
-<a name="1.0.0"></a>
 # [1.0.0](https://github.com/axetroy/vscode-gpm/compare/v0.26.0...v1.0.0) (2018-07-31)
 
 
@@ -35,7 +44,6 @@
 
 
 
-<a name="0.26.0"></a>
 # [0.26.0](https://github.com/axetroy/vscode-gpm/compare/v0.25.0...v0.26.0) (2018-07-27)
 
 
@@ -45,7 +53,6 @@
 
 
 
-<a name="0.25.0"></a>
 # [0.25.0](https://github.com/axetroy/vscode-gpm/compare/v0.24.0...v0.25.0) (2018-07-27)
 
 
@@ -55,7 +62,6 @@
 
 
 
-<a name="0.24.0"></a>
 # [0.24.0](https://github.com/axetroy/vscode-gpm/compare/v0.23.5...v0.24.0) (2018-07-26)
 
 
@@ -75,7 +81,6 @@
 
 
 
-<a name="0.23.5"></a>
 ## [0.23.5](https://github.com/axetroy/vscode-gpm/compare/v0.23.4...v0.23.5) (2018-07-25)
 
 
@@ -85,12 +90,10 @@
 
 
 
-<a name="0.23.4"></a>
 ## [0.23.4](https://github.com/axetroy/vscode-gpm/compare/v0.23.3...v0.23.4) (2018-07-25)
 
 
 
-<a name="0.23.3"></a>
 ## [0.23.3](https://github.com/axetroy/vscode-gpm/compare/v0.23.2...v0.23.3) (2018-07-25)
 
 
@@ -105,7 +108,6 @@
 
 
 
-<a name="0.23.2"></a>
 ## [0.23.2](https://github.com/axetroy/vscode-gpm/compare/v0.23.1...v0.23.2) (2018-07-24)
 
 
@@ -115,7 +117,6 @@
 
 
 
-<a name="0.23.1"></a>
 ## [0.23.1](https://github.com/axetroy/vscode-gpm/compare/v0.23.0...v0.23.1) (2018-07-24)
 
 
@@ -135,7 +136,6 @@
 
 
 
-<a name="0.23.0"></a>
 # [0.23.0](https://github.com/axetroy/vscode-gpm/compare/v0.22.0...v0.23.0) (2018-07-06)
 
 
@@ -151,7 +151,6 @@
 
 
 
-<a name="0.22.0"></a>
 # [0.22.0](https://github.com/axetroy/vscode-gpm/compare/v0.21.3...v0.22.0) (2018-07-06)
 
 
@@ -161,7 +160,6 @@
 
 
 
-<a name="0.21.3"></a>
 ## [0.21.3](https://github.com/axetroy/vscode-gpm/compare/v0.21.2...v0.21.3) (2018-07-05)
 
 
@@ -171,7 +169,6 @@
 
 
 
-<a name="0.21.2"></a>
 ## [0.21.2](https://github.com/axetroy/vscode-gpm/compare/v0.21.1...v0.21.2) (2018-07-05)
 
 
@@ -181,7 +178,6 @@
 
 
 
-<a name="0.21.1"></a>
 ## [0.21.1](https://github.com/axetroy/vscode-gpm/compare/v0.21.0...v0.21.1) (2018-07-05)
 
 
@@ -191,7 +187,6 @@
 
 
 
-<a name="0.21.0"></a>
 # [0.21.0](https://github.com/axetroy/vscode-gpm/compare/v0.20.1...v0.21.0) (2018-06-22)
 
 
@@ -208,7 +203,6 @@
 
 
 
-<a name="0.20.1"></a>
 ## [0.20.1](https://github.com/axetroy/vscode-gpm/compare/v0.20.0...v0.20.1) (2018-06-13)
 
 
@@ -218,7 +212,6 @@
 
 
 
-<a name="0.20.0"></a>
 # [0.20.0](https://github.com/axetroy/vscode-gpm/compare/v0.19.0...v0.20.0) (2018-06-07)
 
 
@@ -229,7 +222,6 @@
 
 
 
-<a name="0.19.0"></a>
 # [0.19.0](https://github.com/axetroy/vscode-gpm/compare/v0.18.0...v0.19.0) (2018-05-28)
 
 
@@ -241,7 +233,6 @@
 
 
 
-<a name="0.18.0"></a>
 # [0.18.0](https://github.com/axetroy/vscode-gpm/compare/v0.17.0...v0.18.0) (2018-05-28)
 
 
@@ -251,7 +242,6 @@
 
 
 
-<a name="0.17.0"></a>
 # [0.17.0](https://github.com/axetroy/vscode-gpm/compare/v0.16.3...v0.17.0) (2018-05-19)
 
 
@@ -261,7 +251,6 @@
 
 
 
-<a name="0.16.3"></a>
 ## [0.16.3](https://github.com/axetroy/vscode-gpm/compare/v0.16.2...v0.16.3) (2018-05-17)
 
 
@@ -271,7 +260,6 @@
 
 
 
-<a name="0.16.2"></a>
 ## [0.16.2](https://github.com/axetroy/vscode-gpm/compare/v0.16.1...v0.16.2) (2018-04-11)
 
 
@@ -282,7 +270,6 @@
 
 
 
-<a name="0.16.1"></a>
 ## [0.16.1](https://github.com/axetroy/vscode-gpm/compare/v0.16.0...v0.16.1) (2018-04-09)
 
 
@@ -297,7 +284,6 @@
 
 
 
-<a name="0.16.0"></a>
 # [0.16.0](https://github.com/axetroy/vscode-gpm/compare/v0.15.1...v0.16.0) (2018-04-07)
 
 
@@ -311,7 +297,6 @@
 
 
 
-<a name="0.15.1"></a>
 ## [0.15.1](https://github.com/axetroy/vscode-gpm/compare/v0.15.0...v0.15.1) (2018-04-06)
 
 
@@ -321,7 +306,6 @@
 
 
 
-<a name="0.15.0"></a>
 # [0.15.0](https://github.com/axetroy/vscode-gpm/compare/v0.14.1...v0.15.0) (2018-04-04)
 
 
@@ -333,7 +317,6 @@
 
 
 
-<a name="0.14.1"></a>
 ## [0.14.1](https://github.com/axetroy/vscode-gpm/compare/v0.14.0...v0.14.1) (2018-04-03)
 
 
@@ -343,7 +326,6 @@
 
 
 
-<a name="0.14.0"></a>
 # [0.14.0](https://github.com/axetroy/vscode-gpm/compare/v0.13.1...v0.14.0) (2018-04-01)
 
 
@@ -360,7 +342,6 @@
 
 
 
-<a name="0.13.1"></a>
 ## [0.13.1](https://github.com/axetroy/vscode-gpm/compare/v0.13.0...v0.13.1) (2018-03-29)
 
 
@@ -370,7 +351,6 @@
 
 
 
-<a name="0.13.0"></a>
 # [0.13.0](https://github.com/axetroy/vscode-gpm/compare/v0.12.1...v0.13.0) (2018-03-28)
 
 
@@ -380,7 +360,6 @@
 
 
 
-<a name="0.12.1"></a>
 ## [0.12.1](https://github.com/axetroy/vscode-gpm/compare/v0.12.0...v0.12.1) (2018-03-26)
 
 
@@ -390,7 +369,6 @@
 
 
 
-<a name="0.12.0"></a>
 # [0.12.0](https://github.com/axetroy/vscode-gpm/compare/v0.11.0...v0.12.0) (2018-03-23)
 
 
@@ -400,7 +378,6 @@
 
 
 
-<a name="0.11.0"></a>
 # [0.11.0](https://github.com/axetroy/vscode-gpm/compare/v0.10.0...v0.11.0) (2018-03-23)
 
 
@@ -415,7 +392,6 @@
 
 
 
-<a name="0.10.0"></a>
 # [0.10.0](https://github.com/axetroy/vscode-gpm/compare/v0.9.0...v0.10.0) (2018-03-22)
 
 
@@ -425,7 +401,6 @@
 
 
 
-<a name="0.9.0"></a>
 # [0.9.0](https://github.com/axetroy/vscode-gpm/compare/v0.8.4...v0.9.0) (2018-03-22)
 
 
@@ -436,7 +411,6 @@
 
 
 
-<a name="0.8.4"></a>
 ## [0.8.4](https://github.com/axetroy/vscode-gpm/compare/v0.8.3...v0.8.4) (2018-03-22)
 
 
@@ -446,7 +420,6 @@
 
 
 
-<a name="0.8.3"></a>
 ## [0.8.3](https://github.com/axetroy/vscode-gpm/compare/v0.8.2...v0.8.3) (2018-03-21)
 
 
@@ -456,17 +429,14 @@
 
 
 
-<a name="0.8.2"></a>
 ## [0.8.2](https://github.com/axetroy/vscode-gpm/compare/v0.8.1...v0.8.2) (2018-03-21)
 
 
 
-<a name="0.8.1"></a>
 ## [0.8.1](https://github.com/axetroy/vscode-gpm/compare/v0.8.0...v0.8.1) (2018-03-21)
 
 
 
-<a name="0.8.0"></a>
 # [0.8.0](https://github.com/axetroy/vscode-gpm/compare/v0.7.0...v0.8.0) (2018-03-21)
 
 
@@ -486,7 +456,6 @@
 
 
 
-<a name="0.7.0"></a>
 # [0.7.0](https://github.com/axetroy/vscode-gpm/compare/v0.6.0...v0.7.0) (2018-03-21)
 
 
@@ -496,7 +465,6 @@
 
 
 
-<a name="0.6.0"></a>
 # [0.6.0](https://github.com/axetroy/vscode-gpm/compare/v0.5.0...v0.6.0) (2018-03-21)
 
 
@@ -512,7 +480,6 @@
 
 
 
-<a name="0.5.0"></a>
 # [0.5.0](https://github.com/axetroy/vscode-gpm/compare/v0.4.1...v0.5.0) (2018-03-20)
 
 
@@ -522,7 +489,6 @@
 
 
 
-<a name="0.4.1"></a>
 ## [0.4.1](https://github.com/axetroy/vscode-gpm/compare/v0.4.0...v0.4.1) (2018-03-20)
 
 
@@ -532,7 +498,6 @@
 
 
 
-<a name="0.4.0"></a>
 # [0.4.0](https://github.com/axetroy/vscode-gpm/compare/4eed2aa...v0.4.0) (2018-03-20)
 
 
