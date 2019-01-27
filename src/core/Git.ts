@@ -122,7 +122,7 @@ export class Git {
     await fs.ensureDir(randomTemp);
 
     try {
-      await this.Shell.run(randomTemp, `git clone ${address} --progress -v`);
+      await this.Shell.run(randomTemp, `git clone --progress -v --recurse-submodules ${address}`);
 
       // move the dist
       await fs.ensureDir(dist);
