@@ -65,6 +65,7 @@
   "err.invalidOwnerName": "Your input \"{0}\" is not equal with \"{1}\"，delete fail",
   "err.invalidRepoName": "Your input \"{0}\" is not equal with \"{1}\"，delete fail",
   "err.invalidSourceName": "Your input \"{0}\" is not equal with \"{1}\"，delete fail",
+  "err.processKilled": "The process have been killed.",
   "action.create": "Create",
   "action.cancel": "Cancel",
   "action.overwrite": "Overwrite",

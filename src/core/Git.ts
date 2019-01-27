@@ -144,6 +144,9 @@ export class Git {
       };
     } catch (err) {
       await fs.remove(randomTemp);
+      if (err.message === "SIGKILL") {
+        throw new Error(this.i18n.localize("err.processKilled"))
+      }
       throw err;
     }
   }

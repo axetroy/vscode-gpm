@@ -64,6 +64,7 @@
   "err.invalidOwnerName": "您的输入 \"{0}\" 与拥有者名 \"{1}\" 不匹配，无法删除",
   "err.invalidRepoName": "您的输入 \"{0}\" 与项目名 \"{1}\" 不匹配，无法删除",
   "err.invalidSourceName": "您的输入 \"{0}\" 与源名 \"{1}\" 不匹配，无法删除",
+  "err.processKilled": "进程已被杀死",
   "action.create": "创建",
   "action.cancel": "取消",
   "action.overwrite": "覆盖",
