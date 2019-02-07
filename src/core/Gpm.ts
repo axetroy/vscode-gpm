@@ -482,6 +482,8 @@ export class Gpm {
         return this.star(repository);
       case SearchBehavior.Unstar:
         return this.unstar(repository);
+      case SearchBehavior.AddToWorkspace:
+        return this.addToWorkspace(repository);
       case SearchBehavior.Ask:
         const repositorySymbol: string = `@${repository.owner}/${
           repository.repository
@@ -528,6 +530,31 @@ export class Gpm {
   public async unstar(repository: IRepository): Promise<void> {
     await this.explorer.star.unstar(repository);
     this.refresh();
+  }
+  /**
+   * add project to workspace
+   * @param repository
+   */
+  public addToWorkspace(repository: IRepository) {
+    const name = `${repository.source}/${repository.owner}/${
+      repository.repository
+    }`;
+    const uri = vscode.Uri.file(repository.path);
+
+    const workspace = vscode.workspace.getWorkspaceFolder(uri);
+
+    if (workspace) {
+      // TODO: if workspace exist. open it.
+      // waiting for vscode api
+    } else {
+      vscode.workspace.updateWorkspaceFolders(
+        vscode.workspace.workspaceFolders
+          ? vscode.workspace.workspaceFolders.length
+          : 0,
+        null,
+        { uri, name }
+      );
+    }
   }
   /**
    * Get the star list

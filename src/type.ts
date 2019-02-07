@@ -107,6 +107,7 @@ export enum SearchBehavior {
   Remove = "action.remove",
   Star = "star",
   Unstar = "unstar",
+  AddToWorkspace = "addToWorkSpace",
   Ask = "ask"
 }
 
@@ -129,6 +130,7 @@ export enum Command {
   Search = "gpm.search",
   OpenInTerminal = "gpm.openInTerminal",
   CopyPath = "gpm.copyPath",
+  AddToWorkspace = "gpm.addToWorkspace",
   // create
   CreateRepository = "gpm.createRepository",
   CreateOwner = "gpm.createOwner",
@@ -138,5 +140,6 @@ export enum Command {
   ListProject2Remove = "gpm.list2remove",
   ListProject2Star = "gpm.list2star",
   ListProject2UnStar = "gpm.list2unstar",
-  ListProject2OpenInTerminal = "gpm.list2openInTerminal"
+  ListProject2OpenInTerminal = "gpm.list2openInTerminal",
+  ListProject2AddToWorkspace = "gpm.list2addToWorkspace"
 }

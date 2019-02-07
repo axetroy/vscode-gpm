@@ -210,6 +210,16 @@
         "command": "gpm.copyPath",
         "title": "%cmd.copyPath.title%",
         "category": "GPM"
+      },
+      {
+        "command": "gpm.addToWorkspace",
+        "title": "%cmd.addToWorkspace.title%",
+        "category": "GPM"
+      },
+      {
+        "command": "gpm.list2addToWorkspace",
+        "title": "%cmd.list2addToWorkspace.title%",
+        "category": "GPM"
       }
     ],
     "menus": {
@@ -350,6 +360,16 @@
           "command": "gpm.copyPath",
           "group": "context",
           "when": "view == GPMExplorer && viewItem != segmentation"
+        },
+        {
+          "command": "gpm.addToWorkspace",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository"
+        },
+        {
+          "command": "gpm.addToWorkspace",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem == repository.stared"
         }
       ],
       "commandPalette": [
@@ -396,11 +416,15 @@
         {
           "command": "gpm.copyPath",
           "when": "never"
+        },
+        {
+          "command": "gpm.addToWorkspace",
+          "when": "never"
         }
       ]
     },
     "configuration": {
-      "title": "GPM",
+      "title": "GPM config",
       "properties": {
         "gpm.rootPath": {
           "type": "array",
@@ -426,6 +450,7 @@
             "remove",
             "star",
             "unstar",
+            "addToWorkSpace",
             "ask"
           ],
           "description": "%ext.config.searchBehavior%"

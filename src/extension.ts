@@ -59,6 +59,36 @@ export async function activate(
     )
   );
 
+  // copy path
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.AddToWorkspace,
+      async (repository: IRepository): Promise<void> => {
+        gpm.addToWorkspace(repository);
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.ListProject2AddToWorkspace,
+      async () => {
+        const repository = await gpm.selectRepository(void 0, {
+          placeHolder: i18n.localize(
+            "tip.placeholder.list2AddWorkspace",
+            "请选择项目然后添加到工作区"
+          )
+        });
+
+        if (!repository) {
+          return;
+        }
+
+        return gpm.addToWorkspace(repository);
+      }
+    )
+  );
+
   // open project in current window
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -445,10 +475,7 @@ export async function activate(
   // watch config change and refresh
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(e => {
-      const refreshConfigs = [
-        "gpm.rootPath",
-        "gpm.flattenProjects"
-      ]
+      const refreshConfigs = ["gpm.rootPath", "gpm.flattenProjects"];
       for (const config of refreshConfigs) {
         if (e.affectsConfiguration(config)) {
           gpm.refresh();
