@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/axetroy/vscode-gpm/compare/v1.1.1...v1.2.0) (2019-02-07)
+
+
+### Features
+
+* allow add project to workspace. close [#22](https://github.com/axetroy/vscode-gpm/issues/22) ([f75a625](https://github.com/axetroy/vscode-gpm/commit/f75a625))
+
+
+
 ## [1.1.1](https://github.com/axetroy/vscode-gpm/compare/v1.1.0...v1.1.1) (2019-01-27)
 
 
