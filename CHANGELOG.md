@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/axetroy/vscode-gpm/compare/v1.2.0...v1.2.1) (2019-02-08)
+
+
+### Bug Fixes
+
+* add to workspace command not in activationEvents ([cd6d90a](https://github.com/axetroy/vscode-gpm/commit/cd6d90a))
+
+
+
 # [1.2.0](https://github.com/axetroy/vscode-gpm/compare/v1.1.1...v1.2.0) (2019-02-07)
 
 
