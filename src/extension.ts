@@ -59,7 +59,7 @@ export async function activate(
     )
   );
 
-  // copy path
+  // add to workspace
   context.subscriptions.push(
     vscode.commands.registerCommand(
       Command.AddToWorkspace,

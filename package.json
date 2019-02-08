@@ -53,7 +53,9 @@
     "onCommand:gpm.openInTerminal",
     "onCommand:gpm.list2openInTerminal",
     "onCommand:gpm.createRepository",
-    "onCommand:gpm.createOwner"
+    "onCommand:gpm.createOwner",
+    "onCommand:gpm.addToWorkspace",
+    "onCommand:gpm.list2addToWorkspace"
   ],
   "contributes": {
     "views": {
