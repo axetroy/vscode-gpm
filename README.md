@@ -1,4 +1,4 @@
-# vscode-gpm
+# vscode-gpm 
 
 [![Build Status](https://travis-ci.org/axetroy/vscode-gpm.svg?branch=master)](https://travis-ci.org/axetroy/vscode-gpm)
 [![Visual Studio Marketplace](https://img.shields.io/vscode-marketplace/d/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
