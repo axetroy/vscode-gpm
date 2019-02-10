@@ -19,7 +19,7 @@ export class Localize {
   public localize(key: string, comment: string = "", args: any[] = []): string {
     // 返回翻译后的内容
     const languagePack = this.bundle;
-    const message = languagePack[key];
+    const message = languagePack[key] || "";
     return this.format(message, args);
   }
   private format(message: string, args: any[] = []): string {
