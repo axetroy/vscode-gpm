@@ -455,6 +455,15 @@
             "addToWorkSpace",
             "ask"
           ],
+          "markdownEnumDescriptions": [
+            "%ext.config.search.openInNewWindow%",
+            "%ext.config.search.openInCurrentWindow%",
+            "%ext.config.search.remove%",
+            "%ext.config.search.star%",
+            "%ext.config.search.unstar%",
+            "%ext.config.search.addToWorkSpace%",
+            "%ext.config.search.ask%"
+          ],
           "description": "%ext.config.searchBehavior%"
         },
         "gpm.flattenProjects": {
