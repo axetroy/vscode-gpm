@@ -1,5 +1,5 @@
 import { ChildProcess } from "child_process";
-import * as shell from "shelljs";
+import * as execa from "execa";
 import { Service } from "typedi";
 import { Command } from "../type";
 import { Statusbar } from "./Statusbar";
@@ -22,11 +22,11 @@ export class Shell {
    */
   public async run(cwd: string, command: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      shell.cd(cwd);
+      const args = command.split(' ')
 
-      const process = shell.exec(command, {
-        async: true
-      }) as ChildProcess;
+      const executable = args.shift() as string
+
+      const process = execa(executable, args, { cwd })
 
       const statusbar = new Statusbar(Command.InterruptCommand);
 

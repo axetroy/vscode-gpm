@@ -491,11 +491,11 @@
     "publish": "npx vsce publish"
   },
   "devDependencies": {
+    "@types/execa": "^0.9.0",
     "@types/fs-extra": "^5.0.4",
     "@types/lodash": "^4.14.120",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
-    "@types/shelljs": "^0.8.2",
     "conventional-changelog-cli": "^2.0.11",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.14.0",
@@ -505,13 +505,13 @@
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
     "clipboardy": "^1.2.3",
+    "execa": "^1.0.0",
     "fs-extra": "^7.0.1",
     "git-url-parse": "^11.1.2",
     "lodash": "^4.17.10",
     "p-map": "^2.0.0",
     "process-exists": "^3.1.0",
     "reflect-metadata": "^0.1.13",
-    "shelljs": "^0.8.3",
     "typedi": "^0.8.0",
     "unique-string": "^1.0.0"
   }
