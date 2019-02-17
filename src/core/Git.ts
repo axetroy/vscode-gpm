@@ -2,7 +2,6 @@ import * as fs from "fs-extra";
 import * as gitUrlParse from "git-url-parse";
 import * as os from "os";
 import * as path from "path";
-import * as shell from "shelljs";
 import { Container, Inject, Service } from "typedi";
 import * as uniqueString from "unique-string";
 import * as vscode from "vscode";
@@ -30,10 +29,10 @@ export class Git {
   /**
    * check git command has been installed.
    */
-  private isGitAvailable(): boolean {
+  private async isGitAvailable(): Promise<boolean> {
     try {
-      const r = shell.which("git");
-      return !!r;
+      await this.Shell.run(__dirname, "git");
+      return true;
     } catch (err) {
       vscode.window.showErrorMessage(
         this.i18n.localize("err.gitNotInstall", "请确保Git已经安装")
@@ -96,7 +95,9 @@ export class Git {
    * @param baseDir
    */
   public async clone(address: string, baseDir: string): Promise<IClone | void> {
-    this.isGitAvailable();
+    if ((await this.isGitAvailable()) === false) {
+      return;
+    }
 
     const gitInfo = gitUrlParse(address);
 
@@ -122,7 +123,10 @@ export class Git {
     await fs.ensureDir(randomTemp);
 
     try {
-      await this.Shell.run(randomTemp, `git clone --progress -v --recurse-submodules ${address}`);
+      await this.Shell.run(
+        randomTemp,
+        `git clone --progress -v --recurse-submodules ${address}`
+      );
 
       // move the dist
       await fs.ensureDir(dist);
@@ -145,7 +149,7 @@ export class Git {
     } catch (err) {
       await fs.remove(randomTemp);
       if (err.message === "SIGKILL") {
-        throw new Error(this.i18n.localize("err.processKilled"))
+        throw new Error(this.i18n.localize("err.processKilled"));
       }
       throw err;
     }
