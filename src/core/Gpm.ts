@@ -8,7 +8,6 @@ import { Shell } from "../common/Shell";
 import { Terminal } from "../common/Terminal";
 import {
   FileType,
-  Hook,
   IFile,
   IOwner,
   IRepository,

@@ -77,13 +77,6 @@ export enum PruneAction {
   Cancel = "action.cancel"
 }
 
-export enum Hook {
-  Add = "add",
-  Postadd = "postadd",
-  Preremove = "preremove",
-  Postremove = "postremove"
-}
-
 export enum SearchAction {
   Open = "action.open",
   Remove = "action.remove",
