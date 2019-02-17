@@ -3,7 +3,6 @@
   "ext.view.star": "My stars",
   "ext.view.stared": "The project you stared",
   "ext.config.rootPath": "GPM root path, default: [$HOME/gpm], support other environment variables, eb. $GOPATH",
-  "ext.config.isAutoRunHook": "Run custom hook automatically. WARNING: it may be dangerous. risk on your own.",
   "ext.config.searchBehavior": "Define the behavior of search and select a project.",
   "ext.config.flattenProjects": "Show flatten project. eg owner_name/project_name",
   "ext.config.search.openInNewWindow": "Open in new window",

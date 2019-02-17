@@ -21,7 +21,6 @@ import {
 } from "../type";
 import { Config } from "./Config";
 import { Git } from "./Git";
-import { Hooker } from "./Hook";
 import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
 
@@ -34,7 +33,6 @@ export class Gpm {
   @Inject() public resource!: Resource;
   @Inject() public git!: Git;
   @Inject() public shell!: Shell;
-  @Inject() public hook!: Hooker;
   @Inject() public terminal!: Terminal;
   /**
    * Add project
@@ -95,15 +93,6 @@ export class Gpm {
 
     if (!res) {
       return;
-    }
-
-    try {
-      // run the hooks
-      // whatever hook success or fail
-      // it still going on
-      await this.hook.run(res.path, Hook.Postadd);
-    } catch (err) {
-      console.error(err);
     }
 
     const open = this.i18n.localize(ProjectPostAddAction.Open);
@@ -202,26 +191,8 @@ export class Gpm {
    * @memberof Gpm
    */
   public async remove(repository: IRepository) {
-    // run the hooks before remove project
-    // whatever hook success or fail
-    // it still going on
-    try {
-      await this.hook.run(repository.path, Hook.Preremove);
-    } catch (err) {
-      console.error(err);
-    }
-
     // remove project
     await fs.remove(repository.path);
-
-    // run the hooks after remove project
-    // whatever hook success or fail
-    // it still going on
-    try {
-      await this.hook.run(path.dirname(repository.path), Hook.Postremove);
-    } catch (err) {
-      console.error(err);
-    }
 
     // unstar project
     this.unstar(repository);

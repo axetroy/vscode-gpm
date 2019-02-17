@@ -438,11 +438,6 @@
           ],
           "description": "%ext.config.rootPath%"
         },
-        "gpm.isAutoRunHook": {
-          "type": "boolean",
-          "default": false,
-          "description": "%ext.config.isAutoRunHook%"
-        },
         "gpm.searchBehavior": {
           "type": "string",
           "default": "openInNewWindow",
@@ -472,13 +467,7 @@
           "description": "%ext.config.flattenProjects%"
         }
       }
-    },
-    "jsonValidation": [
-      {
-        "fileMatch": ".gpmrc",
-        "url": "https://raw.githubusercontent.com/axetroy/vscode-gpm/master/gpmrc.schema.json"
-      }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
