@@ -436,7 +436,7 @@
           "default": [
             "$HOME/gpm"
           ],
-          "description": "%ext.config.rootPath%"
+          "markdownDescription": "%ext.config.rootPath%"
         },
         "gpm.searchBehavior": {
           "type": "string",
@@ -464,7 +464,7 @@
         "gpm.flattenProjects": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.config.flattenProjects%"
+          "markdownDescription": "%ext.config.flattenProjects%"
         }
       }
     }
