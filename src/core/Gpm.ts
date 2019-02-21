@@ -1,4 +1,3 @@
-import * as Walker from "@axetroy/walk";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { Inject, Service } from "typedi";
@@ -22,6 +21,7 @@ import { Config } from "./Config";
 import { Git } from "./Git";
 import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
+import Pruner from "../util/pruner";
 
 @Service()
 export class Gpm {
@@ -140,47 +140,35 @@ export class Gpm {
         return;
     }
 
-    const done: Array<Promise<any>> = [];
-
-    let files = 0;
-    let directory = 0;
-    let removeDirCount = 0;
-
     vscode.window.showInformationMessage(
       this.i18n.localize("tip.message.pruneWait")
     );
 
+    const statusbar = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Right,
+      100
+    );
+
+    statusbar.text = "[GPM]: searching...";
+    statusbar.show();
+
+    let num = 0;
+
     for (const rootPath of this.config.rootPath) {
-      const walker = new Walker(rootPath);
-
-      walker.on("file", (filepath: string) => {
-        files++;
+      const pruner = new Pruner(rootPath);
+      pruner.on("file", (filepath: string) => {
+        statusbar.text = `[GPM]: ${filepath}`;
+        statusbar.show();
       });
-
-      walker.on("directory", (filepath: string) => {
-        directory++;
-        const name = path.basename(filepath);
-        if (name === "node_modules") {
-          done.push(
-            fs
-              .remove(filepath)
-              .then(() => removeDirCount++)
-              .catch(err => Promise.resolve())
-          );
-        }
-      });
-
-      await walker.walk();
+      pruner.on("found", () => num++);
+      await pruner.find();
     }
 
-    await Promise.all(done);
+    statusbar.hide();
+    statusbar.dispose();
 
     vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.pruneReport", "报告", [
-        files,
-        directory,
-        removeDirCount
-      ])
+      this.i18n.localize("tip.message.pruneReport", "报告", [num])
     );
     this.refresh();
   }

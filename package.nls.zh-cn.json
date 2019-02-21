@@ -61,7 +61,7 @@
   "tip.message.cloned": "项目 @{0}/{1} 克隆成功",
   "tip.message.pruneWarning": "Prune 命令将移除根目录下所有的 node_modules 目录, 你确定继续吗?",
   "tip.message.pruneWait": "正在扫描, 稍等片刻...",
-  "tip.message.pruneReport": "发现 {0} 个文件, {1} 个目录. 共移除 {2} 个 node_modules 目录",
+  "tip.message.pruneReport": "移除 {0} 个 node_modules 目录",
   "tip.message.clearReport": "缓存已清除",
   "tip.message.how2open": "你想怎么打开项目 {0}?",
   "tip.message.doWhat": "你想对 {0} 做哪些操作?",

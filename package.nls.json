@@ -61,7 +61,7 @@
   "tip.message.cloned": "Project @{0}/{1} have been cloned.",
   "tip.message.pruneWarning": "Prune will remove all node_modules folder under root path, will you continue?",
   "tip.message.pruneWait": "pruning... wait for a moment",
-  "tip.message.pruneReport": "Found {0} files, {1} directories. remove {2} count of node_modules",
+  "tip.message.pruneReport": "remove {0} count of node_modules.",
   "tip.message.clearReport": "Cache have been cleaned.",
   "tip.message.how2open": "How to open {0}?",
   "tip.message.doWhat": "What do you want to do about {0}?",
