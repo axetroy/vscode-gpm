@@ -162,7 +162,7 @@ export async function activate(
 
   // add project
   context.subscriptions.push(
-    vscode.commands.registerCommand(Command.AddProject, gpm.add.bind(gpm))
+    vscode.commands.registerCommand(Command.CloneProject, gpm.clone.bind(gpm))
   );
 
   // remove project

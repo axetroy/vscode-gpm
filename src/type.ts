@@ -111,7 +111,7 @@ export enum Command {
   Refresh = "gpm.refresh",
   ClearCache = "gpm.clearCache",
   Prune = "gpm.prune",
-  AddProject = "gpm.add",
+  CloneProject = "gpm.clone",
   RemoveProject = "gpm.remove",
   RemoveOwner = "gpm.removeOwner",
   RemoveSource = "gpm.removeSource",

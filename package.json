@@ -32,7 +32,7 @@
     "onView:GPMExplorer",
     "onCommand:gpm.refresh",
     "onCommand:gpm.clearCache",
-    "onCommand:gpm.add",
+    "onCommand:gpm.clone",
     "onCommand:gpm.openInCurrentWindow",
     "onCommand:gpm.openInNewWindow",
     "onCommand:gpm.prune",
@@ -91,7 +91,7 @@
         "category": "GPM"
       },
       {
-        "command": "gpm.add",
+        "command": "gpm.clone",
         "title": "%cmd.add.title%",
         "category": "GPM",
         "icon": {
@@ -232,7 +232,7 @@
           "when": "view == GPMExplorer"
         },
         {
-          "command": "gpm.add",
+          "command": "gpm.clone",
           "group": "navigation@2",
           "when": "view == GPMExplorer"
         },
