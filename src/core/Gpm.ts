@@ -34,11 +34,11 @@ export class Gpm {
   @Inject() public shell!: Shell;
   @Inject() public terminal!: Terminal;
   /**
-   * Add project
+   * clone project
    * @returns
    * @memberof Gpm
    */
-  public async add() {
+  public async clone() {
     const gitProjectAddress = await vscode.window.showInputBox({
       placeHolder: this.i18n.localize(
         "tip.placeholder.addressExample",
@@ -441,7 +441,7 @@ export class Gpm {
       case SearchBehavior.Unstar:
         return this.unstar(repository);
       case SearchBehavior.AddToWorkspace:
-        return this.addToWorkspace(repository);
+        return this.openInWorkspace(repository);
       case SearchBehavior.Ask:
         const repositorySymbol: string = `@${repository.owner}/${
           repository.repository
