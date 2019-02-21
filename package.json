@@ -54,7 +54,7 @@
     "onCommand:gpm.list2openInTerminal",
     "onCommand:gpm.createRepository",
     "onCommand:gpm.createOwner",
-    "onCommand:gpm.addToWorkspace",
+    "onCommand:gpm.openInWorkspace",
     "onCommand:gpm.list2addToWorkspace"
   ],
   "contributes": {
@@ -214,7 +214,7 @@
         "category": "GPM"
       },
       {
-        "command": "gpm.addToWorkspace",
+        "command": "gpm.openInWorkspace",
         "title": "%cmd.addToWorkspace.title%",
         "category": "GPM"
       },
@@ -364,12 +364,12 @@
           "when": "view == GPMExplorer && viewItem != segmentation"
         },
         {
-          "command": "gpm.addToWorkspace",
+          "command": "gpm.openInWorkspace",
           "group": "context",
           "when": "view == GPMExplorer && viewItem == repository"
         },
         {
-          "command": "gpm.addToWorkspace",
+          "command": "gpm.openInWorkspace",
           "group": "context",
           "when": "view == GPMExplorer && viewItem == repository.stared"
         }
@@ -420,7 +420,7 @@
           "when": "never"
         },
         {
-          "command": "gpm.addToWorkspace",
+          "command": "gpm.openInWorkspace",
           "when": "never"
         }
       ]

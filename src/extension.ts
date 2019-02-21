@@ -62,16 +62,14 @@ export async function activate(
   // add to workspace
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      Command.AddToWorkspace,
-      async (repository: IRepository): Promise<void> => {
-        gpm.addToWorkspace(repository);
-      }
+      Command.OpenInWorkspace,
+      gpm.openInWorkspace.bind(gpm)
     )
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      Command.ListProject2AddToWorkspace,
+      Command.ListProject2OpenInWorkspace,
       async () => {
         const repository = await gpm.selectRepository(void 0, {
           placeHolder: i18n.localize(
@@ -84,7 +82,7 @@ export async function activate(
           return;
         }
 
-        return gpm.addToWorkspace(repository);
+        return gpm.openInWorkspace(repository);
       }
     )
   );

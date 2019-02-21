@@ -490,10 +490,10 @@ export class Gpm {
     this.refresh();
   }
   /**
-   * add project to workspace
+   * open project in workspace
    * @param repository
    */
-  public addToWorkspace(repository: IRepository) {
+  public openInWorkspace(repository: IRepository) {
     const name = `${repository.source}/${repository.owner}/${
       repository.repository
     }`;
