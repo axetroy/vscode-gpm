@@ -426,7 +426,7 @@
       ]
     },
     "configuration": {
-      "title": "GPM config",
+      "title": "GPM configuration",
       "properties": {
         "gpm.rootPath": {
           "type": "array",
