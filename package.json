@@ -440,7 +440,7 @@
         },
         "gpm.searchBehavior": {
           "type": "string",
-          "default": "openInNewWindow",
+          "default": "addToWorkSpace",
           "enum": [
             "openInNewWindow",
             "openInCurrentWindow",
