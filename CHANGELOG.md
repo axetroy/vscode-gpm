@@ -1,3 +1,24 @@
+# [2.0.0](https://github.com/axetroy/vscode-gpm/compare/v1.2.1...v2.0.0) (2019-02-22)
+
+
+### Bug Fixes
+
+* If not match i18n key, it will throw error ([f326068](https://github.com/axetroy/vscode-gpm/commit/f326068))
+* not found method ([dbec7e5](https://github.com/axetroy/vscode-gpm/commit/dbec7e5))
+
+
+### Features
+
+* improve configuration ([037ba41](https://github.com/axetroy/vscode-gpm/commit/037ba41))
+* now default searchBehavior change to 'addToWorkSpace' ([5e12b78](https://github.com/axetroy/vscode-gpm/commit/5e12b78))
+* optimization configuration item ([8406c68](https://github.com/axetroy/vscode-gpm/commit/8406c68))
+* remove gpm hook and .gpmrc.json associations ([f065082](https://github.com/axetroy/vscode-gpm/commit/f065082))
+* rename addtoworkspace to openInWorkspace ([2d919ff](https://github.com/axetroy/vscode-gpm/commit/2d919ff))
+* rename gpm.add to gpm.clone ([329a9f2](https://github.com/axetroy/vscode-gpm/commit/329a9f2))
+* upgrade deps ([4c1f4fc](https://github.com/axetroy/vscode-gpm/commit/4c1f4fc))
+
+
+
 ## [1.2.1](https://github.com/axetroy/vscode-gpm/compare/v1.2.0...v1.2.1) (2019-02-08)
 
 
