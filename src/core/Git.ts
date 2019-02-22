@@ -125,7 +125,6 @@ export class Git {
     await fs.ensureDir(randomTemp);
 
     try {
-      this.Config.cloneArgs
       await this.Shell.run(
         randomTemp,
         `git clone ${address} ${this.Config.cloneArgs}`
