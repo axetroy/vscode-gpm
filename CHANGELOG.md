@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/axetroy/vscode-gpm/compare/v2.0.0...v2.1.0) (2019-02-22)
+
+
+### Features
+
+* add an option to set git clone arguments ([eed2674](https://github.com/axetroy/vscode-gpm/commit/eed2674))
+
+
+
 # [2.0.0](https://github.com/axetroy/vscode-gpm/compare/v1.2.1...v2.0.0) (2019-02-22)
 
 
