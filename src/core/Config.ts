@@ -12,6 +12,7 @@ export class Config {
     IS_AUTO_RUN_HOOK: "isAutoRunHook",
     SEARCH_BEHAVIOR: "searchBehavior",
     IS_FLATTEN_PROJECTS: "flattenProjects",
+    CLONE_ARGS: "cloneArgs"
   };
   /**
    * Get configuration of this extension
@@ -56,6 +57,9 @@ export class Config {
   }
   get isFlattenProjects(): boolean {
     return !!this.select(this.fields.IS_FLATTEN_PROJECTS).get();
+  }
+  get cloneArgs(): string {
+    return (this.select(this.fields.CLONE_ARGS).get() as string) + "" || "";
   }
   /**
    * select a field

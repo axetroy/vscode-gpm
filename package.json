@@ -55,7 +55,7 @@
     "onCommand:gpm.createRepository",
     "onCommand:gpm.createOwner",
     "onCommand:gpm.openInWorkspace",
-    "onCommand:gpm.list2addToWorkspace"
+    "onCommand:gpm.list2OpenInWorkspace"
   ],
   "contributes": {
     "views": {
@@ -215,12 +215,12 @@
       },
       {
         "command": "gpm.openInWorkspace",
-        "title": "%cmd.addToWorkspace.title%",
+        "title": "%cmd.openInWorkspace.title%",
         "category": "GPM"
       },
       {
-        "command": "gpm.list2addToWorkspace",
-        "title": "%cmd.list2addToWorkspace.title%",
+        "command": "gpm.list2OpenInWorkspace",
+        "title": "%cmd.list2OpenInWorkspace.title%",
         "category": "GPM"
       }
     ],
@@ -465,6 +465,11 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "%ext.config.flattenProjects%"
+        },
+        "gpm.cloneArgs": {
+          "type": "string",
+          "default": "--progress -v --recurse-submodules",
+          "markdownDescription": "%ext.config.cloneArgs%"
         }
       }
     }

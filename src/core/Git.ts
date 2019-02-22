@@ -9,6 +9,7 @@ import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
+import { Config } from "./Config";
 
 interface IClone {
   source: string;
@@ -22,6 +23,7 @@ export class Git {
   private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() private i18n!: Localize;
   @Inject() private Shell!: Shell;
+  @Inject() private Config!: Config;
   // the cache dir that project will be clone.
   private CACHE_PATH: string =
     this.context.storagePath || path.join(os.tmpdir(), ".gpm", "temp");
@@ -31,7 +33,7 @@ export class Git {
    */
   private async isGitAvailable(): Promise<boolean> {
     try {
-      await this.Shell.run(__dirname, "git");
+      await this.Shell.run(__dirname, "git version");
       return true;
     } catch (err) {
       vscode.window.showErrorMessage(
@@ -123,9 +125,10 @@ export class Git {
     await fs.ensureDir(randomTemp);
 
     try {
+      this.Config.cloneArgs
       await this.Shell.run(
         randomTemp,
-        `git clone --progress -v --recurse-submodules ${address}`
+        `git clone ${address} ${this.Config.cloneArgs}`
       );
 
       // move the dist
