@@ -5,7 +5,7 @@
   "version": "2.1.1",
   "publisher": "axetroy",
   "engines": {
-    "vscode": "^1.21.0"
+    "vscode": "^1.30.0"
   },
   "repository": {
     "type": "git",
@@ -494,7 +494,7 @@
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.3",
-    "vscode": "^1.1.29"
+    "vscode": "^1.1.30"
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
