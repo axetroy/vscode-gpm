@@ -27,7 +27,7 @@
     "Other"
   ],
   "icon": "resources/logo.png",
-  "main": "./out/extension",
+  "main": "./out/index.js",
   "activationEvents": [
     "onView:GPMExplorer",
     "onCommand:gpm.refresh",
@@ -476,7 +476,8 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && npm run lint",
+    "clean": "rimraf ./out",
+    "compile": "npm run clean && npm run lint && tsc -p ./ && npx @zeit/ncc build out/index.js -o ./dist -e vscode -s --no-source-map-register -m && npm run clean && move-cli ./dist ./out",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "tslint -p ./ -c tslint.json",
@@ -491,6 +492,8 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.9.4",
     "conventional-changelog-cli": "^2.0.12",
+    "move-cli": "^1.2.1",
+    "rimraf": "^2.6.3",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.3",
@@ -498,7 +501,6 @@
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
-    "clipboardy": "^1.2.3",
     "execa": "^1.0.0",
     "fs-extra": "^7.0.1",
     "git-url-parse": "^11.1.2",

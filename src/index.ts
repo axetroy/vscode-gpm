@@ -49,12 +49,7 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.CopyPath,
       async (file: IFile): Promise<void> => {
-        const clipboardy = require("clipboardy");
-        try {
-          await clipboardy.write(file.path);
-        } catch (err) {
-          vscode.window.showErrorMessage(err.message);
-        }
+        await vscode.env.clipboard.writeText(file.path);
       }
     )
   );
