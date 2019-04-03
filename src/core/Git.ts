@@ -33,7 +33,7 @@ export class Git {
    */
   private async isGitAvailable(): Promise<boolean> {
     try {
-      await this.Shell.run(__dirname, "git version");
+      await this.Shell.run(process.cwd(), "git version");
       return true;
     } catch (err) {
       vscode.window.showErrorMessage(
