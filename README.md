@@ -1,7 +1,7 @@
 # vscode-gpm
 
 [![Build Status](https://travis-ci.org/axetroy/vscode-gpm.svg?branch=master)](https://travis-ci.org/axetroy/vscode-gpm)
-[![Visual Studio Marketplace](https://img.shields.io/vscode-marketplace/d/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
+[![Visual Studio Marketplace](https://img.shields.io/vscode-marketplace/d/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm) [![Greenkeeper badge](https://badges.greenkeeper.io/axetroy/vscode-gpm.svg)](https://greenkeeper.io/)
 
 a cross-platform VSCode extension for managing your Git projects with Golang style.
 
