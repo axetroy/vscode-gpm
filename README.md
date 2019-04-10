@@ -1,7 +1,10 @@
-# vscode-gpm
+[![Build Status](https://travis-ci.com/axetroy/vscode-gpm.svg?branch=master)](https://travis-ci.com/axetroy/vscode-gpm)
+[![Version](https://vsmarketplacebadge.apphb.com/version/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
+[![Downloads](https://vsmarketplacebadge.apphb.com/downloads/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 
-[![Build Status](https://travis-ci.org/axetroy/vscode-gpm.svg?branch=master)](https://travis-ci.org/axetroy/vscode-gpm)
-[![Visual Studio Marketplace](https://img.shields.io/vscode-marketplace/d/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
+# vscode-gpm
 
 a cross-platform VSCode extension for managing your Git projects with Golang style.
 
@@ -33,4 +36,4 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 
 ## License
 
-The [MIT License](https://github.com/axetroy/vscode-gpm/blob/master/LICENSE)
+The [Anti 996 License](https://github.com/axetroy/vscode-gpm/blob/master/LICENSE)
