@@ -86,6 +86,7 @@ export enum SearchAction {
 export enum OpenAction {
   CurrentWindow = "action.currentWindow",
   NewWindow = "action.newWindow",
+  Workspace = "action.workspace",
   Cancel = "action.cancel"
 }
 

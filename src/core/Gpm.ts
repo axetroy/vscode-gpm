@@ -273,17 +273,21 @@ export class Gpm {
 
     const currentWindow = this.i18n.localize(OpenAction.CurrentWindow);
     const newWindow = this.i18n.localize(OpenAction.NewWindow);
+    const workspace = this.i18n.localize(OpenAction.Workspace);
 
     const action = await vscode.window.showInformationMessage(
       this.i18n.localize("tip.message.how2open", "选择打开方式", [
         repositorySymbol
       ]),
+      workspace,
       newWindow,
       currentWindow,
       this.i18n.localize(OpenAction.Cancel)
     );
 
     switch (action as OpenAction) {
+      case workspace:
+        return this.openInWorkspace(repository);
       case currentWindow:
         return this.openInCurrentWindow(repository);
       case newWindow:

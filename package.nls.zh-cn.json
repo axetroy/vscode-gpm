@@ -84,6 +84,7 @@
   "action.continue": "继续",
   "action.currentWindow": "当前窗口",
   "action.newWindow": "新窗口",
+  "action.workspace": "工作区",
   "action.yes": "是",
   "action.no": "否"
 }
