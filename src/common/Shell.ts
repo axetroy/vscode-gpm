@@ -22,11 +22,11 @@ export class Shell {
    */
   public async run(cwd: string, command: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const args = command.split(' ')
+      const args = command.split(" ");
 
-      const executable = args.shift() as string
+      const executable = args.shift() as string;
 
-      const process = execa(executable, args, { cwd })
+      const process = execa(executable, args, { cwd });
 
       const statusbar = new Statusbar(Command.InterruptCommand);
 
@@ -61,8 +61,13 @@ export class Shell {
         .on("exit", handler)
         .on("close", handler);
 
-      process.stdout.pipe(statusbar);
-      process.stderr.pipe(statusbar);
+      if (process.stdout) {
+        process.stdout.pipe(statusbar);
+      }
+
+      if (process.stderr) {
+        process.stderr.pipe(statusbar);
+      }
     });
   }
   /**
