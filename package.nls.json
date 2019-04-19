@@ -39,7 +39,7 @@
   "cmd.createOwner.title": "Create Owner",
   "cmd.copyPath.title": "Copy Path",
   "cmd.openInWorkspace.title": "Open in Workspace",
-  "cmd.list2OpenInWorkspace.title": "Open project in  Workspace",
+  "cmd.list2OpenInWorkspace.title": "Open Project in Workspace",
   "tip.placeholder.list2open": "Select a project to open in current window.",
   "tip.placeholder.list2openInNew": "Select a project to open in new window.",
   "tip.placeholder.list2remove": "Select a project and remove.",
