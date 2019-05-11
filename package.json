@@ -502,7 +502,7 @@
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
     "execa": "^1.0.0",
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.0.0",
     "git-url-parse": "^11.1.2",
     "lodash": "^4.17.11",
     "p-map": "^2.0.0",
