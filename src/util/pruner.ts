@@ -2,11 +2,11 @@ import * as fs from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 import { EventEmitter } from "events";
-import * as promiseMap from "p-map";
+import promiseMap from "p-map";
 
 const dir = path.join(os.homedir(), "gpm");
 
-const cores = os.cpus().length;
+const coresLen = os.cpus().length;
 
 function _() {
   //
@@ -22,12 +22,11 @@ class Pruner extends EventEmitter {
       .then((files: string[]) => {
         const mapper = async (file: string) => {
           const absPath = path.join(directory, file);
-          this.emit("file", absPath);
           if (file === "node_modules") {
             this.emit("found", absPath);
           } else {
             await fs
-              .stat(absPath)
+              .lstat(absPath)
               .then(stat => {
                 if (stat.isDirectory()) {
                   return this.find(absPath);
@@ -37,7 +36,7 @@ class Pruner extends EventEmitter {
           }
         };
 
-        return promiseMap(files, mapper, { concurrency: 20 * cores });
+        return promiseMap(files, mapper, { concurrency: 10 * coresLen });
       })
       .catch(_);
   }

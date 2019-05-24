@@ -154,14 +154,23 @@ export class Gpm {
 
     let num = 0;
 
+    const prunePaths: string[] = [];
+
     for (const rootPath of this.config.rootPath) {
       const pruner = new Pruner(rootPath);
-      pruner.on("file", (filepath: string) => {
-        statusbar.text = `[GPM]: ${filepath}`;
-        statusbar.show();
+      pruner.on("found", (filepath: string) => {
+        num++;
+        prunePaths.push(filepath);
+        statusbar.text = `[Found]: ${path.relative(rootPath, filepath)}`;
+        statusbar.tooltip = `Found ${filepath} and remove it later.`;
       });
-      pruner.on("found", () => num++);
       await pruner.find();
+    }
+
+    for (const filepath of prunePaths) {
+      statusbar.text = `[Delete]: ${filepath}`;
+      statusbar.tooltip = `Deleting ${filepath}...`;
+      await fs.remove(filepath);
     }
 
     statusbar.hide();

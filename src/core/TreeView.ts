@@ -1,6 +1,7 @@
+import * as os from "os";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
-import * as promiseMap from "p-map";
+import promiseMap from "p-map";
 import * as path from "path";
 import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
@@ -17,6 +18,8 @@ import { isVisiblePath } from "../util/is-visiblePath";
 import { Config } from "./Config";
 import { Resource } from "./Resource";
 import { Star } from "./Star";
+
+const coresLen = os.cpus().length;
 
 @Service()
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
@@ -42,7 +45,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         // if show project flattens
         // so no owner struct
         if (this.config.isFlattenProjects) {
-          return list as any
+          return list as any;
         }
         const owners: IOwner[] = flatten(list);
         return Promise.all(
@@ -81,20 +84,18 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
     if (this.resource.isSource(element)) {
       // flatten projects
       if (this.config.isFlattenProjects === false) {
-        return this.getOwner(element)
+        return this.getOwner(element);
       } else {
         const owners = await this.getOwner(element);
-        const flatList:IRepository[][] = []
+        const flatList: IRepository[][] = [];
 
-        const mapper =  async (owner: IOwner) => {
-          flatList.push(
-            await this.getRepository(owner, true)
-          )
-        }
+        const mapper = async (owner: IOwner) => {
+          flatList.push(await this.getRepository(owner, true));
+        };
 
-        await promiseMap(owners, mapper, { concurrency: 10 });
+        await promiseMap(owners, mapper, { concurrency: 10 * coresLen });
 
-        const result =  flatten(flatList)
+        const result = flatten(flatList);
 
         return _.sortBy(result, v => _.lowerCase(v.label));
       }
@@ -129,7 +130,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         }
       };
 
-      await promiseMap(files, mapper, { concurrency: 10 });
+      await promiseMap(files, mapper, { concurrency: 10 * coresLen });
     }
 
     const separation: ISegmentation = {
@@ -175,11 +176,14 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       }
     };
 
-    await promiseMap(files, mapper, { concurrency: 10 });
+    await promiseMap(files, mapper, { concurrency: 10 * coresLen });
 
     return _.sortBy(children, v => _.lowerCase(v.owner));
   }
-  private async getRepository(element: IOwner, isFlattenOwner:boolean = false): Promise<IRepository[]> {
+  private async getRepository(
+    element: IOwner,
+    isFlattenOwner: boolean = false
+  ): Promise<IRepository[]> {
     const children: IRepository[] = [];
 
     const files: string[] = (await fs.readdir(element.path)).filter(
@@ -190,7 +194,11 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       const statInfo = await fs.stat(path.join(element.path, file));
 
       if (statInfo.isDirectory()) {
-        const repository = this.resource.createRepository(element, file, isFlattenOwner);
+        const repository = this.resource.createRepository(
+          element,
+          file,
+          isFlattenOwner
+        );
 
         const staredRepository = this.star.find(repository);
 
@@ -202,7 +210,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       }
     };
 
-    await promiseMap(files, mapper, { concurrency: 10 });
+    await promiseMap(files, mapper, { concurrency: 10 * coresLen });
 
     return _.sortBy(children, v => _.lowerCase(v.repository));
   }
@@ -223,7 +231,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       }
     };
 
-    await promiseMap(files, mapper, { concurrency: 10 });
+    await promiseMap(files, mapper, { concurrency: 10 * coresLen });
 
     dirList
       .map(dir => this.resource.createFolder(path.join(element.path, dir)))
