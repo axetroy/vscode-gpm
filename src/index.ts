@@ -7,14 +7,7 @@ import "reflect-metadata";
 import * as vscode from "vscode";
 import { Container } from "typedi";
 import { Gpm } from "./core/Gpm";
-import {
-  Command,
-  ConfirmAction,
-  IFile,
-  IOwner,
-  IRepository,
-  ISource
-} from "./type";
+import { Command, IFile, IOwner, IRepository, ISource } from "./type";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -264,21 +257,28 @@ export async function activate(
         return;
       }
 
-      const yes = i18n.localize(ConfirmAction.Yes);
-
-      const action = await vscode.window.showInformationMessage(
-        i18n.localize("tip.message.beforeRemove", "你确定要删除吗", [
-          repository.owner,
+      const input = await vscode.window.showInputBox({
+        placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
+        prompt: i18n.localize("tip.message.beforeRemove", "请输入名字", [
           repository.repository
-        ]),
-        yes,
-        i18n.localize(ConfirmAction.No)
-      );
+        ])
+      });
 
-      switch (action as ConfirmAction) {
-        case yes:
-          return gpm.remove(repository);
+      if (!input) {
+        return;
       }
+
+      if (input !== repository.repository) {
+        vscode.window.showErrorMessage(
+          i18n.localize("err.invalidRepoName", "输入不正确", [
+            input,
+            repository.repository
+          ])
+        );
+        return;
+      }
+
+      return gpm.remove(repository);
     })
   );
 
