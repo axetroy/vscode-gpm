@@ -33,6 +33,7 @@
   "cmd.list2open.title": "Open Project",
   "cmd.list2openNew.title": "Open Project in New Window",
   "cmd.search.title": "Search",
+  "cmd.find.title": "Find",
   "cmd.openInTerminal.title": "Open in Terminal",
   "cmd.list2openInTerminal.title": "Open Project in Terminal",
   "cmd.createRepository.title": "Create Repository",

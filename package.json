@@ -191,7 +191,7 @@
       },
       {
         "command": "gpm.find",
-        "title": "%cmd.search.title%",
+        "title": "%cmd.find.title%",
         "category": "GPM",
         "icon": {
           "light": "resources/light/command/search.svg",
