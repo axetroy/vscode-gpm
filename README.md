@@ -22,23 +22,23 @@ Support for all git addresses. including `Github/Gitlab/Bitbucket/Coding...`
 
 ## Commands
 
-| Command                      | description                                                  |
-| ---------------------------- | ------------------------------------------------------------ |
-| gpm.search                   | Search project                                               |
-| gpm.find                     | alias for `gpm.search`                                       |
-| gpm.refresh                  | Refresh the treeview                                         |
-| gpm.clearCache               | Clean cache                                                  |
-| gpm.clone                    | Clone project                                                |
-| gpm.prune                    | Prune project. Remove some useless files like `node_modules` |
-| gpm.list2openInCurrentWindow | List project and open in current window                      |
-| gpm.list2openInNewWindow     | List project and open in new window                          |
-| gpm.list2openInWorkspace     | List project and open in workspaces                          |
-| gpm.list2openInTerminal      | List project and open in terminal                            |
-| gpm.list2star                | List project and star                                        |
-| gpm.list2unstar              | List project and unstar                                      |
-| gpm.clearStars               | Clean all started                                            |
-| gpm.list2remove              | List project and remove it                                   |
-| gpm.interruptCommand         | Interrupt Current Running Command                            |
+| Command                  | description                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| gpm.search               | Search project                                               |
+| gpm.find                 | alias for `gpm.search`                                       |
+| gpm.refresh              | Refresh the treeview                                         |
+| gpm.clearCache           | Clean cache                                                  |
+| gpm.clone                | Clone project                                                |
+| gpm.prune                | Prune project. Remove some useless files like `node_modules` |
+| gpm.list2open            | List project and open in current window                      |
+| gpm.list2openNew         | List project and open in new window                          |
+| gpm.list2openInWorkspace | List project and open in workspaces                          |
+| gpm.list2openInTerminal  | List project and open in terminal                            |
+| gpm.list2star            | List project and star                                        |
+| gpm.list2unstar          | List project and unstar                                      |
+| gpm.clearStars           | Clean all started                                            |
+| gpm.list2remove          | List project and remove it                                   |
+| gpm.interruptCommand     | Interrupt Current Running Command                            |
 
 ## Related
 

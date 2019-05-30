@@ -56,7 +56,7 @@
     "onCommand:gpm.createRepository",
     "onCommand:gpm.createOwner",
     "onCommand:gpm.openInWorkspace",
-    "onCommand:gpm.list2OpenInWorkspace"
+    "onCommand:gpm.list2openInWorkspace"
   ],
   "contributes": {
     "views": {
@@ -229,8 +229,8 @@
         "category": "GPM"
       },
       {
-        "command": "gpm.list2OpenInWorkspace",
-        "title": "%cmd.list2OpenInWorkspace.title%",
+        "command": "gpm.list2openInWorkspace",
+        "title": "%cmd.list2openInWorkspace.title%",
         "category": "GPM"
       }
     ],

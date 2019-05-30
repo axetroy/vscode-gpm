@@ -132,9 +132,9 @@ export enum Command {
   // List project to do staff
   ListProject2OpenInCurrentWindow = "gpm.list2open",
   ListProject2OpenInNewWindow = "gpm.list2openNew",
+  ListProject2OpenInWorkspace = "gpm.list2openInWorkspace",
+  ListProject2OpenInTerminal = "gpm.list2openInTerminal",
   ListProject2Remove = "gpm.list2remove",
   ListProject2Star = "gpm.list2star",
-  ListProject2UnStar = "gpm.list2unstar",
-  ListProject2OpenInTerminal = "gpm.list2openInTerminal",
-  ListProject2OpenInWorkspace = "gpm.list2OpenInWorkspace"
+  ListProject2UnStar = "gpm.list2unstar"
 }

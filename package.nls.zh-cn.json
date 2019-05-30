@@ -39,7 +39,7 @@
   "cmd.createOwner.title": "创建拥有者",
   "cmd.copyPath.title": "复制路径",
   "cmd.openInWorkspace.title": "在工作区中打开",
-  "cmd.list2OpenInWorkspace.title": "在工作区中打开项目",
+  "cmd.list2openInWorkspace.title": "在工作区中打开项目",
   "tip.placeholder.list2open": "请选择项目在当前窗口打开",
   "tip.placeholder.list2openInNew": "请选择项目在新窗口打开",
   "tip.placeholder.list2remove": "请选择一个项目然后删除",
