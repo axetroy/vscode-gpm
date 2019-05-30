@@ -126,10 +126,10 @@ export enum Command {
   OpenInTerminal = "gpm.openInTerminal",
   CopyPath = "gpm.copyPath",
   OpenInWorkspace = "gpm.openInWorkspace",
-  // create
+  // Create owner/project
   CreateRepository = "gpm.createRepository",
   CreateOwner = "gpm.createOwner",
-  // list project
+  // List project to do staff
   ListProject2OpenInCurrentWindow = "gpm.list2open",
   ListProject2OpenInNewWindow = "gpm.list2openNew",
   ListProject2Remove = "gpm.list2remove",
