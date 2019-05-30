@@ -1,9 +1,9 @@
 import * as fs from "fs-extra";
-import * as gitUrlParse from "git-url-parse";
+import gitUrlParse from "git-url-parse";
 import * as os from "os";
 import * as path from "path";
 import { Container, Inject, Service } from "typedi";
-import * as uniqueString from "unique-string";
+import uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";

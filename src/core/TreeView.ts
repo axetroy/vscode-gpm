@@ -1,6 +1,6 @@
 import * as os from "os";
 import * as fs from "fs-extra";
-import * as _ from "lodash";
+import _ from "lodash";
 import promiseMap from "p-map";
 import * as path from "path";
 import { Inject, Service } from "typedi";

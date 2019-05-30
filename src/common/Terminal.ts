@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { Container } from "typedi";
-import * as processExists from "process-exists";
+import processExists from "process-exists";
 
 export class Terminal {
   private readonly terminals: { [path: string]: vscode.Terminal } = {};

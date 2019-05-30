@@ -1,5 +1,5 @@
 import { ChildProcess } from "child_process";
-import * as execa from "execa";
+import execa from "execa";
 import { Service } from "typedi";
 import { Command } from "../type";
 import { Statusbar } from "./Statusbar";
