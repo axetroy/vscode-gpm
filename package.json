@@ -50,6 +50,7 @@
     "onCommand:gpm.list2open",
     "onCommand:gpm.list2openNew",
     "onCommand:gpm.search",
+    "onCommand:gpm.find",
     "onCommand:gpm.openInTerminal",
     "onCommand:gpm.list2openInTerminal",
     "onCommand:gpm.createRepository",
@@ -181,6 +182,15 @@
       },
       {
         "command": "gpm.search",
+        "title": "%cmd.search.title%",
+        "category": "GPM",
+        "icon": {
+          "light": "resources/light/command/search.svg",
+          "dark": "resources/dark/command/search.svg"
+        }
+      },
+      {
+        "command": "gpm.find",
         "title": "%cmd.search.title%",
         "category": "GPM",
         "icon": {

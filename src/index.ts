@@ -374,6 +374,13 @@ export async function activate(
     vscode.commands.registerCommand(Command.Search, gpm.search.bind(gpm))
   );
 
+  /**
+   * alias for `gpm.search`
+   */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(Command.Find, gpm.search.bind(gpm))
+  );
+
   // open project in terminal
   context.subscriptions.push(
     vscode.commands.registerCommand(

@@ -122,6 +122,7 @@ export enum Command {
   StarCurrentProject = "gpm.starCurrent",
   InterruptCommand = "gpm.interruptCommand",
   Search = "gpm.search",
+  Find = "gpm.find",
   OpenInTerminal = "gpm.openInTerminal",
   CopyPath = "gpm.copyPath",
   OpenInWorkspace = "gpm.openInWorkspace",
