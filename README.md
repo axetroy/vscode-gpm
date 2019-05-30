@@ -6,17 +6,17 @@
 
 # vscode-gpm
 
-a cross-platform VSCode extension for managing your Git projects with Golang style.
+vscode extension for managing your Git projects with Golang style.
 
-Support almost git address. including Github/Gitlab/Bitbucket/Coding...
+Support for all git addresses. including `Github/Gitlab/Bitbucket/Coding...`
 
 **TIP: Not support private repository with https protocol, please use ssh protocol instead of https**
 
 ## Features
 
-* [x] Tree View
-* [x] Clone/remove/star/search project
-* [x] Work with multiple workspaces
+- [x] Tree View
+- [x] Clone/remove/star/search project
+- [x] Work with multiple workspaces
 
 ## [CHANGELOG](https://github.com/axetroy/vscode-gpm/blob/master/CHANGELOG.md)
 
@@ -25,6 +25,7 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 | Command                      | description                                                  |
 | ---------------------------- | ------------------------------------------------------------ |
 | gpm.search                   | Search project                                               |
+| gpm.find                     | alias for `gpm.search`                                       |
 | gpm.refresh                  | Refresh the treeview                                         |
 | gpm.clearCache               | Clean cache                                                  |
 | gpm.clone                    | Clone project                                                |
@@ -33,8 +34,8 @@ Support almost git address. including Github/Gitlab/Bitbucket/Coding...
 | gpm.list2openInNewWindow     | List project and open in new window                          |
 | gpm.list2openInWorkspace     | List project and open in workspaces                          |
 | gpm.list2openInTerminal      | List project and open in terminal                            |
-| gpm.list2start               | List project and star                                        |
-| gpm.list2unstart             | List project and unstar                                      |
+| gpm.list2star                | List project and star                                        |
+| gpm.list2unstar              | List project and unstar                                      |
 | gpm.clearStars               | Clean all started                                            |
 | gpm.list2remove              | List project and remove it                                   |
 | gpm.interruptCommand         | Interrupt Current Running Command                            |
