@@ -5,6 +5,7 @@ import * as path from "path";
 import { Container, Inject, Service } from "typedi";
 import uniqueString from "unique-string";
 import * as vscode from "vscode";
+import execa from "execa";
 import { Localize } from "../common/Localize";
 import { Shell } from "../common/Shell";
 import { ProjectExistAction } from "../type";
@@ -33,7 +34,7 @@ export class Git {
    */
   private async isGitAvailable(): Promise<boolean> {
     try {
-      await this.Shell.run(process.cwd(), "git version");
+      await execa("git", ["version"]);
       return true;
     } catch (err) {
       vscode.window.showErrorMessage(

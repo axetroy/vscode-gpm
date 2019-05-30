@@ -26,17 +26,17 @@ export class Shell {
 
       const executable = args.shift() as string;
 
-      const process = execa(executable, args, { cwd });
+      const ps = execa(executable, args, { cwd });
 
       const statusbar = new Statusbar(Command.InterruptCommand);
 
-      const processId = process.pid + "";
+      const processId = ps.pid + "";
 
       this.processes.push({
         id: processId,
         cwd,
         cmd: command,
-        process
+        process: ps
       });
 
       const removeProcess = () => {
@@ -46,27 +46,37 @@ export class Shell {
         }
       };
 
+      let message = "";
+
       function handler(code: number, signal: string): void {
         removeProcess();
         code !== 0
-          ? reject(new Error(signal || `Exit with code ${code}`))
+          ? reject(
+              message
+                ? new Error(message)
+                : new Error(signal || `exit with code ${code}`)
+            )
           : resolve();
       }
 
-      process
-        .on("error", err => {
-          removeProcess();
-          reject(err);
-        })
+      ps.on("error", err => {
+        removeProcess();
+        reject(err);
+      })
         .on("exit", handler)
         .on("close", handler);
 
-      if (process.stdout) {
-        process.stdout.pipe(statusbar);
+      if (ps.stdout) {
+        ps.stdout.pipe(statusbar);
       }
 
-      if (process.stderr) {
-        process.stderr.pipe(statusbar);
+      if (ps.stderr) {
+        // Git 的输出全都是输出到 stderr
+        ps.stderr.on("data", chunk => {
+          message += chunk;
+        });
+
+        ps.stderr.pipe(statusbar);
       }
     });
   }
