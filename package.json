@@ -499,7 +499,7 @@
     "@types/execa": "0.9.0",
     "@types/fs-extra": "7.0.0",
     "@types/lodash": "4.14.134",
-    "@types/mocha": "5.2.6",
+    "@types/mocha": "5.2.7",
     "@types/node": "11.13.12",
     "conventional-changelog-cli": "2.0.21",
     "move-cli": "1.2.1",
