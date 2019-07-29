@@ -501,7 +501,7 @@
     "@types/lodash": "4.14.136",
     "@types/mocha": "5.2.7",
     "@types/node": "11.13.18",
-    "conventional-changelog-cli": "2.0.21",
+    "conventional-changelog-cli": "2.0.23",
     "move-cli": "1.2.1",
     "rimraf": "2.6.3",
     "tslint": "5.18.0",
