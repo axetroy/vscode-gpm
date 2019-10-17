@@ -1,3 +1,70 @@
+## [2.3.4](https://github.com/axetroy/vscode-gpm/compare/v2.3.3...v2.3.4) (2019-05-30)
+
+
+
+## [2.3.3](https://github.com/axetroy/vscode-gpm/compare/v2.3.2...v2.3.3) (2019-05-30)
+
+
+### Features
+
+* improve error message ([bf29b26](https://github.com/axetroy/vscode-gpm/commit/bf29b26))
+
+
+
+## [2.3.2](https://github.com/axetroy/vscode-gpm/compare/v2.3.1...v2.3.2) (2019-05-30)
+
+
+### Features
+
+* add  command alias for ([bc38df9](https://github.com/axetroy/vscode-gpm/commit/bc38df9))
+
+
+
+## [2.3.1](https://github.com/axetroy/vscode-gpm/compare/v2.3.0...v2.3.1) (2019-05-24)
+
+
+### Bug Fixes
+
+* eslint ([52b290d](https://github.com/axetroy/vscode-gpm/commit/52b290d))
+
+
+
+# [2.3.0](https://github.com/axetroy/vscode-gpm/compare/v2.2.1...v2.3.0) (2019-04-10)
+
+
+### Features
+
+* add  when clone done. ([92dda3d](https://github.com/axetroy/vscode-gpm/commit/92dda3d))
+* update LICENSE to anti-996 ([114b49a](https://github.com/axetroy/vscode-gpm/commit/114b49a))
+
+
+
+## [2.2.1](https://github.com/axetroy/vscode-gpm/compare/v2.2.0...v2.2.1) (2019-04-03)
+
+
+### Bug Fixes
+
+* bug ([5ba2c7d](https://github.com/axetroy/vscode-gpm/commit/5ba2c7d))
+
+
+
+# [2.2.0](https://github.com/axetroy/vscode-gpm/compare/v2.1.2...v2.2.0) (2019-04-02)
+
+
+
+## [2.1.2](https://github.com/axetroy/vscode-gpm/compare/v2.1.1...v2.1.2) (2019-02-25)
+
+
+### Bug Fixes
+
+* fix vscode engines ([c86b803](https://github.com/axetroy/vscode-gpm/commit/c86b803))
+
+
+
+## [2.1.1](https://github.com/axetroy/vscode-gpm/compare/v2.1.0...v2.1.1) (2019-02-22)
+
+
+
 # [2.1.0](https://github.com/axetroy/vscode-gpm/compare/v2.0.0...v2.1.0) (2019-02-22)
 
 
