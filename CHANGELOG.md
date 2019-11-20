@@ -1,3 +1,7 @@
+## [2.3.5](https://github.com/axetroy/vscode-gpm/compare/v2.3.4...v2.3.5) (2019-11-20)
+
+
+
 ## [2.3.4](https://github.com/axetroy/vscode-gpm/compare/v2.3.3...v2.3.4) (2019-05-30)
 
 
@@ -635,6 +639,5 @@
 * support prune ([8536fc4](https://github.com/axetroy/vscode-gpm/commit/8536fc4))
 * support remove project ([93f8504](https://github.com/axetroy/vscode-gpm/commit/93f8504))
 * support star and unstar project ([1ec8e8b](https://github.com/axetroy/vscode-gpm/commit/1ec8e8b))
-
 
 
