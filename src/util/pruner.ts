@@ -12,6 +12,8 @@ function _() {
   //
 }
 
+const pruneMap = new Set(["node_modules", "bower_components"])
+
 class Pruner extends EventEmitter {
   constructor(private rootDir: string = dir) {
     super();
@@ -22,7 +24,7 @@ class Pruner extends EventEmitter {
       .then((files: string[]) => {
         const mapper = async (file: string) => {
           const absPath = path.join(directory, file);
-          if (file === "node_modules") {
+          if (pruneMap.has(file)) {
             this.emit("found", absPath);
           } else {
             await fs
