@@ -52,7 +52,7 @@
   "tip.placeholder.requireOwner": "Enter a name of owner.",
   "tip.placeholder.requireNewRepo": "Enter a new name of project.",
   "tip.placeholder.enterAddress": "Please enter public HTTPS address or SSH address",
-  "tip.placeholder.addressExample": "eg. https://github.com/eggjs/egg.git",
+  "tip.placeholder.addressExample": "eg. https://github.com/axetroy/vscode-gpm.git",
   "tip.placeholder.selectProject": "Select a project.",
   "tip.placeholder.selectRootPath": "Select a root path to clone.",
   "tip.placeholder.selectProcessAndKill": "Select a process and kill.",

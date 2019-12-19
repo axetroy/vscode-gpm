@@ -52,7 +52,7 @@
   "tip.placeholder.requireOwner": "请输入所有者名称",
   "tip.placeholder.requireNewRepo": "请输入新的项目名称",
   "tip.placeholder.enterAddress": "请输入公开的 HTTPS 地址或 SSH 地址",
-  "tip.placeholder.addressExample": "例如 https://github.com/eggjs/egg.git",
+  "tip.placeholder.addressExample": "例如 https://github.com/axetroy/vscode-gpm.git",
   "tip.placeholder.selectProject": "选择一个项目",
   "tip.placeholder.selectRootPath": "选择一个根目录",
   "tip.placeholder.selectProcessAndKill": "选择一个进程然后杀死",
