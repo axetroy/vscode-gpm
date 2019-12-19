@@ -496,7 +496,6 @@
     "publish": "npx vsce publish"
   },
   "devDependencies": {
-    "@types/execa": "2.0.0",
     "@types/fs-extra": "8.0.1",
     "@types/lodash": "4.14.149",
     "@types/mocha": "5.2.7",
