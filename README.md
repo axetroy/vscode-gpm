@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/axetroy/vscode-gpm.svg?branch=master)](https://travis-ci.org/axetroy/vscode-gpm)
 [![Version](https://vsmarketplacebadge.apphb.com/version/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
 [![Downloads](https://vsmarketplacebadge.apphb.com/downloads/axetroy.vscode-gpm.svg)](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-gpm)
 [![DeepScan grade](https://deepscan.io/api/teams/5773/projects/7593/branches/79865/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5773&pid=7593&bid=79865)
