@@ -502,7 +502,7 @@
     "@types/node": "12.12.25",
     "conventional-changelog-cli": "2.0.31",
     "move-cli": "1.2.1",
-    "rimraf": "3.0.0",
+    "rimraf": "3.0.1",
     "tslint": "6.0.0",
     "tslint-config-prettier": "1.18.0",
     "typescript": "3.7.5",
