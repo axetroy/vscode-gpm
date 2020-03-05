@@ -514,7 +514,7 @@
     "fs-extra": "8.1.0",
     "git-url-parse": "11.1.2",
     "lodash": "4.17.15",
-    "p-map": "3.0.0",
+    "p-map": "4.0.0",
     "process-exists": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "typedi": "^0.8.0",
