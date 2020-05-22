@@ -510,7 +510,7 @@
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
-    "execa": "4.0.1",
+    "execa": "4.0.2",
     "fs-extra": "9.0.0",
     "git-url-parse": "11.1.2",
     "lodash": "4.17.15",
