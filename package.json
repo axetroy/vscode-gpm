@@ -513,7 +513,7 @@
     "execa": "4.0.3",
     "fs-extra": "9.0.1",
     "git-url-parse": "11.1.2",
-    "lodash": "4.17.16",
+    "lodash": "4.17.17",
     "p-map": "4.0.0",
     "process-exists": "^4.0.0",
     "reflect-metadata": "^0.1.13",
