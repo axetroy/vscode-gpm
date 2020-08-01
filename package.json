@@ -498,7 +498,7 @@
   "devDependencies": {
     "@types/fs-extra": "9.0.1",
     "@types/lodash": "4.14.158",
-    "@types/mocha": "8.0.0",
+    "@types/mocha": "8.0.1",
     "@types/node": "12.12.53",
     "conventional-changelog-cli": "2.0.34",
     "move-cli": "1.2.1",
