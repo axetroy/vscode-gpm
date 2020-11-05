@@ -500,7 +500,7 @@
     "@types/lodash": "4.14.164",
     "@types/mocha": "8.0.3",
     "@types/node": "12.19.2",
-    "conventional-changelog-cli": "2.1.0",
+    "conventional-changelog-cli": "2.1.1",
     "move-cli": "1.2.1",
     "rimraf": "3.0.2",
     "tslint": "6.1.3",
