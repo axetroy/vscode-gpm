@@ -10,8 +10,8 @@ import {
   IFile,
   IOwner,
   IRepository,
-
-  ISegmentation, ISource
+  ISegmentation,
+  ISource
 } from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/is-visiblePath";
@@ -36,12 +36,12 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
   public traverse(): Promise<IRepository[]> {
     return (this.getChildren() as Promise<ISource[]>)
-      .then(sources => {
+      .then((sources) => {
         return Promise.all(
-          sources.map(source => this.getChildren(source) as Promise<IOwner[]>)
+          sources.map((source) => this.getChildren(source) as Promise<IOwner[]>)
         );
       })
-      .then(list => {
+      .then((list) => {
         // if show project flattens
         // so no owner struct
         if (this.config.isFlattenProjects) {
@@ -49,10 +49,12 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         }
         const owners: IOwner[] = flatten(list);
         return Promise.all(
-          owners.map(owner => this.getChildren(owner) as Promise<IRepository[]>)
+          owners.map(
+            (owner) => this.getChildren(owner) as Promise<IRepository[]>
+          )
         );
       })
-      .then(list => {
+      .then((list) => {
         const repositories: IRepository[] = (flatten(list) as IFile[])
           .filter(this.resource.isRepository)
           .sort((a, b) => (a.owner as any) - (b.owner as any));
@@ -97,7 +99,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
         const result = flatten(flatList);
 
-        return _.sortBy(result, v => _.lowerCase(v.label));
+        return _.sortBy(result, (v) => _.lowerCase(v.label));
       }
     }
 
@@ -113,6 +115,17 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
     // concat with star
     if (this.star.list().length) {
       children.push(this.star);
+      const separationForStar: ISegmentation = {
+        label: "————————",
+        type: FileType.Segmentation,
+        contextValue: FileType.Segmentation,
+        collapsibleState: 0,
+        path: "",
+        rootPath: "",
+        source: "",
+        segmentation: true,
+      };
+      children.push(separationForStar);
     }
 
     const sources: ISource[] = [];
@@ -141,12 +154,12 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       path: "",
       rootPath: "",
       source: "",
-      segmentation: true
+      segmentation: true,
     };
 
     const array = _(sources)
-      .sortBy(v => _.lowerCase(v.source))
-      .groupBy(v => v.rootPath)
+      .sortBy((v) => _.lowerCase(v.source))
+      .groupBy((v) => v.rootPath)
       .values()
       .value();
 
@@ -178,7 +191,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     await promiseMap(files, mapper, { concurrency: 10 * coresLen });
 
-    return _.sortBy(children, v => _.lowerCase(v.owner));
+    return _.sortBy(children, (v) => _.lowerCase(v.owner));
   }
   private async getRepository(
     element: IOwner,
@@ -212,7 +225,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     await promiseMap(files, mapper, { concurrency: 10 * coresLen });
 
-    return _.sortBy(children, v => _.lowerCase(v.repository));
+    return _.sortBy(children, (v) => _.lowerCase(v.repository));
   }
 
   private async getExplorer(element: IFile): Promise<IFile[]> {
@@ -234,13 +247,13 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
     await promiseMap(files, mapper, { concurrency: 10 * coresLen });
 
     dirList
-      .map(dir => this.resource.createFolder(path.join(element.path, dir)))
+      .map((dir) => this.resource.createFolder(path.join(element.path, dir)))
       .concat(
-        fileList.map(filename =>
+        fileList.map((filename) =>
           this.resource.createFile(path.join((element as IFile).path, filename))
         )
       )
-      .forEach(ele => children.push(ele));
+      .forEach((ele) => children.push(ele));
 
     return children;
   }
