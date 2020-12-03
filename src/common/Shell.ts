@@ -56,7 +56,7 @@ export class Shell {
                 ? new Error(message)
                 : new Error(signal || `exit with code ${code}`)
             )
-          : resolve();
+          : resolve(void 0);
       }
 
       ps.on("error", err => {

@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
 import * as path from "path";
-import { Container } from "typedi";
 import processExists from "process-exists";
+import { Container } from "typedi";
+import * as vscode from "vscode";
 
 export class Terminal {
   private readonly terminals: { [path: string]: vscode.Terminal } = {};
@@ -24,7 +24,7 @@ export class Terminal {
       this.terminals[filepath] = terminal;
     } else {
       terminal = this.terminals[filepath];
-      const exists = await processExists(await terminal.processId);
+      const exists = await processExists(await terminal.processId || 0);
       if (!exists) {
         // if the terminal have exit or it have been close.
         delete this.terminals[filepath];

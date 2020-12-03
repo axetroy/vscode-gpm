@@ -1,6 +1,6 @@
-import * as os from "os";
 import * as fs from "fs-extra";
 import _ from "lodash";
+import * as os from "os";
 import promiseMap from "p-map";
 import * as path from "path";
 import { Inject, Service } from "typedi";
@@ -10,8 +10,8 @@ import {
   IFile,
   IOwner,
   IRepository,
-  ISource,
-  ISegmentation
+
+  ISegmentation, ISource
 } from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/is-visiblePath";
@@ -61,7 +61,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   }
 
   public refresh(): void {
-    this.privateOnDidChangeTreeData.fire();
+    this.privateOnDidChangeTreeData.fire(void 0);
   }
 
   public getTreeItem(element: IFile): vscode.TreeItem {
