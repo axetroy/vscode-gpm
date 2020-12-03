@@ -7,9 +7,8 @@ import {
   IFile,
   IOwner,
   IRepository,
-  ISource,
-  IStar,
-  ISegmentation
+  ISegmentation, ISource,
+  IStar
 } from "../type";
 
 @Service()
@@ -25,6 +24,7 @@ export class Resource {
         command: Command.OpenFile,
         arguments: [filepath]
       },
+      resourceUri: vscode.Uri.file(filepath),
       iconPath: vscode.ThemeIcon.File,
       tooltip: filepath,
       // customer property
