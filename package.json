@@ -505,7 +505,7 @@
     "rimraf": "3.0.2",
     "tslint": "6.1.3",
     "tslint-config-prettier": "1.18.0",
-    "typescript": "4.1.2",
+    "typescript": "4.1.3",
     "vscode": "1.1.37"
   },
   "dependencies": {
