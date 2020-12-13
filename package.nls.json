@@ -5,7 +5,6 @@
   "ext.config.rootPath": "Specify the root directory of the project.\n\ndefault: `[$HOME/gpm]`. support environment variables\n\nTypes:\n- string[]: eg `[\"$HOME/gpm\"]`.\n- string: string split by `,` eg `\"$HOME/gpm, $GOPATH/src\"`",
   "ext.config.searchBehavior": "Define the behavior of search and select a project.",
   "ext.config.flattenProjects": "Display flattened project in treeview. eg.\n- github.com\n  - owner_name/project_name",
-  "ext.config.cloneArgs": "The arguments for ``git clone <arguments>`` when clone project.",
   "ext.config.search.openInNewWindow": "Open in new window",
   "ext.config.search.openInCurrentWindow": "Open in current window",
   "ext.config.search.remove": "Remove project",

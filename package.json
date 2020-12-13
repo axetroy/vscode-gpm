@@ -475,11 +475,6 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "%ext.config.flattenProjects%"
-        },
-        "gpm.cloneArgs": {
-          "type": "string",
-          "default": "--progress -v --recurse-submodules",
-          "markdownDescription": "%ext.config.cloneArgs%"
         }
       }
     }
