@@ -9,9 +9,6 @@
 vscode extension for managing your Git projects with Golang style.
 
 Support for all git addresses. including `Github/Gitlab/Bitbucket/Coding...`
-
-**TIP: Not support private repository with https protocol, please use ssh protocol instead of https**
-
 ## Features
 
 - [x] Tree View

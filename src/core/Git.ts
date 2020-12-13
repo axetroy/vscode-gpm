@@ -5,12 +5,10 @@ import * as path from "path";
 import { Container, Inject, Service } from "typedi";
 import uniqueString from "unique-string";
 import * as vscode from "vscode";
-import execa from "execa";
 import { Localize } from "../common/Localize";
-import { Shell } from "../common/Shell";
+import { findGit, Git as GitClient } from "../git/git";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
-import { Config } from "./Config";
 
 interface IClone {
   source: string;
@@ -23,26 +21,11 @@ interface IClone {
 export class Git {
   private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() private i18n!: Localize;
-  @Inject() private Shell!: Shell;
-  @Inject() private Config!: Config;
   // the cache dir that project will be clone.
-  private CACHE_PATH: string =
-    this.context.storagePath || path.join(os.tmpdir(), ".gpm", "temp");
+  private CACHE_PATH: string = this.context.storageUri
+    ? this.context.storageUri.fsPath
+    : path.join(os.tmpdir(), ".gpm", "temp");
 
-  /**
-   * check git command has been installed.
-   */
-  private async isGitAvailable(): Promise<boolean> {
-    try {
-      await execa("git", ["version"]);
-      return true;
-    } catch (err) {
-      vscode.window.showErrorMessage(
-        this.i18n.localize("err.gitNotInstall", "请确保Git已经安装")
-      );
-      return false;
-    }
-  }
   /**
    * crate a random temp dir
    */
@@ -75,7 +58,7 @@ export class Git {
               "tip.placeholder.requireNewRepo",
               "请输入新的项目名字"
             ),
-            ignoreFocusOut: true
+            ignoreFocusOut: true,
           });
 
           if (!newName) {
@@ -98,9 +81,22 @@ export class Git {
    * @param baseDir
    */
   public async clone(address: string, baseDir: string): Promise<IClone | void> {
-    if ((await this.isGitAvailable()) === false) {
-      return;
-    }
+    const pathHint = vscode.workspace
+      .getConfiguration("git")
+      .get<string | string[]>("path");
+
+    const info = await findGit(pathHint, () => {});
+
+    const client = new GitClient({
+      gitPath: info.path,
+      userAgent: `git/${info.version} (${
+        (os as any).version?.() ?? os.type()
+      } ${os.release()}; ${os.platform()} ${os.arch()}) vscode/${
+        vscode.version
+      } (${vscode.env.appName})`,
+      version: info.version,
+      env: process.env,
+    });
 
     const gitInfo = gitUrlParse(address);
 
@@ -126,9 +122,23 @@ export class Git {
     await fs.ensureDir(randomTemp);
 
     try {
-      await this.Shell.run(
-        randomTemp,
-        `git clone ${address} ${this.Config.cloneArgs}`
+      const projectDir = await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: this.i18n.localize("cmd.add.cloning", "克隆中...", [address]),
+          cancellable: true,
+        },
+        (progress, cancelToken) => {
+          return client.clone(
+            address,
+            {
+              recursive: true,
+              parentPath: randomTemp,
+              progress: progress,
+            },
+            cancelToken
+          );
+        }
       );
 
       // move the dist
@@ -139,15 +149,15 @@ export class Git {
         await fs.unlink(dist);
       }
 
-      await fs.move(path.join(randomTemp, gitInfo.name), dist, {
-        overwrite: true
+      await fs.move(projectDir, dist, {
+        overwrite: true,
       });
 
       return {
         source: gitInfo.source,
         owner: gitInfo.owner,
         name: gitInfo.name,
-        path: dist
+        path: dist,
       };
     } catch (err) {
       await fs.remove(randomTemp);
