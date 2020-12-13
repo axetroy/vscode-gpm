@@ -22,8 +22,8 @@ export class Git {
   private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() private i18n!: Localize;
   // the cache dir that project will be clone.
-  private CACHE_PATH: string = this.context.storageUri
-    ? this.context.storageUri.fsPath
+  private CACHE_PATH: string = this.context.storagePath
+    ? this.context.storagePath
     : path.join(os.tmpdir(), ".gpm", "temp");
 
   /**
