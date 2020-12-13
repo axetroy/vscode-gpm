@@ -99,7 +99,9 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
         const result = flatten(flatList);
 
-        return _.sortBy(result, (v) => _.lowerCase(v.label));
+        return _.sortBy(result, (v) =>
+          _.lowerCase(typeof v.label === "string" ? v.label : v.label?.label)
+        );
       }
     }
 
