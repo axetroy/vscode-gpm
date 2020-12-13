@@ -10,5 +10,10 @@
     "no-submodule-imports": false,
     "no-console": false,
     "no-this-assignment": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "./src/git/*"
+    ]
   }
 }

@@ -85,7 +85,7 @@ export class Git {
       .getConfiguration("git")
       .get<string | string[]>("path");
 
-    const info = await findGit(pathHint, () => {});
+    const info = await findGit(pathHint, () => {/* empty block */});
 
     const client = new GitClient({
       gitPath: info.path,
@@ -134,7 +134,7 @@ export class Git {
             {
               recursive: true,
               parentPath: randomTemp,
-              progress: progress,
+              progress,
             },
             cancelToken
           );
