@@ -34,7 +34,7 @@ export class Config {
 
     const rootPathArray: string[] = Array.isArray(rootPath)
       ? rootPath
-      : rootPath.split(",").map(v => v.trim());
+      : rootPath.split(",").map((v) => v.trim());
     return rootPathArray.map((v: string) =>
       path.normalize(
         v
@@ -71,10 +71,11 @@ export class Config {
       },
       update: (
         value: any,
-        configurationTarget?: vscode.ConfigurationTarget | boolean
+        configurationTarget: vscode.ConfigurationTarget = vscode
+          .ConfigurationTarget.Global
       ) => {
         return this.configuration.update(field, value, configurationTarget);
-      }
+      },
     };
   }
 }

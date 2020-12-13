@@ -87,6 +87,15 @@
         }
       },
       {
+        "command": "gpm.flatten",
+        "title": "%cmd.flatten.title%",
+        "category": "GPM",
+        "icon": {
+          "light": "resources/light/command/flatten.svg",
+          "dark": "resources/dark/command/flatten.svg"
+        }
+      },
+      {
         "command": "gpm.clearCache",
         "title": "%cmd.clear.title%",
         "category": "GPM"
@@ -244,6 +253,11 @@
         {
           "command": "gpm.clone",
           "group": "navigation@2",
+          "when": "view == GPMExplorer"
+        },
+        {
+          "command": "gpm.flatten",
+          "group": "navigation@3",
           "when": "view == GPMExplorer"
         },
         {

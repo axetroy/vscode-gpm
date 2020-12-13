@@ -8,7 +8,7 @@ export enum FileType {
   Source = "source",
   Owner = "owner",
   Repository = "repository",
-  RepositoryStared = "repository.stared"
+  RepositoryStared = "repository.stared",
 }
 
 export interface IFile extends vscode.TreeItem {
@@ -58,41 +58,41 @@ export interface IPreset {
 
 export enum InitAction {
   Create = "action.create",
-  Cancel = "action.cancel"
+  Cancel = "action.cancel",
 }
 
 export enum ProjectExistAction {
   Overwrite = "action.overwrite",
   Rename = "action.rename",
-  Cancel = "action.cancel"
+  Cancel = "action.cancel",
 }
 
 export enum ProjectPostAddAction {
   Open = "action.open",
-  Cancel = "action.cancel"
+  Cancel = "action.cancel",
 }
 
 export enum PruneAction {
   Continue = "action.continue",
-  Cancel = "action.cancel"
+  Cancel = "action.cancel",
 }
 
 export enum SearchAction {
   Open = "action.open",
   Remove = "action.remove",
-  Cancel = "action.cancel"
+  Cancel = "action.cancel",
 }
 
 export enum OpenAction {
   CurrentWindow = "action.currentWindow",
   NewWindow = "action.newWindow",
   Workspace = "action.workspace",
-  Cancel = "action.cancel"
+  Cancel = "action.cancel",
 }
 
 export enum ConfirmAction {
   Yes = "action.yes",
-  No = "action.no"
+  No = "action.no",
 }
 
 export enum SearchBehavior {
@@ -102,7 +102,7 @@ export enum SearchBehavior {
   Star = "star",
   Unstar = "unstar",
   AddToWorkspace = "addToWorkSpace",
-  Ask = "ask"
+  Ask = "ask",
 }
 
 export enum Command {
@@ -110,6 +110,7 @@ export enum Command {
   OpenInCurrentWindow = "gpm.openInCurrentWindow",
   OpenInNewWindow = "gpm.openInNewWindow",
   Refresh = "gpm.refresh",
+  Flatten = "gpm.flatten",
   ClearCache = "gpm.clearCache",
   Prune = "gpm.prune",
   CloneProject = "gpm.clone",
@@ -136,5 +137,5 @@ export enum Command {
   ListProject2OpenInTerminal = "gpm.list2openInTerminal",
   ListProject2Remove = "gpm.list2remove",
   ListProject2Star = "gpm.list2star",
-  ListProject2UnStar = "gpm.list2unstar"
+  ListProject2UnStar = "gpm.list2unstar",
 }

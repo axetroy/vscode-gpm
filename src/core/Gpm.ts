@@ -17,11 +17,11 @@ import {
   SearchAction,
   SearchBehavior
 } from "../type";
+import Pruner from "../util/pruner";
 import { Config } from "./Config";
 import { Git } from "./Git";
 import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
-import Pruner from "../util/pruner";
 
 @Service()
 export class Gpm {
@@ -48,7 +48,7 @@ export class Gpm {
         "tip.placeholder.enterAddress",
         "请输入git地址"
       ),
-      ignoreFocusOut: true
+      ignoreFocusOut: true,
     });
 
     if (!gitProjectAddress) {
@@ -58,7 +58,7 @@ export class Gpm {
     const PREFIX = "$(location)";
 
     const rootPaths = this.config.rootPath.map(
-      rootpath => `${PREFIX}  ${rootpath}`
+      (rootpath) => `${PREFIX}  ${rootpath}`
     );
 
     if (!rootPaths.length) {
@@ -76,7 +76,7 @@ export class Gpm {
               "tip.placeholder.selectRootPath",
               "选择一个根目录"
             ),
-            ignoreFocusOut: true
+            ignoreFocusOut: true,
           })
         : rootPaths.shift();
 
@@ -99,7 +99,7 @@ export class Gpm {
     const action: string | void = await vscode.window.showInformationMessage(
       this.i18n.localize("tip.message.cloned", "克隆成功", [
         res.owner,
-        res.name
+        res.name,
       ]),
       open,
       this.i18n.localize(ProjectPostAddAction.Cancel)
@@ -113,7 +113,7 @@ export class Gpm {
           path: res.path,
           repository: res.name,
           type: FileType.Repository,
-          rootPath: ""
+          rootPath: "",
         });
         break;
       default:
@@ -276,9 +276,7 @@ export class Gpm {
    * @memberof Gpm
    */
   public async open(repository: IRepository) {
-    const repositorySymbol: string = `@${repository.owner}/${
-      repository.repository
-    }`;
+    const repositorySymbol: string = `@${repository.owner}/${repository.repository}`;
 
     const currentWindow = this.i18n.localize(OpenAction.CurrentWindow);
     const newWindow = this.i18n.localize(OpenAction.NewWindow);
@@ -286,7 +284,7 @@ export class Gpm {
 
     const action = await vscode.window.showInformationMessage(
       this.i18n.localize("tip.message.how2open", "选择打开方式", [
-        repositorySymbol
+        repositorySymbol,
       ]),
       workspace,
       newWindow,
@@ -344,12 +342,12 @@ export class Gpm {
    * @memberof Gpm
    */
   public async interruptCommand() {
-    const itemList = this.shell.processes.map(v => {
+    const itemList = this.shell.processes.map((v) => {
       return {
         label: "$(dashboard) " + v.cmd,
         description: v.id,
         pid: v.id,
-        ppid: process.pid
+        ppid: process.pid,
       };
     });
 
@@ -360,7 +358,7 @@ export class Gpm {
         "tip.placeholder.selectProcessAndKill",
         "选择一个进程然后kill掉"
       ),
-      ignoreFocusOut: true
+      ignoreFocusOut: true,
     });
 
     if (!processSelected) {
@@ -384,11 +382,11 @@ export class Gpm {
       repositories = await this.explorer.traverse();
     }
 
-    const itemList = repositories.map(r => {
+    const itemList = repositories.map((r) => {
       return {
         label: `$(repo)  ${r.owner}/${r.repository}`,
         description: r.source,
-        path: r.path
+        path: r.path,
         // detail: r.path
       };
     });
@@ -401,16 +399,16 @@ export class Gpm {
           "tip.placeholder.selectProject",
           "请选择一个项目"
         ),
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
       },
-      ...(options || {})
+      ...(options || {}),
     });
 
     if (!itemSelected) {
       return;
     }
 
-    return repositories.find(v => v.path === itemSelected.path);
+    return repositories.find((v) => v.path === itemSelected.path);
   }
   /**
    * Open file/folder in terminal
@@ -456,16 +454,14 @@ export class Gpm {
       case SearchBehavior.AddToWorkspace:
         return this.openInWorkspace(repository);
       case SearchBehavior.Ask:
-        const repositorySymbol: string = `@${repository.owner}/${
-          repository.repository
-        }`;
+        const repositorySymbol: string = `@${repository.owner}/${repository.repository}`;
 
         const open = this.i18n.localize(SearchAction.Open);
         const remove = this.i18n.localize(SearchAction.Remove);
 
         const doAction = await vscode.window.showInformationMessage(
           this.i18n.localize("tip.message.doWhat", "你想干嘛?", [
-            repositorySymbol
+            repositorySymbol,
           ]),
           open,
           remove,
@@ -507,9 +503,7 @@ export class Gpm {
    * @param repository
    */
   public openInWorkspace(repository: IRepository) {
-    const name = `${repository.source}/${repository.owner}/${
-      repository.repository
-    }`;
+    const name = `${repository.source}/${repository.owner}/${repository.repository}`;
     const uri = vscode.Uri.file(repository.path);
 
     const workspace = vscode.workspace.getWorkspaceFolder(uri);

@@ -7,7 +7,8 @@ import {
   IFile,
   IOwner,
   IRepository,
-  ISegmentation, ISource,
+  ISegmentation,
+  ISource,
   IStar
 } from "../type";
 
@@ -22,34 +23,39 @@ export class Resource {
       command: {
         title: "Open file",
         command: Command.OpenFile,
-        arguments: [filepath]
+        arguments: [filepath],
       },
       resourceUri: vscode.Uri.file(filepath),
       iconPath: vscode.ThemeIcon.File,
       tooltip: filepath,
       // customer property
       type: FileType.File,
-      path: filepath
+      path: filepath,
     };
   }
   public createFolder(filepath: string): IFile {
     return {
       label: path.basename(filepath),
       contextValue: FileType.Folder,
-      collapsibleState: 1,
+      collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
       command: void 0,
       iconPath: vscode.ThemeIcon.Folder,
       // customer property
       type: FileType.Folder,
-      path: filepath
+      path: filepath,
     };
   }
-  public createSource(sourceName: string, rootPath: string): ISource {
+  public createSource(
+    sourceName: string,
+    rootPath: string,
+    collapsibleState: vscode.TreeItemCollapsibleState = vscode
+      .TreeItemCollapsibleState.Collapsed
+  ): ISource {
     const item: ISource = {
       id: `${rootPath}/${sourceName}`,
       label: sourceName,
       contextValue: FileType.Source,
-      collapsibleState: 1,
+      collapsibleState: collapsibleState,
       command: void 0,
       iconPath: "",
       tooltip: `${rootPath}/${sourceName}`,
@@ -57,7 +63,7 @@ export class Resource {
       source: sourceName,
       type: FileType.Source,
       path: path.join(rootPath, sourceName),
-      rootPath
+      rootPath,
     };
     let icon: string = "";
     switch (sourceName) {
@@ -95,12 +101,17 @@ export class Resource {
 
     return item;
   }
-  public createOwner(source: ISource, ownerName: string): IOwner {
+  public createOwner(
+    source: ISource,
+    ownerName: string,
+    collapsibleState: vscode.TreeItemCollapsibleState = vscode
+      .TreeItemCollapsibleState.Collapsed
+  ): IOwner {
     return {
       id: `${source.id}/${ownerName}`,
       label: ownerName,
       contextValue: FileType.Owner,
-      collapsibleState: 1,
+      collapsibleState: collapsibleState,
       command: void 0,
       iconPath: this.getIcon("user.svg"),
       tooltip: `${source.source}/${ownerName}`,
@@ -109,15 +120,23 @@ export class Resource {
       owner: ownerName,
       type: FileType.Owner,
       path: path.join(source.path, ownerName),
-      rootPath: source.rootPath
+      rootPath: source.rootPath,
     };
   }
-  public createRepository(owner: IOwner, repositoryName: string, isFlattenOwner: boolean = false): IRepository {
+  public createRepository(
+    owner: IOwner,
+    repositoryName: string,
+    isFlattenOwner: boolean = false,
+    collapsibleState: vscode.TreeItemCollapsibleState = vscode
+      .TreeItemCollapsibleState.Collapsed
+  ): IRepository {
     return {
       id: `${owner.id}/${repositoryName}`,
-      label: isFlattenOwner ? owner.owner + '/' + repositoryName : repositoryName,
+      label: isFlattenOwner
+        ? owner.owner + "/" + repositoryName
+        : repositoryName,
       contextValue: FileType.Repository,
-      collapsibleState: 1,
+      collapsibleState: collapsibleState,
       command: void 0,
       iconPath: this.getIcon("repository.svg"),
       tooltip: `${owner.source}/${owner.owner}/${repositoryName}`,
@@ -127,14 +146,14 @@ export class Resource {
       repository: repositoryName,
       type: FileType.Repository,
       path: path.join(owner.path, repositoryName),
-      rootPath: owner.rootPath
+      rootPath: owner.rootPath,
     };
   }
   public getIcon(...paths: string[]) {
     const context = this.context;
     return {
       dark: context.asAbsolutePath(path.join("resources", "dark", ...paths)),
-      light: context.asAbsolutePath(path.join("resources", "light", ...paths))
+      light: context.asAbsolutePath(path.join("resources", "light", ...paths)),
     };
   }
   public isSource(o: any): o is ISource {

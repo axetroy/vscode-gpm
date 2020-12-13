@@ -9,6 +9,9 @@
 vscode extension for managing your Git projects with Golang style.
 
 Support for all git addresses. including `Github/Gitlab/Bitbucket/Coding...`
+
+**If you need to manage dozens or even hundreds of projects, then this extension can help you manage these projects easily**
+
 ## Features
 
 - [x] Tree View
@@ -24,6 +27,7 @@ Support for all git addresses. including `Github/Gitlab/Bitbucket/Coding...`
 | gpm.search               | Search project                                               |
 | gpm.find                 | alias for `gpm.search`                                       |
 | gpm.refresh              | Refresh the treeview                                         |
+| gpm.flatten              | Flatten project tree                                         |
 | gpm.clearCache           | Clean cache                                                  |
 | gpm.clone                | Clone project                                                |
 | gpm.prune                | Prune project. Remove some useless files like `node_modules` |

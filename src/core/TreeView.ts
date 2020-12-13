@@ -5,6 +5,7 @@ import promiseMap from "p-map";
 import * as path from "path";
 import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
+import { Localize } from "../common/Localize";
 import {
   FileType,
   IFile,
@@ -26,6 +27,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   @Inject() private config!: Config;
   @Inject() private resource!: Resource;
   @Inject() public star!: Star;
+  @Inject() public i18n!: Localize;
 
   // tree view event
   private privateOnDidChangeTreeData: vscode.EventEmitter<
@@ -132,7 +134,33 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     const sources: ISource[] = [];
 
-    for (const GPM_ROOT_PATH of this.config.rootPath) {
+    loop: for (const GPM_ROOT_PATH of this.config.rootPath) {
+      if ((await fs.pathExists(GPM_ROOT_PATH)) === false) {
+        const create = this.i18n.localize("action.create");
+        const ignore = this.i18n.localize("action.ignore");
+        const action = await vscode.window.showInformationMessage(
+          this.i18n.localize(
+            "tip.message.gpmRootFolderNotExist",
+            "项目不存在",
+            [GPM_ROOT_PATH]
+          ),
+          create,
+          ignore
+        );
+
+        if (!action) {
+          continue loop;
+        }
+
+        switch (action) {
+          case create:
+            await fs.ensureDir(GPM_ROOT_PATH);
+            break;
+          case ignore:
+            continue loop;
+        }
+      }
+
       const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(
         isVisiblePath
       );

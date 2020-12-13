@@ -4,8 +4,8 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import "reflect-metadata";
-import * as vscode from "vscode";
 import { Container } from "typedi";
+import * as vscode from "vscode";
 import { Gpm } from "./core/Gpm";
 import { Command, IFile, IOwner, IRepository, ISource } from "./type";
 
@@ -63,7 +63,7 @@ export async function activate(
           placeHolder: i18n.localize(
             "tip.placeholder.list2AddWorkspace",
             "请选择项目然后添加到工作区"
-          )
+          ),
         });
 
         if (!repository) {
@@ -92,7 +92,7 @@ export async function activate(
           placeHolder: i18n.localize(
             "tip.placeholder.list2open",
             "新窗口打开项目"
-          )
+          ),
         });
 
         if (repository) {
@@ -118,7 +118,7 @@ export async function activate(
           placeHolder: i18n.localize(
             "tip.placeholder.list2openInNew",
             "新窗口打开"
-          )
+          ),
         });
 
         if (repository) {
@@ -159,8 +159,8 @@ export async function activate(
         const input = await vscode.window.showInputBox({
           placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
           prompt: i18n.localize("tip.message.beforeRemove", "请输入名字", [
-            repository.repository
-          ])
+            repository.repository,
+          ]),
         });
 
         if (!input) {
@@ -171,7 +171,7 @@ export async function activate(
           vscode.window.showErrorMessage(
             i18n.localize("err.invalidRepoName", "输入不正确", [
               input,
-              repository.repository
+              repository.repository,
             ])
           );
           return;
@@ -190,8 +190,8 @@ export async function activate(
         const input = await vscode.window.showInputBox({
           placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
           prompt: i18n.localize("tip.message.beforeRemoveOwner", "请输入名字", [
-            owner.owner
-          ])
+            owner.owner,
+          ]),
         });
 
         if (!input) {
@@ -202,7 +202,7 @@ export async function activate(
           vscode.window.showErrorMessage(
             i18n.localize("err.invalidOwnerName", "输入不正确", [
               input,
-              owner.owner
+              owner.owner,
             ])
           );
           return;
@@ -224,7 +224,7 @@ export async function activate(
             "tip.message.beforeRemoveSource",
             "请输入名字",
             [source.source]
-          )
+          ),
         });
 
         if (!input) {
@@ -235,7 +235,7 @@ export async function activate(
           vscode.window.showErrorMessage(
             i18n.localize("err.invalidSourceName", "输入不正确", [
               input,
-              source.source
+              source.source,
             ])
           );
           return;
@@ -250,7 +250,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2Remove, async () => {
       const repository = await gpm.selectRepository(void 0, {
-        placeHolder: i18n.localize("tip.placeholder.list2remove", "请选择项目")
+        placeHolder: i18n.localize("tip.placeholder.list2remove", "请选择项目"),
       });
 
       if (!repository) {
@@ -260,8 +260,8 @@ export async function activate(
       const input = await vscode.window.showInputBox({
         placeHolder: i18n.localize("tip.message.irrevocable", "不能被撤销哦"),
         prompt: i18n.localize("tip.message.beforeRemove", "请输入名字", [
-          repository.repository
-        ])
+          repository.repository,
+        ]),
       });
 
       if (!input) {
@@ -272,7 +272,7 @@ export async function activate(
         vscode.window.showErrorMessage(
           i18n.localize("err.invalidRepoName", "输入不正确", [
             input,
-            repository.repository
+            repository.repository,
           ])
         );
         return;
@@ -326,7 +326,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2Star, async () => {
       const repository = await gpm.selectRepository(void 0, {
-        placeHolder: i18n.localize("tip.placeholder.list2star", "请选择项目")
+        placeHolder: i18n.localize("tip.placeholder.list2star", "请选择项目"),
       });
 
       if (repository) {
@@ -344,7 +344,7 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.ListProject2UnStar, async () => {
       const repository = await gpm.selectRepository(gpm.starList(), {
-        placeHolder: i18n.localize("tip.placeholder.list2star", "请选择项目")
+        placeHolder: i18n.localize("tip.placeholder.list2star", "请选择项目"),
       });
 
       if (repository) {
@@ -398,7 +398,7 @@ export async function activate(
           placeHolder: i18n.localize(
             "tip.placeholder.list2OpenInTerminal",
             "请选择项目然后在终端打开"
-          )
+          ),
         });
 
         if (!repository) {
@@ -419,7 +419,7 @@ export async function activate(
           placeHolder: i18n.localize(
             "tip.placeholder.requireProject",
             "请输入项目名称"
-          )
+          ),
         });
 
         if (!repositoryName) {
@@ -450,7 +450,7 @@ export async function activate(
           placeHolder: i18n.localize(
             "tip.placeholder.requireOwner",
             "请输入所有者名称"
-          )
+          ),
         });
 
         if (!ownerName) {
@@ -472,9 +472,18 @@ export async function activate(
     )
   );
 
+  // flatten
+  context.subscriptions.push(
+    vscode.commands.registerCommand(Command.Flatten, async () => {
+      gpm.config
+        .select(gpm.config.fields.IS_FLATTEN_PROJECTS)
+        .update(!gpm.config.isFlattenProjects);
+    })
+  );
+
   // watch config change and refresh
   context.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration(e => {
+    vscode.workspace.onDidChangeConfiguration((e) => {
       const refreshConfigs = ["gpm.rootPath", "gpm.flattenProjects"];
       for (const config of refreshConfigs) {
         if (e.affectsConfiguration(config)) {
