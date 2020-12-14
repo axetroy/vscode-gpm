@@ -433,6 +433,8 @@ export class Git {
 			if (options.recursive) {
 				command.push('--recursive');
 			}
+			command.push('-c');
+			command.push('core.longpaths=true');
 			await this.exec(options.parentPath, command, { cancellationToken, onSpawn });
 		} catch (err) {
 			if (err.stderr) {
