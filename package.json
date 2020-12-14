@@ -241,6 +241,11 @@
         "command": "gpm.list2openInWorkspace",
         "title": "%cmd.list2openInWorkspace.title%",
         "category": "GPM"
+      },
+      {
+        "command": "gpm.revealInExplorer",
+        "title": "%cmd.revealInExplorer.title%",
+        "category": "GPM"
       }
     ],
     "menus": {
@@ -396,6 +401,11 @@
           "command": "gpm.openInWorkspace",
           "group": "context",
           "when": "view == GPMExplorer && viewItem == repository.stared"
+        },
+        {
+          "command": "gpm.revealInExplorer",
+          "group": "context",
+          "when": "view == GPMExplorer && viewItem != segmentation"
         }
       ],
       "commandPalette": [

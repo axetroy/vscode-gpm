@@ -111,6 +111,7 @@ export enum Command {
   OpenInNewWindow = "gpm.openInNewWindow",
   Refresh = "gpm.refresh",
   Flatten = "gpm.flatten",
+  revealInExplorer = "gpm.revealInExplorer",
   ClearCache = "gpm.clearCache",
   Prune = "gpm.prune",
   CloneProject = "gpm.clone",

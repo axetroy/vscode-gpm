@@ -2,6 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as fs from "fs-extra";
+import * as os from "os";
 import * as path from "path";
 import "reflect-metadata";
 import { Container } from "typedi";
@@ -483,6 +484,21 @@ export async function activate(
         .select(gpm.config.fields.IS_FLATTEN_PROJECTS)
         .update(!gpm.config.isFlattenProjects);
     })
+  );
+
+  // reveal in explorer
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.revealInExplorer,
+      async (item: IFile) => {
+        const { path } = item;
+        const platform = os.platform();
+        await vscode.commands.executeCommand(
+          platform === "win32" ? "revealInWindows" : "revealFileInOS",
+          vscode.Uri.file(path)
+        );
+      }
+    )
   );
 
   // watch config change and refresh
