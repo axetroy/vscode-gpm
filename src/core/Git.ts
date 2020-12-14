@@ -126,8 +126,7 @@ export class Git {
       path.join(
         baseDir,
         gitInfo.source,
-        // use emoji arrow right: https://emojipedia.org/right-arrow/
-        gitInfo.owner.replace(/\//gim, "➡️"),
+        gitInfo.owner.replace(/\//gim, "."),
         gitInfo.name
       )
     );
