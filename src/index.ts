@@ -491,11 +491,11 @@ export async function activate(
     vscode.commands.registerCommand(
       Command.revealInExplorer,
       async (item: IFile) => {
-        const { path } = item;
+        const { path: filepath } = item;
         const platform = os.platform();
         await vscode.commands.executeCommand(
           platform === "win32" ? "revealInWindows" : "revealFileInOS",
-          vscode.Uri.file(path)
+          vscode.Uri.file(filepath)
         );
       }
     )
