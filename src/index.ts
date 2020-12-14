@@ -2,7 +2,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as fs from "fs-extra";
-import * as os from "os";
 import * as path from "path";
 import "reflect-metadata";
 import { Container } from "typedi";
@@ -492,9 +491,8 @@ export async function activate(
       Command.revealInExplorer,
       async (item: IFile) => {
         const { path: filepath } = item;
-        const platform = os.platform();
         await vscode.commands.executeCommand(
-          platform === "win32" ? "revealInWindows" : "revealFileInOS",
+          "revealFileInOS",
           vscode.Uri.file(filepath)
         );
       }
