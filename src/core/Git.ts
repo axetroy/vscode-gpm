@@ -6,6 +6,7 @@ import { Container, Inject, Service } from "typedi";
 import uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
+import { Output } from "../common/Output";
 import { findGit, Git as GitClient } from "../git/git";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
@@ -21,6 +22,7 @@ interface IClone {
 export class Git {
   private readonly context: vscode.ExtensionContext = Container.get("context");
   @Inject() private i18n!: Localize;
+  @Inject() private output!: Output;
   // the cache dir that project will be clone.
   private CACHE_PATH: string = this.context.storagePath
     ? this.context.storagePath
@@ -85,7 +87,11 @@ export class Git {
       .getConfiguration("git")
       .get<string | string[]>("path");
 
-    const info = await findGit(pathHint, () => {/* empty block */});
+    const info = await findGit(pathHint, () => {
+      /* empty block */
+    });
+
+    this.output.writeln(`found git '${info.path}' ${info.version}`);
 
     const client = new GitClient({
       gitPath: info.path,
@@ -100,6 +106,9 @@ export class Git {
 
     const gitInfo = gitUrlParse(address);
 
+    this.output.writeln(`clone project '${address}'`);
+    this.output.writeln(`parse git info '${JSON.stringify(gitInfo, null, 2)}'`);
+
     // invalid git address
     if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
       vscode.window.showErrorMessage(
@@ -111,8 +120,15 @@ export class Git {
     // clone into temp file
     const randomTemp: string = this.createRandomTempDir();
 
+    this.output.writeln(`temp dir '${randomTemp}'`);
+
     const dist = await this.getValidProjectName(
-      path.join(baseDir, gitInfo.source, gitInfo.owner, gitInfo.name)
+      path.join(
+        baseDir,
+        gitInfo.source,
+        gitInfo.owner.replace(/\//gim, ">"),
+        gitInfo.name
+      )
     );
 
     if (!dist) {
@@ -141,17 +157,20 @@ export class Git {
         }
       );
 
+      this.output.writeln(`cloned dir '${projectDir}'`);
+
       // move the dist
       await fs.ensureDir(dist);
 
       // if it's a link, then unlink first
       if (await isLink(dist)) {
+        this.output.writeln(`unlink dir '${dist}'`);
         await fs.unlink(dist);
       }
 
-      await fs.move(projectDir, dist, {
-        overwrite: true,
-      });
+      this.output.writeln(`start move '${projectDir}' to '${dist}'`);
+
+      await fs.move(projectDir, dist, { overwrite: true });
 
       return {
         source: gitInfo.source,
@@ -160,6 +179,7 @@ export class Git {
         path: dist,
       };
     } catch (err) {
+      this.output.writeln(err.stack || err.message || err + "");
       await fs.remove(randomTemp);
       if (err.message === "SIGKILL") {
         throw new Error(this.i18n.localize("err.processKilled"));

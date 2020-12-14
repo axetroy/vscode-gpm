@@ -3,6 +3,7 @@ import * as path from "path";
 import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
+import { Output } from "../common/Output";
 import { Shell } from "../common/Shell";
 import { Terminal } from "../common/Terminal";
 import {
@@ -33,6 +34,7 @@ export class Gpm {
   @Inject() public git!: Git;
   @Inject() public shell!: Shell;
   @Inject() public terminal!: Terminal;
+  @Inject() public output!: Output;
   /**
    * clone project
    * @returns
@@ -91,10 +93,14 @@ export class Gpm {
     this.refresh();
 
     if (!res) {
+      this.output.writeln(`clone '${gitProjectAddress}' fail`);
       return;
     }
 
+    this.output.writeln(`clone '${gitProjectAddress}' success`);
+
     const open = this.i18n.localize(ProjectPostAddAction.Open);
+    const cancel = this.i18n.localize(ProjectPostAddAction.Cancel);
 
     const action: string | void = await vscode.window.showInformationMessage(
       this.i18n.localize("tip.message.cloned", "克隆成功", [
@@ -102,7 +108,7 @@ export class Gpm {
         res.name,
       ]),
       open,
-      this.i18n.localize(ProjectPostAddAction.Cancel)
+      cancel
     );
 
     switch (action as ProjectPostAddAction) {
@@ -115,6 +121,8 @@ export class Gpm {
           type: FileType.Repository,
           rootPath: "",
         });
+        break;
+      case cancel:
         break;
       default:
       // do nothing
