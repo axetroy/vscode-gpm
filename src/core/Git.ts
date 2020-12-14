@@ -7,7 +7,7 @@ import uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Output } from "../common/Output";
-import { findGit, Git as GitClient } from "../git/git";
+import { findGit, Git as GitClient, GitError } from "../git/git";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
 
@@ -24,8 +24,8 @@ export class Git {
   @Inject() private i18n!: Localize;
   @Inject() private output!: Output;
   // the cache dir that project will be clone.
-  private CACHE_PATH: string = this.context.storagePath
-    ? this.context.storagePath
+  private CACHE_PATH: string = this.context.storageUri?.fsPath
+    ? this.context.storageUri?.fsPath
     : path.join(os.tmpdir(), ".gpm", "temp");
 
   /**
@@ -126,7 +126,7 @@ export class Git {
       path.join(
         baseDir,
         gitInfo.source,
-        gitInfo.owner.replace(/\//gim, ">"),
+        gitInfo.owner.replace(/\//gim, " "),
         gitInfo.name
       )
     );
@@ -179,7 +179,18 @@ export class Git {
         path: dist,
       };
     } catch (err) {
-      this.output.writeln(err.stack || err.message || err + "");
+      if (err instanceof GitError) {
+        this.output.writeln(err.error?.message);
+        this.output.writeln(err.error?.stack);
+        this.output.writeln(`Git command: ${err.gitCommand}`);
+        this.output.writeln(`Git Arguments: ${err.gitArgs}`);
+        this.output.writeln(err.stderr);
+        this.output.writeln(`git error code: ${err.gitErrorCode}`);
+        this.output.writeln(`exit code: ${err.exitCode}`);
+      } else {
+        this.output.writeln(err.stack || err.message || err + "");
+      }
+      this.output.show();
       await fs.remove(randomTemp);
       if (err.message === "SIGKILL") {
         throw new Error(this.i18n.localize("err.processKilled"));
