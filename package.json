@@ -59,6 +59,12 @@
     "onCommand:gpm.list2openInWorkspace"
   ],
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "GPMExplorer",
+        "contents": "No repositories found.\n[Clone repository](command:gpm.clone)"
+      }
+    ],
     "views": {
       "GPMExplorer": [
         {
