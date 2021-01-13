@@ -7,6 +7,7 @@ import uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Output } from "../common/Output";
+import { Askpass } from "../git/askpass";
 import { findGit, Git as GitClient, GitError } from "../git/git";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
@@ -19,8 +20,10 @@ interface IClone {
 }
 
 @Service()
-export class Git {
+export class Git implements vscode.Disposable {
   private readonly context: vscode.ExtensionContext = Container.get("context");
+  private disposables: vscode.Disposable[] = [];
+  private gitClient!: GitClient;
   @Inject() private i18n!: Localize;
   @Inject() private output!: Output;
   // the cache dir that project will be clone.
@@ -77,12 +80,8 @@ export class Git {
       return repositoryPath;
     }
   }
-  /**
-   * clone project to baseDir
-   * @param address
-   * @param baseDir
-   */
-  public async clone(address: string, baseDir: string): Promise<IClone | void> {
+
+  public async init() {
     const pathHint = vscode.workspace
       .getConfiguration("git")
       .get<string | string[]>("path");
@@ -93,7 +92,13 @@ export class Git {
 
     this.output.writeln(`found git '${info.path}' ${info.version}`);
 
-    const client = new GitClient({
+    const askpass = await Askpass.create(this.output, this.CACHE_PATH);
+    this.disposables.push(askpass);
+    const environment = askpass.getEnv();
+
+    this.output.writeln(JSON.stringify(environment));
+
+    this.gitClient = new GitClient({
       gitPath: info.path,
       userAgent: `git/${info.version} (${
         (os as any).version?.() ?? os.type()
@@ -101,8 +106,20 @@ export class Git {
         vscode.version
       } (${vscode.env.appName})`,
       version: info.version,
-      env: process.env,
+      env: environment,
     });
+  }
+
+  /**
+   * clone project to baseDir
+   * @param address
+   * @param baseDir
+   */
+  public async clone(address: string, baseDir: string): Promise<IClone | void> {
+    if (!this.gitClient) {
+      this.output.writeln("开始初始化....");
+      await this.init();
+    }
 
     const gitInfo = gitUrlParse(address);
 
@@ -145,7 +162,7 @@ export class Git {
           cancellable: true,
         },
         (progress, cancelToken) => {
-          return client.clone(
+          return this.gitClient.clone(
             address,
             {
               recursive: true,
@@ -180,13 +197,25 @@ export class Git {
       };
     } catch (err) {
       if (err instanceof GitError) {
-        this.output.writeln(err.error?.message);
-        this.output.writeln(err.error?.stack);
-        this.output.writeln(`Git command: ${err.gitCommand}`);
-        this.output.writeln(`Git Arguments: ${err.gitArgs}`);
-        this.output.writeln(err.stderr);
+        if (err.error?.message) {
+          this.output.writeln(err.error?.message);
+        }
+        if (err.error?.stack) {
+          this.output.writeln(err.error?.stack);
+        }
+        this.output.writeln(`Git command: "git ${err.gitArgs?.join(" ")}"`);
         this.output.writeln(`git error code: ${err.gitErrorCode}`);
         this.output.writeln(`exit code: ${err.exitCode}`);
+        if (err.stdout) {
+          this.output.writeln(
+            `=== stdout start ===\n${err.stdout || ""}\n=== stdout end ===`
+          );
+        }
+        if (err.stderr) {
+          this.output.writeln(
+            `=== stderr start ===\n${err.stderr || ""}\n=== stderr end ===`
+          );
+        }
       } else {
         this.output.writeln(err.stack || err.message || err + "");
       }
@@ -203,5 +232,11 @@ export class Git {
    */
   public async clean() {
     await fs.remove(this.CACHE_PATH);
+  }
+
+  public async dispose() {
+    for (const d of this.disposables) {
+      d.dispose();
+    }
   }
 }

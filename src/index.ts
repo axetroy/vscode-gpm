@@ -7,6 +7,7 @@ import "reflect-metadata";
 import { Container } from "typedi";
 import * as vscode from "vscode";
 import { Output } from "./common/Output";
+import { Git } from "./core/Git";
 import { Gpm } from "./core/Gpm";
 import { Command, IFile, IOwner, IRepository, ISource } from "./type";
 
@@ -19,10 +20,12 @@ export async function activate(
 
   const gpm = Container.get(Gpm);
   const output = Container.get(Output);
+  const git = Container.get(Git);
   const i18n = gpm.i18n;
   const resource = gpm.resource;
 
   context.subscriptions.push(output);
+  context.subscriptions.push(git);
 
   // open file
   context.subscriptions.push(
