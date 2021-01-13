@@ -38,13 +38,12 @@ jobs:
           yarn run compile
 
       - uses: axetroy/setup-whatchanged@v1
-        if: runner.os == 'linux'
         with:
           version: v0.3.4
 
       - name: Generate CHANGELOG.md
         run: |
-          whatchanged > CHANGELOG.md
+          whatchanged HEAD~ > CHANGELOG.md
 
       - name: Package
         run: |
