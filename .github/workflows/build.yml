@@ -12,6 +12,8 @@ jobs:
     name: node.js ${{ matrix.node }} test in ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v2
         with:
@@ -34,6 +36,13 @@ jobs:
       - name: Compile
         run: |
           yarn run compile
+
+      - uses: axetroy/setup-whatchanged@v1
+        if: runner.os == 'linux'
+        with:
+          version: v0.3.3
+        run: |
+          whatchanged > CHANGELOG.md
 
       - name: Package
         run: |
