@@ -41,6 +41,8 @@ jobs:
         if: runner.os == 'linux'
         with:
           version: v0.3.4
+
+      - name: Generate CHANGELOG.md
         run: |
           whatchanged > CHANGELOG.md
 
