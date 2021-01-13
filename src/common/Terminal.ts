@@ -1,8 +1,9 @@
 import * as path from "path";
 import processExists from "process-exists";
-import { Container } from "typedi";
+import { Container, Service } from "typedi";
 import * as vscode from "vscode";
 
+@Service()
 export class Terminal {
   private readonly terminals: { [path: string]: vscode.Terminal } = {};
   private readonly context: vscode.ExtensionContext = Container.get("context");
