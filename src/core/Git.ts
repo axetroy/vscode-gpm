@@ -208,12 +208,12 @@ export class Git implements vscode.Disposable {
         this.output.writeln(`exit code: ${err.exitCode}`);
         if (err.stdout) {
           this.output.writeln(
-            `=== stdout start ===\n${err.stdout || ""}\n=== stdout end ===`
+            `=== stdout start ===\n${err.stdout}\n=== stdout end ===`
           );
         }
         if (err.stderr) {
           this.output.writeln(
-            `=== stderr start ===\n${err.stderr || ""}\n=== stderr end ===`
+            `=== stderr start ===\n${err.stderr}\n=== stderr end ===`
           );
         }
       } else {
