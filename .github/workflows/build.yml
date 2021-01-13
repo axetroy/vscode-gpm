@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ["12.x"]
+        node: ["14.x"]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     name: node.js ${{ matrix.node }} test in ${{ matrix.os }}
     steps:
@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "12.x"
+          node-version: ${{ matrix.node }}
 
       - name: Environment
         run: |
@@ -77,7 +77,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "12.x"
+          node-version: "14.x"
 
       - name: publish to vscode market
         # require Azure DevOps Personal Access Token
