@@ -554,7 +554,7 @@
     "process-exists": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "string_decoder": "^1.3.0",
-    "typedi": "^0.9.1",
+    "typedi": "^0.10.0",
     "unique-string": "^2.0.0",
     "vscode-nls": "^5.0.0",
     "which": "^2.0.2"
