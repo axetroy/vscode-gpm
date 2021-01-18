@@ -527,7 +527,7 @@
   "devDependencies": {
     "@types/byline": "4.2.32",
     "@types/fs-extra": "9.0.6",
-    "@types/lodash": "4.14.167",
+    "@types/lodash": "4.14.168",
     "@types/mocha": "8.2.0",
     "@types/node": "14.14.21",
     "@types/which": "2.0.0",
