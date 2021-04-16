@@ -27,24 +27,16 @@ export class Config {
    * @memberof Config
    */
   get rootPath(): string[] {
-    // 由于历史原因，读出来的可能是字符串而不是数组
-    const rootPath = this.select(this.fields.ROOT_PATH).get() as
-      | string
-      | string[];
+    const rootPath = this.select(this.fields.ROOT_PATH).get() as string[];
 
-    const rootPathArray: string[] = Array.isArray(rootPath)
-      ? rootPath
-      : rootPath.split(",").map((v) => v.trim());
-    return rootPathArray.map((v: string) =>
+    return rootPath.map((v: string) =>
       path.normalize(
         v
           .trim()
-          .replace(/^~/, process.env.HOME as string)
+          .replace(/^~/, os.homedir())
           .replace("$HOME", os.homedir())
-          .replace(
-            /\$\w+/,
-            (word: string) => process.env[word.replace(/^\$/, "")] as string
-          )
+          .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")] as string)
+          .replace(/\//g, path.sep)
       )
     );
   }
@@ -64,16 +56,11 @@ export class Config {
    * @memberof Config
    */
   public select(field: string) {
-    // return this.configuration.get(field);
     return {
       get: () => {
         return this.configuration.get(field);
       },
-      update: (
-        value: any,
-        configurationTarget: vscode.ConfigurationTarget = vscode
-          .ConfigurationTarget.Global
-      ) => {
+      update: (value: any, configurationTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global) => {
         return this.configuration.update(field, value, configurationTarget);
       },
     };

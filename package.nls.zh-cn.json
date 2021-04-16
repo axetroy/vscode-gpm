@@ -2,7 +2,7 @@
   "ext.view.title": "项目管理",
   "ext.view.star": "我的收藏",
   "ext.view.stared": "那些年被你收藏的项目",
-  "ext.config.rootPath": "指定项目的根目录.\n\n默认值: `[$HOME/gpm]`. 支持环境变量\n\n类型:\n- string[]: 如 `[\"$HOME/gpm\"]`.\n- string: 以为 `,` 作为分隔符的字符串, 如 `\"$HOME/gpm, $GOPATH/src\"`",
+  "ext.config.rootPath": "指定项目的根目录.\n\n默认值: `[$HOME/gpm]`. 支持环境变量\n\n类型:\n- string[]: 如 `[\"$HOME/gpm\"]`.",
   "ext.config.searchBehavior": "定义搜索项目，然后点击之后的行为.",
   "ext.config.flattenProjects": "树结构扁平化显示项目. 例如:\n- github.com\n  - owner_name/project_name",
   "ext.config.search.openInNewWindow": "在新窗口打开",
