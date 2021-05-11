@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import gitUrlParse from "git-url-parse";
 import * as os from "os";
 import * as path from "path";
-import { Container, Inject, Service } from "typedi";
+import { Inject, Service } from "typedi";
 import uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
@@ -21,15 +21,12 @@ interface IClone {
 
 @Service()
 export class Git implements vscode.Disposable {
-  private readonly context: vscode.ExtensionContext = Container.get("context");
   private disposables: vscode.Disposable[] = [];
   private gitClient!: GitClient;
   @Inject() private i18n!: Localize;
   @Inject() private output!: Output;
   // the cache dir that project will be clone.
-  private CACHE_PATH: string = this.context.storageUri?.fsPath
-    ? this.context.storageUri?.fsPath
-    : path.join(os.tmpdir(), ".gpm", "temp");
+  private CACHE_PATH: string = path.join(os.tmpdir(), "gpm", "temp");
 
   /**
    * crate a random temp dir
@@ -178,6 +175,10 @@ export class Git implements vscode.Disposable {
         path: dist,
       };
     } catch (err) {
+      await fs.remove(randomTemp).catch(() => {
+        // ignore empty block
+      });
+
       const isCancel = err.message === "Cancelled";
       let shouldShowOutput = false;
       if (err instanceof GitError) {
@@ -208,12 +209,11 @@ export class Git implements vscode.Disposable {
       if (shouldShowOutput) {
         this.output.show();
       }
-      await fs.remove(randomTemp);
-      if (err.message === "SIGKILL") {
-        throw new Error(this.i18n.localize("err.processKilled"));
-      }
       if (isCancel) {
         return;
+      }
+      if (err.message === "SIGKILL") {
+        throw new Error(this.i18n.localize("err.processKilled"));
       }
       throw err;
     }
@@ -222,7 +222,9 @@ export class Git implements vscode.Disposable {
    * Clear cache
    */
   public async clean() {
-    await fs.remove(this.CACHE_PATH);
+    await fs.remove(this.CACHE_PATH).catch(() => {
+      // ignore empty block
+    });
   }
 
   public async dispose() {
