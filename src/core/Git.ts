@@ -223,7 +223,9 @@ export class Git implements vscode.Disposable {
       } else {
         this.output.writeln(err.stack || err.message || err + "");
       }
-      shouldShowOutput && this.output.show();
+      if (shouldShowOutput) {
+        this.output.show();
+      }
       await fs.remove(randomTemp);
       if (err.message === "SIGKILL") {
         throw new Error(this.i18n.localize("err.processKilled"));
