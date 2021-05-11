@@ -544,7 +544,7 @@
     "fs-extra": "10.0.0",
     "git-url-parse": "11.4.4",
     "iconv-lite-umd": "^0.6.8",
-    "jschardet": "^2.2.1",
+    "jschardet": "^3.0.0",
     "lodash": "4.17.21",
     "p-map": "4.0.0",
     "process-exists": "^4.0.0",
