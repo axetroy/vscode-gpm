@@ -8,5 +8,4 @@ tslint.json
 resources/screenshot/*
 *.log
 .DS_Store
-node_modules
 renovate.json
