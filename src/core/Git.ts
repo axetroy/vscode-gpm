@@ -196,8 +196,10 @@ export class Git implements vscode.Disposable {
         path: dist,
       };
     } catch (err) {
+      let shouldShowOutput = false
       if (err instanceof GitError) {
         if (err.error?.message) {
+          shouldShowOutput = true
           this.output.writeln(err.error?.message);
         }
         if (err.error?.stack) {
@@ -207,11 +209,13 @@ export class Git implements vscode.Disposable {
         this.output.writeln(`git error code: ${err.gitErrorCode}`);
         this.output.writeln(`exit code: ${err.exitCode}`);
         if (err.stdout) {
+          shouldShowOutput = true
           this.output.writeln(
             `=== stdout start ===\n${err.stdout}\n=== stdout end ===`
           );
         }
         if (err.stderr) {
+          shouldShowOutput = true
           this.output.writeln(
             `=== stderr start ===\n${err.stderr}\n=== stderr end ===`
           );
@@ -219,7 +223,7 @@ export class Git implements vscode.Disposable {
       } else {
         this.output.writeln(err.stack || err.message || err + "");
       }
-      this.output.show();
+      shouldShowOutput && this.output.show();
       await fs.remove(randomTemp);
       if (err.message === "SIGKILL") {
         throw new Error(this.i18n.localize("err.processKilled"));
