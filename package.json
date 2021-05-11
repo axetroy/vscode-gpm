@@ -2,7 +2,7 @@
   "name": "vscode-gpm",
   "displayName": "gpm",
   "description": "Manager your git projects with Golang style",
-  "version": "2.6.8",
+  "version": "2.6.9",
   "publisher": "axetroy",
   "engines": {
     "vscode": "^1.56.0"
