@@ -514,7 +514,7 @@
     "clean": "rimraf ./out",
     "compile": "npm run clean && ncc build src/index.ts -o ./dist -e vscode -m && npm run clean && move-cli ./dist ./out && npm run copy-script:prod",
     "compile:askpass-main": "ncc build src/git/askpass-main.ts -o ./askpass-main -e vscode -m && move-cli ./askpass-main/index.js ./out/askpass-main.js && rimraf ./askpass-main",
-    "watch": "copy-script:dev && tsc -watch -p ./",
+    "watch": "npm run copy-script:dev && tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "tslint -p ./ -c tslint.json",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",

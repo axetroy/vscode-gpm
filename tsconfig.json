@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ES2015",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "target": "es6",
     "outDir": "out",
