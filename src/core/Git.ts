@@ -124,7 +124,7 @@ export class Git implements vscode.Disposable {
     this.output.writeln(`temp dir '${randomTemp}'`);
 
     const dist = await this.getValidProjectName(
-      path.join(baseDir, gitInfo.source, gitInfo.owner.replace(/\//gim, "."), gitInfo.name)
+      path.join(baseDir, gitInfo.resource, gitInfo.owner.replace(/\//gim, "."), gitInfo.name)
     );
 
     if (!dist) {
@@ -169,7 +169,7 @@ export class Git implements vscode.Disposable {
       await fs.move(projectDir, dist, { overwrite: true });
 
       return {
-        source: gitInfo.source,
+        source: gitInfo.resource,
         owner: gitInfo.owner,
         name: gitInfo.name,
         path: dist,
