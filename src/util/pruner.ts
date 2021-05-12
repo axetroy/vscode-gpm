@@ -4,18 +4,16 @@ import * as path from "path";
 import { EventEmitter } from "events";
 import promiseMap from "p-map";
 
-const dir = path.join(os.homedir(), "gpm");
-
 const coresLen = os.cpus().length;
 
 function _() {
   //
 }
 
-const pruneMap = new Set(["node_modules", "bower_components"])
+const pruneMap = new Set(["node_modules", "bower_components"]);
 
 class Pruner extends EventEmitter {
-  constructor(private rootDir: string = dir) {
+  constructor(private rootDir: string) {
     super();
   }
   public async find(directory = this.rootDir) {
@@ -29,7 +27,7 @@ class Pruner extends EventEmitter {
           } else {
             await fs
               .lstat(absPath)
-              .then(stat => {
+              .then((stat) => {
                 if (stat.isDirectory()) {
                   return this.find(absPath);
                 }
@@ -38,7 +36,7 @@ class Pruner extends EventEmitter {
           }
         };
 
-        return promiseMap(files, mapper, { concurrency: 10 * coresLen });
+        return promiseMap(files, mapper, { concurrency: coresLen });
       })
       .catch(_);
   }
