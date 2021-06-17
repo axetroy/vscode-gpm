@@ -539,7 +539,7 @@
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
     "byline": "^5.0.0",
-    "execa": "5.1.0",
+    "execa": "5.1.1",
     "file-type": "^16.0.1",
     "fs-extra": "10.0.0",
     "git-url-parse": "11.4.4",
