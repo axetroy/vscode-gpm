@@ -522,7 +522,7 @@
     "copy-script": "cpy \"./src/git/*.sh\" \"./out/git/\""
   },
   "devDependencies": {
-    "@types/byline": "4.2.32",
+    "@types/byline": "4.2.33",
     "@types/fs-extra": "9.0.11",
     "@types/lodash": "4.14.170",
     "@types/mocha": "8.2.2",
