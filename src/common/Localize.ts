@@ -10,7 +10,7 @@ export class Localize {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public localize(key: string, _comment = "", args: string[] = []): string {
-    return localize(key, ...args);
+  public localize(key: string, _comment = "", args: unknown[] = []): string {
+    return localize(key, ...args as string[]);
   }
 }
