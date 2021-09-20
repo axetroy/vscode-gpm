@@ -553,6 +553,7 @@
     "typedi": "^0.10.0",
     "unique-string": "^3.0.0",
     "vscode-nls": "^5.0.0",
+    "vscode-nls-i18n": "0.2.4",
     "which": "^2.0.2"
   }
 }
