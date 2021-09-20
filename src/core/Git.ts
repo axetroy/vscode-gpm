@@ -179,9 +179,10 @@ export class Git implements vscode.Disposable {
         // ignore empty block
       });
 
-      const isCancel = err.message === "Cancelled";
+      let isCancel = false
       let shouldShowOutput = false;
       if (err instanceof GitError) {
+        isCancel = err.message === "Cancelled";
         if (err.error?.message) {
           shouldShowOutput = true;
           this.output.writeln(err.error?.message);
@@ -200,8 +201,11 @@ export class Git implements vscode.Disposable {
           shouldShowOutput = true;
           this.output.writeln(`=== stderr start ===\n${err.stderr}\n=== stderr end ===`);
         }
-      } else {
+      } else if (err instanceof Error) {
+        isCancel = err.message === "Cancelled";
         this.output.writeln(err.stack || err.message || err + "");
+      } else {
+        this.output.writeln(err + "");
       }
       if (isCancel) {
         shouldShowOutput = false;
@@ -212,7 +216,7 @@ export class Git implements vscode.Disposable {
       if (isCancel) {
         return;
       }
-      if (err.message === "SIGKILL") {
+      if (err instanceof Error && err.message === "SIGKILL") {
         throw new Error(this.i18n.localize("err.processKilled"));
       }
       throw err;

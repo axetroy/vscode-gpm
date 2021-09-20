@@ -274,7 +274,9 @@ export class Gpm {
         this.i18n.localize("tip.message.clearReport", "清理完毕")
       );
     } catch (err) {
-      await vscode.window.showErrorMessage(err.message);
+      if (err instanceof Error) {
+        await vscode.window.showErrorMessage(err.message);
+      }
     }
   }
   /**

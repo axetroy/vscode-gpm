@@ -38,7 +38,9 @@ export async function activate(
             vscode.Uri.file(filepath)
           );
         } catch (err) {
-          vscode.window.showErrorMessage(err.message);
+          if (err instanceof Error) {
+            vscode.window.showErrorMessage(err.message);
+          }
         }
       }
     )
