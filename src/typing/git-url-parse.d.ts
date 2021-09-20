@@ -32,7 +32,7 @@ type Protocol = "https" | "ssh";
 type GitUrlParse = (input: string) => GitStructure;
 
 declare module "git-url-parse" {
-  var gitUrlParse: GitUrlParse;
+  const gitUrlParse: GitUrlParse;
 
   export = gitUrlParse;
 }

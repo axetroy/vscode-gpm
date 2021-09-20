@@ -65,7 +65,7 @@ export class Resource {
       path: path.join(rootPath, sourceName),
       rootPath,
     };
-    let icon: string = "";
+    let icon = "";
     switch (sourceName) {
       case "github.com":
         icon = "github.svg";
@@ -126,7 +126,7 @@ export class Resource {
   public createRepository(
     owner: IOwner,
     repositoryName: string,
-    isFlattenOwner: boolean = false,
+    isFlattenOwner = false,
     collapsibleState: vscode.TreeItemCollapsibleState = vscode
       .TreeItemCollapsibleState.Collapsed
   ): IRepository {
@@ -149,6 +149,7 @@ export class Resource {
       rootPath: owner.rootPath,
     };
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public getIcon(...paths: string[]) {
     const context = this.context;
     return {
@@ -156,18 +157,23 @@ export class Resource {
       light: context.asAbsolutePath(path.join("resources", "light", ...paths)),
     };
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public isSource(o: any): o is ISource {
     return o && o.type === FileType.Source;
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public isOwner(o: any): o is IOwner {
     return o && o.type === FileType.Owner;
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public isRepository(o: any): o is IRepository {
     return o && o.type === FileType.Repository;
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public isStar(o: any): o is IStar {
     return o && o.type === FileType.Star;
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public isSegmentation(o: any): o is ISegmentation {
     return o && o.type === FileType.Segmentation;
   }

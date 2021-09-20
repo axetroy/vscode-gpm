@@ -18,7 +18,7 @@ export class Terminal {
       terminal = vscode.window.createTerminal({
         name: "[GPM]: " + path.basename(filepath),
         cwd: filepath,
-        env: process.env as any
+        env: process.env
       });
 
       this.context.subscriptions.push(terminal);

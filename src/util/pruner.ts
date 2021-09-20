@@ -16,7 +16,7 @@ class Pruner extends EventEmitter {
   constructor(private rootDir: string) {
     super();
   }
-  public async find(directory = this.rootDir) {
+  public async find(directory = this.rootDir): Promise<void | void[]> {
     return fs
       .readdir(directory)
       .then((files: string[]) => {

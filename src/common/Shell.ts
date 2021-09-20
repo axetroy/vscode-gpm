@@ -20,7 +20,7 @@ export class Shell {
    * @param cwd
    * @param command
    */
-  public async run(cwd: string, command: string): Promise<any> {
+  public async run(cwd: string, command: string): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const args = command.split(" ");
 
@@ -84,7 +84,7 @@ export class Shell {
    * Interrupt the process
    * @param pid
    */
-  public async interrupt(pid: string) {
+  public async interrupt(pid: string): Promise<void> {
     const index = this.processes.findIndex(v => v.id === pid);
 
     if (index >= 0) {

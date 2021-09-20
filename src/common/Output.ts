@@ -5,35 +5,35 @@ const output = vscode.window.createOutputChannel("GPM");
 
 @Service()
 export class Output implements vscode.OutputChannel {
-  get name() {
+  get name(): string {
     return output.name;
   }
-  public show() {
+  public show(): void {
     output.show();
   }
-  public hide() {
+  public hide(): void {
     output.hide();
   }
-  public append(data: string) {
+  public append(data: string): void {
     output.append(data);
   }
-  public write(data?: string) {
+  public write(data?: string): void {
     if (data !== undefined) {
       output.append(data);
     }
   }
-  public appendLine(data: string) {
+  public appendLine(data: string): void {
     output.appendLine(data);
   }
-  public writeln(data?: string) {
+  public writeln(data?: string): void {
     if (data !== undefined) {
       output.appendLine(data);
     }
   }
-  public clear() {
+  public clear(): void {
     output.clear();
   }
-  public dispose() {
+  public dispose(): void {
     output.dispose();
   }
 }

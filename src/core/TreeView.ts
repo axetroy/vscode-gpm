@@ -47,6 +47,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         // if show project flattens
         // so no owner struct
         if (this.config.isFlattenProjects) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return list as any;
         }
         const owners: IOwner[] = flatten(list);
@@ -59,6 +60,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
       .then((list) => {
         const repositories: IRepository[] = (flatten(list) as IFile[])
           .filter(this.resource.isRepository)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .sort((a, b) => (a.owner as any) - (b.owner as any));
         return Promise.resolve(repositories);
       });
@@ -225,7 +227,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   }
   private async getRepository(
     element: IOwner,
-    isFlattenOwner: boolean = false
+    isFlattenOwner = false
   ): Promise<IRepository[]> {
     const children: IRepository[] = [];
 

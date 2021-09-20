@@ -52,7 +52,7 @@ export class Git implements vscode.Disposable {
       switch (actionName as ProjectExistAction) {
         case overwrite:
           return repositoryPath;
-        case rename:
+        case rename: {
           const newName = await vscode.window.showInputBox({
             prompt: this.i18n.localize("tip.placeholder.requireNewRepo", "请输入新的项目名字"),
             ignoreFocusOut: true,
@@ -63,6 +63,8 @@ export class Git implements vscode.Disposable {
           }
 
           return this.getValidProjectName(path.join(path.dirname(repositoryPath), newName));
+        }
+
         default:
           return;
       }
@@ -71,7 +73,7 @@ export class Git implements vscode.Disposable {
     }
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     const pathHint = vscode.workspace.getConfiguration("git").get<string | string[]>("path");
 
     const info = await findGit(pathHint, () => {
@@ -89,6 +91,7 @@ export class Git implements vscode.Disposable {
     this.gitClient = new GitClient({
       gitPath: info.path,
       userAgent: `git/${info.version} (${
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (os as any).version?.() ?? os.type()
       } ${os.release()}; ${os.platform()} ${os.arch()}) vscode/${vscode.version} (${vscode.env.appName})`,
       version: info.version,
@@ -179,7 +182,7 @@ export class Git implements vscode.Disposable {
         // ignore empty block
       });
 
-      let isCancel = false
+      let isCancel = false;
       let shouldShowOutput = false;
       if (err instanceof GitError) {
         isCancel = err.message === "Cancelled";
@@ -225,13 +228,13 @@ export class Git implements vscode.Disposable {
   /**
    * Clear cache
    */
-  public async clean() {
+  public async clean(): Promise<void> {
     await fs.remove(this.CACHE_PATH).catch(() => {
       // ignore empty block
     });
   }
 
-  public async dispose() {
+  public async dispose(): Promise<void> {
     for (const d of this.disposables) {
       d.dispose();
     }

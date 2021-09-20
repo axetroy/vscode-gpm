@@ -9,7 +9,8 @@ export class Localize {
     init(context.extensionPath);
   }
 
-  public localize(key: string, comment: string = "", args: any[] = []): string {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public localize(key: string, _comment = "", args: string[] = []): string {
     return localize(key, ...args);
   }
 }

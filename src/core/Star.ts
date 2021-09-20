@@ -4,7 +4,7 @@ import { Localize } from "../common/Localize";
 import { FileType, IRepository, IStar } from "../type";
 import { Resource } from "./Resource";
 
-const storageKey: string = "@stars";
+const storageKey = "@stars";
 const staredSuffix = "@stared";
 
 @Service()
@@ -12,27 +12,23 @@ export class Star implements IStar {
   private context: vscode.ExtensionContext = Container.get("context");
   public i18n = Container.get(Localize);
   public resource = Container.get(Resource);
-  private starList: IRepository[] =
-    this.context.globalState.get(storageKey) || [];
+  private starList: IRepository[] = this.context.globalState.get(storageKey) || [];
   public label: string = this.i18n.localize("ext.view.star", "你的收藏");
   public contextValue = FileType.Star;
   public collapsibleState = 2;
   public iconPath = this.resource.getIcon("star.svg");
-  public tooltip: string = this.i18n.localize(
-    "ext.view.stared",
-    "你的收藏的项目"
-  );
+  public tooltip: string = this.i18n.localize("ext.view.stared", "你的收藏的项目");
   // customer property
   public type = FileType.Star;
   public path = ""; // empty path
 
   private findIndex(repository: IRepository): number {
-    return this.starList.findIndex(r => repository.path === r.path);
+    return this.starList.findIndex((r) => repository.path === r.path);
   }
   private async update(value: IRepository[] = this.starList) {
     return this.context.globalState.update(storageKey, value);
   }
-  public list() {
+  public list(): IRepository[] {
     return this.starList;
   }
   public find(repository: IRepository): IRepository | void {
@@ -41,7 +37,7 @@ export class Star implements IStar {
       return this.starList[index];
     }
   }
-  public async star(repository: IRepository) {
+  public async star(repository: IRepository): Promise<void> {
     if (this.findIndex(repository) < 0) {
       const newRepository = { ...repository };
       newRepository.id = repository.id + staredSuffix;
@@ -50,7 +46,7 @@ export class Star implements IStar {
       await this.update();
     }
   }
-  public async unstar(repository: IRepository) {
+  public async unstar(repository: IRepository): Promise<void> {
     const index = this.findIndex(repository);
     if (index >= 0) {
       repository.contextValue = FileType.Repository;
@@ -58,7 +54,7 @@ export class Star implements IStar {
       await this.update();
     }
   }
-  public async clear() {
+  public async clear(): Promise<void> {
     for (const repository of this.starList) {
       repository.contextValue = FileType.Repository;
     }

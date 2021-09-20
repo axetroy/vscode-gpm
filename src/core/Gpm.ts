@@ -16,7 +16,7 @@ import {
   ProjectPostAddAction,
   PruneAction,
   SearchAction,
-  SearchBehavior
+  SearchBehavior,
 } from "../type";
 import Pruner from "../util/pruner";
 import { Config } from "./Config";
@@ -40,16 +40,10 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async clone() {
+  public async clone(): Promise<void> {
     const gitProjectAddress = await vscode.window.showInputBox({
-      placeHolder: this.i18n.localize(
-        "tip.placeholder.addressExample",
-        "例如 xxx"
-      ),
-      prompt: this.i18n.localize(
-        "tip.placeholder.enterAddress",
-        "请输入git地址"
-      ),
+      placeHolder: this.i18n.localize("tip.placeholder.addressExample", "例如 xxx"),
+      prompt: this.i18n.localize("tip.placeholder.enterAddress", "请输入git地址"),
       ignoreFocusOut: true,
     });
 
@@ -59,14 +53,10 @@ export class Gpm {
 
     const PREFIX = "$(location)";
 
-    const rootPaths = this.config.rootPath.map(
-      (rootpath) => `${PREFIX}  ${rootpath}`
-    );
+    const rootPaths = this.config.rootPath.map((rootpath) => `${PREFIX}  ${rootpath}`);
 
     if (!rootPaths.length) {
-      vscode.window.showErrorMessage(
-        this.i18n.localize("err.requireRootPath", "请至少设置一个 rootPath")
-      );
+      vscode.window.showErrorMessage(this.i18n.localize("err.requireRootPath", "请至少设置一个 rootPath"));
       return;
     }
 
@@ -74,10 +64,7 @@ export class Gpm {
     let baseDir =
       rootPaths.length > 1
         ? await vscode.window.showQuickPick(rootPaths, {
-            placeHolder: this.i18n.localize(
-              "tip.placeholder.selectRootPath",
-              "选择一个根目录"
-            ),
+            placeHolder: this.i18n.localize("tip.placeholder.selectRootPath", "选择一个根目录"),
             ignoreFocusOut: true,
           })
         : rootPaths.shift();
@@ -103,10 +90,7 @@ export class Gpm {
     const cancel = this.i18n.localize(ProjectPostAddAction.Cancel);
 
     const action: string | void = await vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.cloned", "克隆成功", [
-        res.owner,
-        res.name,
-      ]),
+      this.i18n.localize("tip.message.cloned", "克隆成功", [res.owner, res.name]),
       open,
       cancel
     );
@@ -133,7 +117,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async prune() {
+  public async prune(): Promise<void> {
     const Continue = this.i18n.localize(PruneAction.Continue);
     const action = await vscode.window.showWarningMessage(
       this.i18n.localize("tip.message.pruneWarning", "移除警告"),
@@ -148,14 +132,9 @@ export class Gpm {
         return;
     }
 
-    vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.pruneWait")
-    );
+    vscode.window.showInformationMessage(this.i18n.localize("tip.message.pruneWait"));
 
-    const statusbar = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Right,
-      100
-    );
+    const statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
     statusbar.text = "[GPM]: searching...";
     statusbar.show();
@@ -184,9 +163,7 @@ export class Gpm {
     statusbar.hide();
     statusbar.dispose();
 
-    vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.pruneReport", "报告", [num])
-    );
+    vscode.window.showInformationMessage(this.i18n.localize("tip.message.pruneReport", "报告", [num]));
     this.refresh();
   }
   /**
@@ -194,7 +171,7 @@ export class Gpm {
    * @param {IRepository} repository
    * @memberof Gpm
    */
-  public async remove(repository: IRepository) {
+  public async remove(repository: IRepository): Promise<void> {
     // remove project
     await fs.remove(repository.path);
 
@@ -226,16 +203,13 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async removeOwner(owner: IOwner) {
+  public async removeOwner(owner: IOwner): Promise<void> {
     const repositories: string[] = await fs.readdir(owner.path);
 
     for (const repository of repositories) {
       const stat = await fs.stat(path.join(owner.path, repository));
       if (stat.isDirectory()) {
-        const repositoryEntity = this.resource.createRepository(
-          owner,
-          repository
-        );
+        const repositoryEntity = this.resource.createRepository(owner, repository);
         await this.remove(repositoryEntity);
       }
     }
@@ -249,7 +223,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async removeSource(source: ISource) {
+  public async removeSource(source: ISource): Promise<void> {
     const owners: string[] = await fs.readdir(source.path);
 
     for (const ownerName of owners) {
@@ -267,12 +241,10 @@ export class Gpm {
    * Clear cache
    * @memberof Gpm
    */
-  public async cleanCache() {
+  public async cleanCache(): Promise<void> {
     try {
       await this.git.clean();
-      await vscode.window.showInformationMessage(
-        this.i18n.localize("tip.message.clearReport", "清理完毕")
-      );
+      await vscode.window.showInformationMessage(this.i18n.localize("tip.message.clearReport", "清理完毕"));
     } catch (err) {
       if (err instanceof Error) {
         await vscode.window.showErrorMessage(err.message);
@@ -285,17 +257,15 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async open(repository: IRepository) {
-    const repositorySymbol: string = `@${repository.owner}/${repository.repository}`;
+  public async open(repository: IRepository): Promise<void> {
+    const repositorySymbol = `@${repository.owner}/${repository.repository}`;
 
     const currentWindow = this.i18n.localize(OpenAction.CurrentWindow);
     const newWindow = this.i18n.localize(OpenAction.NewWindow);
     const workspace = this.i18n.localize(OpenAction.Workspace);
 
     const action = await vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.how2open", "选择打开方式", [
-        repositorySymbol,
-      ]),
+      this.i18n.localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
       workspace,
       newWindow,
       currentWindow,
@@ -321,12 +291,8 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  private openFolder(filepath: string, ...res: any[]) {
-    return vscode.commands.executeCommand(
-      "vscode.openFolder",
-      vscode.Uri.file(filepath),
-      ...res
-    );
+  private async openFolder(filepath: string, ...res: unknown[]): Promise<void> {
+    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(filepath), ...res);
   }
   /**
    * Open file in current window
@@ -334,7 +300,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async openInCurrentWindow(file: IFile) {
+  public async openInCurrentWindow(file: IFile): Promise<void> {
     return this.openFolder(file.path);
   }
   /**
@@ -343,7 +309,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async openInNewWindow(file: IFile) {
+  public async openInNewWindow(file: IFile): Promise<void> {
     return this.openFolder(file.path, true);
   }
   /**
@@ -351,7 +317,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async interruptCommand() {
+  public async interruptCommand(): Promise<void> {
     const itemList = this.shell.processes.map((v) => {
       return {
         label: "$(dashboard) " + v.cmd,
@@ -364,10 +330,7 @@ export class Gpm {
     const processSelected = await vscode.window.showQuickPick(itemList, {
       matchOnDescription: false,
       matchOnDetail: false,
-      placeHolder: this.i18n.localize(
-        "tip.placeholder.selectProcessAndKill",
-        "选择一个进程然后kill掉"
-      ),
+      placeHolder: this.i18n.localize("tip.placeholder.selectProcessAndKill", "选择一个进程然后kill掉"),
       ignoreFocusOut: true,
     });
 
@@ -405,10 +368,7 @@ export class Gpm {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
-        placeHolder: this.i18n.localize(
-          "tip.placeholder.selectProject",
-          "请选择一个项目"
-        ),
+        placeHolder: this.i18n.localize("tip.placeholder.selectProject", "请选择一个项目"),
         ignoreFocusOut: true,
       },
       ...(options || {}),
@@ -433,7 +393,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public refresh() {
+  public refresh(): void {
     return this.explorer.refresh();
   }
   /**
@@ -441,7 +401,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async search() {
+  public async search(): Promise<unknown> {
     const repository = await this.selectRepository();
 
     if (!repository) {
@@ -463,16 +423,14 @@ export class Gpm {
         return this.unstar(repository);
       case SearchBehavior.AddToWorkspace:
         return this.openInWorkspace(repository);
-      case SearchBehavior.Ask:
-        const repositorySymbol: string = `@${repository.owner}/${repository.repository}`;
+      case SearchBehavior.Ask: {
+        const repositorySymbol = `@${repository.owner}/${repository.repository}`;
 
         const open = this.i18n.localize(SearchAction.Open);
         const remove = this.i18n.localize(SearchAction.Remove);
 
         const doAction = await vscode.window.showInformationMessage(
-          this.i18n.localize("tip.message.doWhat", "你想干嘛?", [
-            repositorySymbol,
-          ]),
+          this.i18n.localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
           open,
           remove,
           this.i18n.localize(SearchAction.Cancel)
@@ -486,6 +444,8 @@ export class Gpm {
           default:
             return;
         }
+      }
+
       default:
       // do nothing
     }
@@ -512,7 +472,7 @@ export class Gpm {
    * open project in workspace
    * @param repository
    */
-  public openInWorkspace(repository: IRepository) {
+  public openInWorkspace(repository: IRepository): void {
     const name = `${repository.source}/${repository.owner}/${repository.repository}`;
     const uri = vscode.Uri.file(repository.path);
 
@@ -523,9 +483,7 @@ export class Gpm {
       // waiting for vscode api
     } else {
       vscode.workspace.updateWorkspaceFolders(
-        vscode.workspace.workspaceFolders
-          ? vscode.workspace.workspaceFolders.length
-          : 0,
+        vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0,
         null,
         { uri, name }
       );
@@ -536,7 +494,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public starList() {
+  public starList(): IRepository[] {
     return this.explorer.star.list();
   }
   /**

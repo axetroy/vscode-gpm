@@ -4,11 +4,7 @@ import { Command } from "../type";
 
 export class Statusbar extends Writable {
   private statusbar: StatusBarItem;
-  constructor(
-    private command: Command,
-    alignment: StatusBarAlignment = StatusBarAlignment.Right,
-    priority: number = 100
-  ) {
+  constructor(private command: Command, alignment: StatusBarAlignment = StatusBarAlignment.Right, priority = 100) {
     super();
     this.statusbar = window.createStatusBarItem(alignment, priority);
     this.on("finish", this.hide.bind(this));
@@ -26,7 +22,7 @@ export class Statusbar extends Writable {
     this.statusbar.hide();
     this.statusbar.dispose();
   }
-  public _write(chunk: string | Buffer, encoding: string, cb: () => void) {
+  public _write(chunk: string | Buffer, encoding: string, cb: () => void): void {
     this.show(chunk + "");
     cb();
   }

@@ -18,7 +18,7 @@ export class Config {
    * @readonly
    * @memberof Config
    */
-  get configuration() {
+  get configuration(): vscode.WorkspaceConfiguration {
     return vscode.workspace.getConfiguration(this.extensionField);
   }
   /**
@@ -55,12 +55,13 @@ export class Config {
    * @returns
    * @memberof Config
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public select(field: string) {
     return {
       get: () => {
         return this.configuration.get(field);
       },
-      update: (value: any, configurationTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global) => {
+      update: (value: unknown, configurationTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global) => {
         return this.configuration.update(field, value, configurationTarget);
       },
     };

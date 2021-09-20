@@ -300,7 +300,8 @@ export async function activate(
   context.subscriptions.push(
     vscode.commands.registerCommand(
       Command.StarCurrentProject,
-      async (repository: IRepository): Promise<void> => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      async (_repository: IRepository): Promise<void> => {
         // 当前项目的路径
         const rootPath = vscode.workspace.rootPath;
         if (!rootPath) {
@@ -524,7 +525,8 @@ export async function activate(
 
 // this method is called when your extension is deactivated
 export async function deactivate(
-  context: vscode.ExtensionContext
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _context: vscode.ExtensionContext
 ): Promise<void> {
   // when disable extension
   // clear cache

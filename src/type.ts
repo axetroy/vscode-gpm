@@ -28,8 +28,8 @@ export interface ISegmentation extends ISource {
 export interface IStar extends IFile {
   type: FileType;
   find(repository: IRepository): IRepository | void;
-  star(repository: IRepository): Promise<any>;
-  unstar(repository: IRepository): Promise<any>;
+  star(repository: IRepository): Promise<unknown>;
+  unstar(repository: IRepository): Promise<unknown>;
   list(): IRepository[];
   clear(): void;
 }
