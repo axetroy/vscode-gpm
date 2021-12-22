@@ -7,6 +7,7 @@ import { Output } from "../common/Output";
 import { Shell } from "../common/Shell";
 import { Terminal } from "../common/Terminal";
 import {
+  Command,
   FileType,
   IFile,
   IOwner,
@@ -19,6 +20,7 @@ import {
   SearchBehavior,
 } from "../type";
 import Pruner from "../util/pruner";
+import { command } from "./command";
 import { Config } from "./Config";
 import { Git } from "./Git";
 import { Resource } from "./Resource";
@@ -40,6 +42,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.CloneProject)
   public async clone(): Promise<void> {
     const gitProjectAddress = await vscode.window.showInputBox({
       placeHolder: this.i18n.localize("tip.placeholder.addressExample", "例如 xxx"),
@@ -53,7 +56,7 @@ export class Gpm {
 
     const PREFIX = "$(location)";
 
-    const rootPaths = this.config.rootPath.map((rootpath) => `${PREFIX}  ${rootpath}`);
+    const rootPaths = this.config.rootPath.map((rootPath) => `${PREFIX}  ${rootPath}`);
 
     if (!rootPaths.length) {
       vscode.window.showErrorMessage(this.i18n.localize("err.requireRootPath", "请至少设置一个 rootPath"));
@@ -97,7 +100,7 @@ export class Gpm {
 
     switch (action as ProjectPostAddAction) {
       case open:
-        await this.open({
+        await this.openRepository({
           source: res.source,
           owner: res.owner,
           path: res.path,
@@ -117,6 +120,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.Prune)
   public async prune(): Promise<void> {
     const Continue = this.i18n.localize(PruneAction.Continue);
     const action = await vscode.window.showWarningMessage(
@@ -241,6 +245,7 @@ export class Gpm {
    * Clear cache
    * @memberof Gpm
    */
+  @command(Command.ClearCache)
   public async cleanCache(): Promise<void> {
     try {
       await this.git.clean();
@@ -257,7 +262,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
-  public async open(repository: IRepository): Promise<void> {
+  private async openRepository(repository: IRepository): Promise<void> {
     const repositorySymbol = `@${repository.owner}/${repository.repository}`;
 
     const currentWindow = this.i18n.localize(OpenAction.CurrentWindow);
@@ -300,6 +305,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.OpenInCurrentWindow)
   public async openInCurrentWindow(file: IFile): Promise<void> {
     return this.openFolder(file.path);
   }
@@ -309,6 +315,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.OpenInNewWindow)
   public async openInNewWindow(file: IFile): Promise<void> {
     return this.openFolder(file.path, true);
   }
@@ -317,6 +324,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.InterruptCommand)
   public async interruptCommand(): Promise<void> {
     const itemList = this.shell.processes.map((v) => {
       return {
@@ -385,6 +393,7 @@ export class Gpm {
    * @param {IFile} file
    * @memberof Gpm
    */
+  @command(Command.OpenInTerminal)
   public async openTerminal(file: IFile): Promise<void> {
     await this.terminal.open(file.path);
   }
@@ -393,6 +402,7 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.Refresh)
   public refresh(): void {
     return this.explorer.refresh();
   }
@@ -401,6 +411,8 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.Search)
+  @command(Command.Find)
   public async search(): Promise<unknown> {
     const repository = await this.selectRepository();
 
@@ -438,7 +450,7 @@ export class Gpm {
 
         switch (doAction as SearchAction) {
           case open:
-            return this.open(repository);
+            return this.openRepository(repository);
           case remove:
             return this.remove(repository);
           default:
@@ -455,6 +467,7 @@ export class Gpm {
    * @param {IRepository} repository
    * @memberof Gpm
    */
+  @command(Command.Star)
   public async star(repository: IRepository): Promise<void> {
     await this.explorer.star.star(repository);
     this.refresh();
@@ -464,6 +477,7 @@ export class Gpm {
    * @param {IRepository} repository
    * @memberof Gpm
    */
+  @command(Command.Unstar)
   public async unstar(repository: IRepository): Promise<void> {
     await this.explorer.star.unstar(repository);
     this.refresh();
@@ -472,6 +486,7 @@ export class Gpm {
    * open project in workspace
    * @param repository
    */
+  @command(Command.OpenInWorkspace)
   public openInWorkspace(repository: IRepository): void {
     const name = `${repository.source}/${repository.owner}/${repository.repository}`;
     const uri = vscode.Uri.file(repository.path);
@@ -489,6 +504,31 @@ export class Gpm {
       );
     }
   }
+
+  @command(Command.ListProject2OpenInWorkspace)
+  public async listProjectToOpenInWorkspace(): Promise<void> {
+    const repository = await this.selectRepository(void 0, {
+      placeHolder: this.i18n.localize("tip.placeholder.list2AddWorkspace", "请选择项目然后添加到工作区"),
+    });
+
+    if (!repository) {
+      return;
+    }
+
+    return this.openInWorkspace(repository);
+  }
+
+  @command(Command.ListProject2OpenInCurrentWindow)
+  public async listProjectToOpenInCurrentWindow(): Promise<void> {
+    const repository = await this.selectRepository(void 0, {
+      placeHolder: this.i18n.localize("tip.placeholder.list2open", "新窗口打开项目"),
+    });
+
+    if (repository) {
+      return this.openInCurrentWindow(repository);
+    }
+  }
+
   /**
    * Get the star list
    * @returns
@@ -502,8 +542,25 @@ export class Gpm {
    * @returns
    * @memberof Gpm
    */
+  @command(Command.ClearStars)
   public clearStars(): void {
     this.explorer.star.clear();
     this.refresh();
+  }
+
+  @command(Command.OpenFile)
+  public async openFile(filepath: string): Promise<void> {
+    try {
+      await vscode.commands.executeCommand("vscode.open", vscode.Uri.file(filepath));
+    } catch (err) {
+      if (err instanceof Error) {
+        vscode.window.showErrorMessage(err.message);
+      }
+    }
+  }
+
+  @command(Command.CopyPath)
+  public async copyPath(file: IFile): Promise<void> {
+    await vscode.env.clipboard.writeText(file.path);
   }
 }
