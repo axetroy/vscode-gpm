@@ -542,11 +542,11 @@
     "fs-extra": "10.0.0",
     "git-url-parse": "11.6.0",
     "lodash": "4.17.21",
-    "p-map": "5.1.0",
+    "p-map": "4.0.0",
     "process-exists": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "typedi": "^0.10.0",
-    "unique-string": "^3.0.0",
+    "unique-string": "2.0.0",
     "vscode-nls-i18n": "0.2.4",
     "which": "^2.0.2"
   }
