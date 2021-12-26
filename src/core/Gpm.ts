@@ -4,7 +4,6 @@ import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Output } from "../common/Output";
-import { Shell } from "../common/Shell";
 import { Terminal } from "../common/Terminal";
 import {
   FileType,
@@ -32,7 +31,6 @@ export class Gpm {
   @Inject() public explorer!: ProjectTreeProvider;
   @Inject() public resource!: Resource;
   @Inject() public git!: Git;
-  @Inject() public shell!: Shell;
   @Inject() public terminal!: Terminal;
   @Inject() public output!: Output;
   /**
@@ -311,34 +309,6 @@ export class Gpm {
    */
   public async openInNewWindow(file: IFile): Promise<void> {
     return this.openFolder(file.path, true);
-  }
-  /**
-   * interrupt current running command
-   * @returns
-   * @memberof Gpm
-   */
-  public async interruptCommand(): Promise<void> {
-    const itemList = this.shell.processes.map((v) => {
-      return {
-        label: "$(dashboard) " + v.cmd,
-        description: v.id,
-        pid: v.id,
-        ppid: process.pid,
-      };
-    });
-
-    const processSelected = await vscode.window.showQuickPick(itemList, {
-      matchOnDescription: false,
-      matchOnDetail: false,
-      placeHolder: this.i18n.localize("tip.placeholder.selectProcessAndKill", "选择一个进程然后kill掉"),
-      ignoreFocusOut: true,
-    });
-
-    if (!processSelected) {
-      return;
-    }
-
-    return this.shell.interrupt(processSelected.pid);
   }
   /**
    * Select a repository from repositories

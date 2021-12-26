@@ -45,7 +45,6 @@
     "onCommand:gpm.remove",
     "onCommand:gpm.removeOwner",
     "onCommand:gpm.removeSource",
-    "onCommand:gpm.interruptCommand",
     "onCommand:gpm.list2remove",
     "onCommand:gpm.list2open",
     "onCommand:gpm.list2openNew",
@@ -542,7 +541,6 @@
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
-    "execa": "5.1.1",
     "fs-extra": "10.0.0",
     "git-url-parse": "11.6.0",
     "lodash": "4.17.21",

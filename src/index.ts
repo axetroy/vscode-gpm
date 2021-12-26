@@ -371,14 +371,6 @@ export async function activate(
     )
   );
 
-  // interrupt running command
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      Command.InterruptCommand,
-      gpm.interruptCommand.bind(gpm)
-    )
-  );
-
   // search project
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.Search, gpm.search.bind(gpm))

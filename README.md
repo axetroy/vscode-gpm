@@ -40,7 +40,6 @@ Support for all git addresses. including `Github/Gitlab/Bitbucket/Coding...`
 | gpm.list2unstar          | List project and unstar                                      |
 | gpm.clearStars           | Clean all started                                            |
 | gpm.list2remove          | List project and remove it                                   |
-| gpm.interruptCommand     | Interrupt Current Running Command                            |
 
 ## Related
 

@@ -29,7 +29,6 @@
   "cmd.remove.title": "Remove",
   "cmd.removeOwner.title": "Remove",
   "cmd.removeSource.title": "Remove",
-  "cmd.interruptCommand.title": "Interrupt Current Running Command",
   "cmd.list2remove.title": "Remove Project",
   "cmd.list2open.title": "Open Project",
   "cmd.list2openNew.title": "Open Project in New Window",

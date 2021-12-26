@@ -29,7 +29,6 @@
   "cmd.remove.title": "删除",
   "cmd.removeOwner.title": "删除",
   "cmd.removeSource.title": "删除",
-  "cmd.interruptCommand.title": "终止正在运行的任务",
   "cmd.list2remove.title": "删除项目",
   "cmd.list2open.title": "打开项目",
   "cmd.list2openNew.title": "新窗口打开项目",

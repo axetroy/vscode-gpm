@@ -122,7 +122,6 @@ export enum Command {
   Unstar = "gpm.unstar",
   ClearStars = "gpm.clearStars",
   StarCurrentProject = "gpm.starCurrent",
-  InterruptCommand = "gpm.interruptCommand",
   Search = "gpm.search",
   Find = "gpm.find",
   OpenInTerminal = "gpm.openInTerminal",
