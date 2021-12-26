@@ -58,6 +58,9 @@
     "onCommand:gpm.openInWorkspace",
     "onCommand:gpm.list2openInWorkspace"
   ],
+  "extensionDependencies": [
+    "vscode.git"
+  ],
   "contributes": {
     "viewsWelcome": [
       {
