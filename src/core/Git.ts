@@ -7,8 +7,6 @@ import uniqueString from "unique-string";
 import * as vscode from "vscode";
 import { Localize } from "../common/Localize";
 import { Output } from "../common/Output";
-import { Askpass } from "../git/askpass";
-import { findGit, Git as GitClient, GitError } from "../git/git";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
 
@@ -22,11 +20,36 @@ interface IClone {
 @Service()
 export class Git implements vscode.Disposable {
   private disposables: vscode.Disposable[] = [];
-  private gitClient!: GitClient;
   @Inject() private i18n!: Localize;
   @Inject() private output!: Output;
   // the cache dir that project will be clone.
   private CACHE_PATH: string = path.join(os.tmpdir(), "gpm", "temp");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async getGitAPI(): Promise<any> {
+    const extension = vscode.extensions.getExtension("vscode.git");
+    const err = new Error("Cannot get git APIs. try restart Visual Studio Code.");
+
+    if (!extension) {
+      throw err;
+    }
+
+    if (!extension.isActive) {
+      await extension.activate();
+    }
+
+    if (!extension.exports || !extension.exports.getAPI) {
+      throw err;
+    }
+
+    const api = extension.exports.getAPI(1);
+
+    if (!api) {
+      throw err;
+    }
+
+    return api._model.git;
+  }
 
   /**
    * crate a random temp dir
@@ -73,43 +96,12 @@ export class Git implements vscode.Disposable {
     }
   }
 
-  public async init(): Promise<void> {
-    const pathHint = vscode.workspace.getConfiguration("git").get<string | string[]>("path");
-
-    const info = await findGit(pathHint, () => {
-      /* empty block */
-    });
-
-    this.output.writeln(`found git '${info.path}' ${info.version}`);
-
-    const askpass = await Askpass.create(this.output, this.CACHE_PATH);
-    this.disposables.push(askpass);
-    const environment = askpass.getEnv();
-
-    this.output.writeln(JSON.stringify(environment));
-
-    this.gitClient = new GitClient({
-      gitPath: info.path,
-      userAgent: `git/${info.version} (${
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (os as any).version?.() ?? os.type()
-      } ${os.release()}; ${os.platform()} ${os.arch()}) vscode/${vscode.version} (${vscode.env.appName})`,
-      version: info.version,
-      env: environment,
-    });
-  }
-
   /**
    * clone project to baseDir
    * @param address
    * @param baseDir
    */
   public async clone(address: string, baseDir: string): Promise<IClone | void> {
-    if (!this.gitClient) {
-      this.output.writeln("开始初始化....");
-      await this.init();
-    }
-
     const gitInfo = gitUrlParse(address);
 
     this.output.writeln(`clone project '${address}'`);
@@ -137,6 +129,7 @@ export class Git implements vscode.Disposable {
     await fs.ensureDir(randomTemp);
 
     try {
+      const gitApi = await this.getGitAPI();
       const projectDir = await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
@@ -144,7 +137,7 @@ export class Git implements vscode.Disposable {
           cancellable: true,
         },
         (progress, cancelToken) => {
-          return this.gitClient.clone(
+          return gitApi.clone(
             address,
             {
               recursive: true,
@@ -152,7 +145,16 @@ export class Git implements vscode.Disposable {
               progress,
             },
             cancelToken
-          );
+          ) as Promise<string>;
+          // return this.gitClient.clone(
+          //   address,
+          //   {
+          //     recursive: true,
+          //     parentPath: randomTemp,
+          //     progress,
+          //   },
+          //   cancelToken
+          // );
         }
       );
 
@@ -177,14 +179,15 @@ export class Git implements vscode.Disposable {
         name: gitInfo.name,
         path: dist,
       };
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       await fs.remove(randomTemp).catch(() => {
-        // ignore empty block
+        /*ignore empty block */
       });
 
       let isCancel = false;
       let shouldShowOutput = false;
-      if (err instanceof GitError) {
+      if (err && typeof err.gitErrorCode === "number") {
         isCancel = err.message === "Cancelled";
         if (err.error?.message) {
           shouldShowOutput = true;
