@@ -477,7 +477,8 @@
             "type": "string"
           },
           "default": [
-            "$HOME/gpm"
+            "$HOME/gpm",
+            "$GOPATH/src"
           ],
           "markdownDescription": "%ext.config.rootPath%"
         },
