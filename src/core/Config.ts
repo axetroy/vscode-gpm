@@ -29,16 +29,28 @@ export class Config {
   get rootPath(): string[] {
     const rootPath = this.select(this.fields.ROOT_PATH).get() as string[];
 
-    return rootPath.map((v: string) =>
-      path.normalize(
-        v
-          .trim()
-          .replace(/^~/, os.homedir())
-          .replace("$HOME", os.homedir())
-          .replace(/\$\w+/, (word: string) => process.env[word.replace(/^\$/, "")] as string)
-          .replace(/\//g, path.sep)
+    const SKIP_ROOT_PATH = "__SKIP_ROOT_PATH__";
+
+    return rootPath
+      .map((v: string) =>
+        path.normalize(
+          v
+            .trim()
+            .replace(/^~/, os.homedir())
+            .replace("$HOME", os.homedir())
+            .replace(/\$\w+/, (word: string) => {
+              const target = process.env[word.replace(/^\$/, "")] as string;
+
+              if (target) {
+                return target;
+              }
+
+              return SKIP_ROOT_PATH;
+            })
+            .replace(/\//g, path.sep)
+        )
       )
-    );
+      .filter((v) => v.indexOf(SKIP_ROOT_PATH) < 0);
   }
   get isAutoRunHook(): boolean {
     return !!this.select(this.fields.IS_AUTO_RUN_HOOK).get();
