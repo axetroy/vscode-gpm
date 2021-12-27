@@ -187,7 +187,8 @@ export class Git implements vscode.Disposable {
 
       let isCancel = false;
       let shouldShowOutput = false;
-      if (err && typeof err.gitErrorCode === "number") {
+      console.dir(err)
+      if (err && typeof err.gitErrorCode === "string") {
         isCancel = err.message === "Cancelled";
         if (err.error?.message) {
           shouldShowOutput = true;

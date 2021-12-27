@@ -178,11 +178,6 @@
         "category": "GPM"
       },
       {
-        "command": "gpm.interruptCommand",
-        "title": "%cmd.interruptCommand.title%",
-        "category": "GPM"
-      },
-      {
         "command": "gpm.list2remove",
         "title": "%cmd.list2remove.title%",
         "category": "GPM"
