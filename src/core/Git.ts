@@ -61,7 +61,7 @@ export class Git implements vscode.Disposable {
    * Get a valid project name
    * @param repositoryPath
    */
-  private async getValidProjectName(repositoryPath: string): Promise<string | void> {
+  private async getValidProjectName(repositoryPath: string, deep: number): Promise<string | void> {
     if (await fs.pathExists(repositoryPath)) {
       const overwrite = this.i18n.localize(ProjectExistAction.Overwrite);
       const rename = this.i18n.localize(ProjectExistAction.Rename);
@@ -76,8 +76,10 @@ export class Git implements vscode.Disposable {
         case overwrite:
           return repositoryPath;
         case rename: {
+          const defaultNewName = path.basename(repositoryPath) + `(${deep})`;
           const newName = await vscode.window.showInputBox({
             prompt: this.i18n.localize("tip.placeholder.requireNewRepo", "请输入新的项目名字"),
+            value: defaultNewName,
             ignoreFocusOut: true,
           });
 
@@ -85,7 +87,10 @@ export class Git implements vscode.Disposable {
             return;
           }
 
-          return this.getValidProjectName(path.join(path.dirname(repositoryPath), newName));
+          return this.getValidProjectName(
+            path.join(path.dirname(repositoryPath), newName),
+            defaultNewName === newName ? deep + 1 : 1
+          );
         }
 
         default:
@@ -119,7 +124,8 @@ export class Git implements vscode.Disposable {
     this.output.writeln(`temp dir '${randomTemp}'`);
 
     const dist = await this.getValidProjectName(
-      path.join(baseDir, gitInfo.resource, gitInfo.owner.replace(/\//gim, "."), gitInfo.name)
+      path.join(baseDir, gitInfo.resource, gitInfo.owner.replace(/\//gim, "."), gitInfo.name),
+      1
     );
 
     if (!dist) {
@@ -176,7 +182,7 @@ export class Git implements vscode.Disposable {
       return {
         source: gitInfo.resource,
         owner: gitInfo.owner,
-        name: gitInfo.name,
+        name: path.basename(dist),
         path: dist,
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -187,7 +193,7 @@ export class Git implements vscode.Disposable {
 
       let isCancel = false;
       let shouldShowOutput = false;
-      console.dir(err)
+      console.dir(err);
       if (err && typeof err.gitErrorCode === "string") {
         isCancel = err.message === "Cancelled";
         if (err.error?.message) {

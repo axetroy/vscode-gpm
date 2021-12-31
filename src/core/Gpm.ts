@@ -51,7 +51,7 @@ export class Gpm {
 
     const PREFIX = "$(location)";
 
-    const rootPaths = this.config.rootPath.map((rootpath) => `${PREFIX}  ${rootpath}`);
+    const rootPaths = this.config.rootPath.map((r) => `${PREFIX}  ${r}`);
 
     if (!rootPaths.length) {
       vscode.window.showErrorMessage(this.i18n.localize("err.requireRootPath", "请至少设置一个 rootPath"));
