@@ -510,7 +510,7 @@
   "scripts": {
     "vscode:prepublish": "npm run lint && npm run test-compile && npm run compile",
     "clean": "rimraf ./out",
-    "compile": "rimraf ./out & npm run esbuild-base -- --minify",
+    "compile": "rimraf ./out && npm run esbuild-base -- --minify",
     "watch": "npm run test-compile && npm run esbuild-watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "changelog": "whatchanged HEAD~ > CHANGELOG.md",
