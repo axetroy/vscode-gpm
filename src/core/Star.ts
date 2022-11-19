@@ -1,26 +1,27 @@
-import { Container, Service } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
+import i18n from "../common/Localize";
 import { FileType, IRepository, IStar } from "../type";
 import { Resource } from "./Resource";
 
 const storageKey = "@stars";
 const staredSuffix = "@stared";
 
-@Service()
 export class Star implements IStar {
-  private context: vscode.ExtensionContext = Container.get("context");
-  public i18n = Container.get(Localize);
-  public resource = Container.get(Resource);
-  private starList: IRepository[] = this.context.globalState.get(storageKey) || [];
-  public label: string = this.i18n.localize("ext.view.star", "你的收藏");
+  private starList: IRepository[] =
+    this.context.globalState.get(storageKey) || [];
+  public label: string = i18n.localize("ext.view.star", "你的收藏");
   public contextValue = FileType.Star;
   public collapsibleState = 2;
   public iconPath = this.resource.getIcon("star.svg");
-  public tooltip: string = this.i18n.localize("ext.view.stared", "你的收藏的项目");
+  public tooltip: string = i18n.localize("ext.view.stared", "你的收藏的项目");
   // customer property
   public type = FileType.Star;
   public path = ""; // empty path
+
+  constructor(
+    private context: vscode.ExtensionContext,
+    private resource: Resource
+  ) {}
 
   private findIndex(repository: IRepository): number {
     return this.starList.findIndex((r) => repository.path === r.path);

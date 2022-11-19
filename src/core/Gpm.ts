@@ -1,8 +1,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
+import i18n from "../common/Localize";
 import { Output } from "../common/Output";
 import { Terminal } from "../common/Terminal";
 import {
@@ -23,16 +22,16 @@ import { Git } from "./Git";
 import { Resource } from "./Resource";
 import { ProjectTreeProvider } from "./TreeView";
 
-@Service()
 export class Gpm {
-  // current opening terminals
-  @Inject() public config!: Config;
-  @Inject() public i18n!: Localize;
-  @Inject() public explorer!: ProjectTreeProvider;
-  @Inject() public resource!: Resource;
-  @Inject() public git!: Git;
-  @Inject() public terminal!: Terminal;
-  @Inject() public output!: Output;
+  constructor(
+    private config: Config,
+    private explorer: ProjectTreeProvider,
+    private resource: Resource,
+    private git: Git,
+    private terminal: Terminal,
+    private output: Output
+  ) {}
+
   /**
    * clone project
    * @returns
@@ -40,8 +39,8 @@ export class Gpm {
    */
   public async clone(): Promise<void> {
     const gitProjectAddress = await vscode.window.showInputBox({
-      placeHolder: this.i18n.localize("tip.placeholder.addressExample", "例如 xxx"),
-      prompt: this.i18n.localize("tip.placeholder.enterAddress", "请输入git地址"),
+      placeHolder: i18n.localize("tip.placeholder.addressExample", "例如 xxx"),
+      prompt: i18n.localize("tip.placeholder.enterAddress", "请输入git地址"),
       ignoreFocusOut: true,
     });
 
@@ -54,7 +53,9 @@ export class Gpm {
     const rootPaths = this.config.rootPath.map((r) => `${PREFIX}  ${r}`);
 
     if (!rootPaths.length) {
-      vscode.window.showErrorMessage(this.i18n.localize("err.requireRootPath", "请至少设置一个 rootPath"));
+      vscode.window.showErrorMessage(
+        i18n.localize("err.requireRootPath", "请至少设置一个 rootPath")
+      );
       return;
     }
 
@@ -62,7 +63,10 @@ export class Gpm {
     let baseDir =
       rootPaths.length > 1
         ? await vscode.window.showQuickPick(rootPaths, {
-            placeHolder: this.i18n.localize("tip.placeholder.selectRootPath", "选择一个根目录"),
+            placeHolder: i18n.localize(
+              "tip.placeholder.selectRootPath",
+              "选择一个根目录"
+            ),
             ignoreFocusOut: true,
           })
         : rootPaths.shift();
@@ -84,11 +88,11 @@ export class Gpm {
 
     this.output.writeln(`clone '${gitProjectAddress}' success`);
 
-    const open = this.i18n.localize(ProjectPostAddAction.Open);
-    const cancel = this.i18n.localize(ProjectPostAddAction.Cancel);
+    const open = i18n.localize(ProjectPostAddAction.Open);
+    const cancel = i18n.localize(ProjectPostAddAction.Cancel);
 
     const action: string | void = await vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.cloned", "克隆成功", [res.owner, res.name]),
+      i18n.localize("tip.message.cloned", "克隆成功", [res.owner, res.name]),
       open,
       cancel
     );
@@ -116,11 +120,11 @@ export class Gpm {
    * @memberof Gpm
    */
   public async prune(): Promise<void> {
-    const Continue = this.i18n.localize(PruneAction.Continue);
+    const Continue = i18n.localize(PruneAction.Continue);
     const action = await vscode.window.showWarningMessage(
-      this.i18n.localize("tip.message.pruneWarning", "移除警告"),
+      i18n.localize("tip.message.pruneWarning", "移除警告"),
       Continue,
-      this.i18n.localize(PruneAction.Cancel)
+      i18n.localize(PruneAction.Cancel)
     );
 
     switch (action as PruneAction) {
@@ -130,9 +134,14 @@ export class Gpm {
         return;
     }
 
-    vscode.window.showInformationMessage(this.i18n.localize("tip.message.pruneWait"));
+    vscode.window.showInformationMessage(
+      i18n.localize("tip.message.pruneWait")
+    );
 
-    const statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    const statusbar = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Right,
+      100
+    );
 
     statusbar.text = "[GPM]: searching...";
     statusbar.show();
@@ -161,7 +170,9 @@ export class Gpm {
     statusbar.hide();
     statusbar.dispose();
 
-    vscode.window.showInformationMessage(this.i18n.localize("tip.message.pruneReport", "报告", [num]));
+    vscode.window.showInformationMessage(
+      i18n.localize("tip.message.pruneReport", "报告", [num])
+    );
     this.refresh();
   }
   /**
@@ -207,7 +218,10 @@ export class Gpm {
     for (const repository of repositories) {
       const stat = await fs.stat(path.join(owner.path, repository));
       if (stat.isDirectory()) {
-        const repositoryEntity = this.resource.createRepository(owner, repository);
+        const repositoryEntity = this.resource.createRepository(
+          owner,
+          repository
+        );
         await this.remove(repositoryEntity);
       }
     }
@@ -242,7 +256,9 @@ export class Gpm {
   public async cleanCache(): Promise<void> {
     try {
       await this.git.clean();
-      await vscode.window.showInformationMessage(this.i18n.localize("tip.message.clearReport", "清理完毕"));
+      await vscode.window.showInformationMessage(
+        i18n.localize("tip.message.clearReport", "清理完毕")
+      );
     } catch (err) {
       if (err instanceof Error) {
         await vscode.window.showErrorMessage(err.message);
@@ -258,16 +274,16 @@ export class Gpm {
   public async open(repository: IRepository): Promise<void> {
     const repositorySymbol = `@${repository.owner}/${repository.repository}`;
 
-    const currentWindow = this.i18n.localize(OpenAction.CurrentWindow);
-    const newWindow = this.i18n.localize(OpenAction.NewWindow);
-    const workspace = this.i18n.localize(OpenAction.Workspace);
+    const currentWindow = i18n.localize(OpenAction.CurrentWindow);
+    const newWindow = i18n.localize(OpenAction.NewWindow);
+    const workspace = i18n.localize(OpenAction.Workspace);
 
     const action = await vscode.window.showInformationMessage(
-      this.i18n.localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
+      i18n.localize("tip.message.how2open", "选择打开方式", [repositorySymbol]),
       workspace,
       newWindow,
       currentWindow,
-      this.i18n.localize(OpenAction.Cancel)
+      i18n.localize(OpenAction.Cancel)
     );
 
     switch (action as OpenAction) {
@@ -290,7 +306,11 @@ export class Gpm {
    * @memberof Gpm
    */
   private async openFolder(filepath: string, ...res: unknown[]): Promise<void> {
-    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(filepath), ...res);
+    await vscode.commands.executeCommand(
+      "vscode.openFolder",
+      vscode.Uri.file(filepath),
+      ...res
+    );
   }
   /**
    * Open file in current window
@@ -338,7 +358,10 @@ export class Gpm {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
-        placeHolder: this.i18n.localize("tip.placeholder.selectProject", "请选择一个项目"),
+        placeHolder: i18n.localize(
+          "tip.placeholder.selectProject",
+          "请选择一个项目"
+        ),
         ignoreFocusOut: true,
       },
       ...(options || {}),
@@ -396,14 +419,14 @@ export class Gpm {
       case SearchBehavior.Ask: {
         const repositorySymbol = `@${repository.owner}/${repository.repository}`;
 
-        const open = this.i18n.localize(SearchAction.Open);
-        const remove = this.i18n.localize(SearchAction.Remove);
+        const open = i18n.localize(SearchAction.Open);
+        const remove = i18n.localize(SearchAction.Remove);
 
         const doAction = await vscode.window.showInformationMessage(
-          this.i18n.localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
+          i18n.localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
           open,
           remove,
-          this.i18n.localize(SearchAction.Cancel)
+          i18n.localize(SearchAction.Cancel)
         );
 
         switch (doAction as SearchAction) {
@@ -453,7 +476,9 @@ export class Gpm {
       // waiting for vscode api
     } else {
       vscode.workspace.updateWorkspaceFolders(
-        vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0,
+        vscode.workspace.workspaceFolders
+          ? vscode.workspace.workspaceFolders.length
+          : 0,
         null,
         { uri, name }
       );

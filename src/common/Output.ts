@@ -1,9 +1,7 @@
-import { Service } from "typedi";
 import * as vscode from "vscode";
 
 const output = vscode.window.createOutputChannel("GPM");
 
-@Service()
 export class Output implements vscode.OutputChannel {
   get name(): string {
     return output.name;

@@ -2,10 +2,9 @@ import * as fs from "fs-extra";
 import gitUrlParse from "git-url-parse";
 import * as os from "os";
 import * as path from "path";
-import { Inject, Service } from "typedi";
 import uniqueString from "unique-string";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
+import i18n from "../common/Localize";
 import { Output } from "../common/Output";
 import { ProjectExistAction } from "../type";
 import { isLink } from "../util/is-link";
@@ -17,18 +16,19 @@ interface IClone {
   path: string;
 }
 
-@Service()
 export class Git implements vscode.Disposable {
   private disposables: vscode.Disposable[] = [];
-  @Inject() private i18n!: Localize;
-  @Inject() private output!: Output;
   // the cache dir that project will be clone.
   private CACHE_PATH: string = path.join(os.tmpdir(), "gpm", "temp");
+
+  constructor(private output: Output) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async getGitAPI(): Promise<any> {
     const extension = vscode.extensions.getExtension("vscode.git");
-    const err = new Error("Cannot get git APIs. try restart Visual Studio Code.");
+    const err = new Error(
+      "Cannot get git APIs. try restart Visual Studio Code."
+    );
 
     if (!extension) {
       throw err;
@@ -61,15 +61,18 @@ export class Git implements vscode.Disposable {
    * Get a valid project name
    * @param repositoryPath
    */
-  private async getValidProjectName(repositoryPath: string, deep: number): Promise<string | void> {
+  private async getValidProjectName(
+    repositoryPath: string,
+    deep: number
+  ): Promise<string | void> {
     if (await fs.pathExists(repositoryPath)) {
-      const overwrite = this.i18n.localize(ProjectExistAction.Overwrite);
-      const rename = this.i18n.localize(ProjectExistAction.Rename);
+      const overwrite = i18n.localize(ProjectExistAction.Overwrite);
+      const rename = i18n.localize(ProjectExistAction.Rename);
       const actionName = await vscode.window.showWarningMessage(
-        this.i18n.localize("tip.message.projectExist", "项目已存在"),
+        i18n.localize("tip.message.projectExist", "项目已存在"),
         overwrite,
         rename,
-        this.i18n.localize(ProjectExistAction.Cancel)
+        i18n.localize(ProjectExistAction.Cancel)
       );
 
       switch (actionName as ProjectExistAction) {
@@ -78,7 +81,10 @@ export class Git implements vscode.Disposable {
         case rename: {
           const defaultNewName = path.basename(repositoryPath) + `(${deep})`;
           const newName = await vscode.window.showInputBox({
-            prompt: this.i18n.localize("tip.placeholder.requireNewRepo", "请输入新的项目名字"),
+            prompt: i18n.localize(
+              "tip.placeholder.requireNewRepo",
+              "请输入新的项目名字"
+            ),
             value: defaultNewName,
             ignoreFocusOut: true,
           });
@@ -114,7 +120,9 @@ export class Git implements vscode.Disposable {
 
     // invalid git address
     if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
-      vscode.window.showErrorMessage(this.i18n.localize("err.invalidGitAddress", "无效的 Git 地址"));
+      vscode.window.showErrorMessage(
+        i18n.localize("err.invalidGitAddress", "无效的 Git 地址")
+      );
       return;
     }
 
@@ -124,7 +132,12 @@ export class Git implements vscode.Disposable {
     this.output.writeln(`temp dir '${randomTemp}'`);
 
     const dist = await this.getValidProjectName(
-      path.join(baseDir, gitInfo.resource, gitInfo.owner.replace(/\//gim, "."), gitInfo.name),
+      path.join(
+        baseDir,
+        gitInfo.resource,
+        gitInfo.owner.replace(/\//gim, "."),
+        gitInfo.name
+      ),
       1
     );
 
@@ -139,7 +152,7 @@ export class Git implements vscode.Disposable {
       const projectDir = await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
-          title: this.i18n.localize("cmd.add.cloning", "克隆中...", [address]),
+          title: i18n.localize("cmd.add.cloning", "克隆中...", [address]),
           cancellable: true,
         },
         (progress, cancelToken) => {
@@ -208,11 +221,15 @@ export class Git implements vscode.Disposable {
         this.output.writeln(`exit code: ${err.exitCode}`);
         if (err.stdout) {
           shouldShowOutput = true;
-          this.output.writeln(`=== stdout start ===\n${err.stdout}\n=== stdout end ===`);
+          this.output.writeln(
+            `=== stdout start ===\n${err.stdout}\n=== stdout end ===`
+          );
         }
         if (err.stderr) {
           shouldShowOutput = true;
-          this.output.writeln(`=== stderr start ===\n${err.stderr}\n=== stderr end ===`);
+          this.output.writeln(
+            `=== stderr start ===\n${err.stderr}\n=== stderr end ===`
+          );
         }
       } else if (err instanceof Error) {
         isCancel = err.message === "Cancelled";
@@ -230,7 +247,7 @@ export class Git implements vscode.Disposable {
         return;
       }
       if (err instanceof Error && err.message === "SIGKILL") {
-        throw new Error(this.i18n.localize("err.processKilled"));
+        throw new Error(i18n.localize("err.processKilled"));
       }
       throw err;
     }

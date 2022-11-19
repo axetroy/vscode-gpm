@@ -3,16 +3,15 @@ import _ from "lodash";
 import * as os from "os";
 import promiseMap from "p-map";
 import * as path from "path";
-import { Inject, Service } from "typedi";
 import * as vscode from "vscode";
-import { Localize } from "../common/Localize";
+import i18n from "../common/Localize";
 import {
   FileType,
   IFile,
   IOwner,
   IRepository,
   ISegmentation,
-  ISource
+  ISource,
 } from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/is-visiblePath";
@@ -22,19 +21,18 @@ import { Star } from "./Star";
 
 const coresLen = os.cpus().length;
 
-@Service()
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
-  @Inject() private config!: Config;
-  @Inject() private resource!: Resource;
-  @Inject() public star!: Star;
-  @Inject() public i18n!: Localize;
-
   // tree view event
-  private privateOnDidChangeTreeData: vscode.EventEmitter<
-    IFile | undefined
-  > = new vscode.EventEmitter<IFile | undefined>();
-  public readonly onDidChangeTreeData: vscode.Event<IFile | undefined> = this
-    .privateOnDidChangeTreeData.event;
+  private privateOnDidChangeTreeData: vscode.EventEmitter<IFile | undefined> =
+    new vscode.EventEmitter<IFile | undefined>();
+  public readonly onDidChangeTreeData: vscode.Event<IFile | undefined> =
+    this.privateOnDidChangeTreeData.event;
+
+  constructor(
+    private config: Config,
+    private resource: Resource,
+    public star: Star
+  ) {}
 
   public traverse(): Promise<IRepository[]> {
     return (this.getChildren() as Promise<ISource[]>)
@@ -138,14 +136,12 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     loop: for (const GPM_ROOT_PATH of this.config.rootPath) {
       if ((await fs.pathExists(GPM_ROOT_PATH)) === false) {
-        const create = this.i18n.localize("action.create");
-        const ignore = this.i18n.localize("action.ignore");
+        const create = i18n.localize("action.create");
+        const ignore = i18n.localize("action.ignore");
         const action = await vscode.window.showInformationMessage(
-          this.i18n.localize(
-            "tip.message.gpmRootFolderNotExist",
-            "项目不存在",
-            [GPM_ROOT_PATH]
-          ),
+          i18n.localize("tip.message.gpmRootFolderNotExist", "项目不存在", [
+            GPM_ROOT_PATH,
+          ]),
           create,
           ignore
         );

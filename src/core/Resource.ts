@@ -1,5 +1,4 @@
 import * as path from "path";
-import { Container, Service } from "typedi";
 import * as vscode from "vscode";
 import {
   Command,
@@ -9,12 +8,12 @@ import {
   IRepository,
   ISegmentation,
   ISource,
-  IStar
+  IStar,
 } from "../type";
 
-@Service()
 export class Resource {
-  private context: vscode.ExtensionContext = Container.get("context");
+  constructor(private context: vscode.ExtensionContext) {}
+
   public createFile(filepath: string): IFile {
     return {
       label: path.basename(filepath),

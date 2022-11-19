@@ -508,10 +508,10 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run lint && npm run test-compile && npm run compile",
+    "vscode:prepublish": "npm run lint && npm run tsc-compile && npm run compile",
     "clean": "rimraf ./out",
     "compile": "rimraf ./out && npm run esbuild-base -- --minify",
-    "watch": "npm run test-compile && npm run esbuild-watch",
+    "watch": "npm run tsc-compile && npm run esbuild-watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "changelog": "whatchanged HEAD~ > CHANGELOG.md",
     "publish": "npx vsce publish",
@@ -519,7 +519,7 @@
     "esbuild-base": "esbuild ./src/index.ts --bundle --outfile=out/index.js --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run esbuild-base -- --sourcemap",
     "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-    "test-compile": "tsc -p ./"
+    "tsc-compile": "tsc -p ./"
   },
   "devDependencies": {
     "@types/fs-extra": "9.0.13",
@@ -543,8 +543,6 @@
     "lodash": "4.17.21",
     "p-map": "4.0.0",
     "process-exists": "^4.0.0",
-    "reflect-metadata": "^0.1.13",
-    "typedi": "^0.10.0",
     "unique-string": "2.0.0",
     "vscode-nls-i18n": "0.2.4",
     "which": "^2.0.2"

@@ -1,10 +1,8 @@
 import * as os from "os";
 import * as path from "path";
-import { Service } from "typedi";
 import * as vscode from "vscode";
 import { SearchBehavior } from "../type";
 
-@Service()
 export class Config {
   private extensionField = "gpm";
   public fields = {
@@ -73,7 +71,11 @@ export class Config {
       get: () => {
         return this.configuration.get(field);
       },
-      update: (value: unknown, configurationTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global) => {
+      update: (
+        value: unknown,
+        configurationTarget: vscode.ConfigurationTarget = vscode
+          .ConfigurationTarget.Global
+      ) => {
         return this.configuration.update(field, value, configurationTarget);
       },
     };

@@ -5,27 +5,37 @@ import fixPath from "fix-path";
 import * as fs from "fs-extra";
 import * as path from "path";
 import "reflect-metadata";
-import { Container } from "typedi";
 import * as vscode from "vscode";
 import { Output } from "./common/Output";
+import { Terminal } from "./common/Terminal";
+import i18n from "./common/Localize";
+import { Config } from "./core/Config";
 import { Git } from "./core/Git";
 import { Gpm } from "./core/Gpm";
+import { Star } from "./core/Star";
+import { Resource } from "./core/Resource";
+import { ProjectTreeProvider } from "./core/TreeView";
 import { Command, IFile, IOwner, IRepository, ISource } from "./type";
 
 fixPath();
+
+let gpm: Gpm;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(
   context: vscode.ExtensionContext
 ): Promise<void> {
-  Container.set("context", context);
+  i18n.init(context.extensionPath);
+  const resource = new Resource(context);
+  const terminal = new Terminal(context);
+  const output = new Output();
+  const config = new Config();
+  const star = new Star(context, resource);
+  const explorer = new ProjectTreeProvider(config, resource, star);
+  const git = new Git(output);
 
-  const gpm = Container.get(Gpm);
-  const output = Container.get(Output);
-  const git = Container.get(Git);
-  const i18n = gpm.i18n;
-  const resource = gpm.resource;
+  gpm = new Gpm(config, explorer, resource, git, terminal, output);
 
   context.subscriptions.push(output);
   context.subscriptions.push(git);
@@ -313,7 +323,7 @@ export async function activate(
         const gpmRoot = path.join(rootPath, "..", "..", "..");
 
         // 如果存在的话
-        if (gpm.config.rootPath.indexOf(gpmRoot) >= 0) {
+        if (config.rootPath.indexOf(gpmRoot) >= 0) {
           const repositoryName = path.basename(rootPath);
           const ownerName = path.basename(path.join(rootPath, ".."));
           const sourceName = path.basename(path.join(rootPath, "..", ".."));
@@ -480,9 +490,9 @@ export async function activate(
   // flatten
   context.subscriptions.push(
     vscode.commands.registerCommand(Command.Flatten, async () => {
-      gpm.config
-        .select(gpm.config.fields.IS_FLATTEN_PROJECTS)
-        .update(!gpm.config.isFlattenProjects);
+      config
+        .select(config.fields.IS_FLATTEN_PROJECTS)
+        .update(!config.isFlattenProjects);
     })
   );
 
@@ -514,7 +524,7 @@ export async function activate(
 
   // tree view
   context.subscriptions.push(
-    vscode.window.registerTreeDataProvider("GPMExplorer", gpm.explorer)
+    vscode.window.registerTreeDataProvider("GPMExplorer", explorer)
   );
 }
 
@@ -525,10 +535,11 @@ export async function deactivate(
 ): Promise<void> {
   // when disable extension
   // clear cache
-  const gpm = Container.get(Gpm);
-  try {
-    await gpm.cleanCache();
-  } catch (err) {
-    console.error(err);
+  if (gpm) {
+    try {
+      await gpm.cleanCache();
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

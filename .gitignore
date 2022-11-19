@@ -1,4 +1,5 @@
 out
+out_tsc
 node_modules
 .vscode-test/
 *.vsix
