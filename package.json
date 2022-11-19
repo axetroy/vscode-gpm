@@ -508,16 +508,18 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run lint && tsc -p ./ && npm run compile",
+    "vscode:prepublish": "npm run lint && npm run test-compile && npm run compile",
     "clean": "rimraf ./out",
-    "compile": "tsc -p ./ && npm run copy-script",
-    "watch": "npm run copy-script && tsc -watch -p ./",
+    "compile": "rimraf ./out & npm run esbuild-base -- --minify",
+    "watch": "npm run test-compile && npm run esbuild-watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "changelog": "whatchanged HEAD~ > CHANGELOG.md",
     "publish": "npx vsce publish",
     "package": "npx vsce package",
-    "copy-script": "cpy \"./src/git/*.sh\" \"./out/git/\""
+    "esbuild-base": "esbuild ./src/index.ts --bundle --outfile=out/index.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test-compile": "tsc -p ./"
   },
   "devDependencies": {
     "@types/fs-extra": "9.0.13",
@@ -528,9 +530,8 @@
     "@types/which": "2.0.1",
     "@typescript-eslint/eslint-plugin": "4.32.0",
     "@typescript-eslint/parser": "4.32.0",
-    "cpy-cli": "3.1.1",
+    "esbuild": "^0.15.14",
     "eslint": "7.32.0",
-    "move-cli": "2.0.0",
     "rimraf": "3.0.2",
     "typescript": "4.4.3"
   },
