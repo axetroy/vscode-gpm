@@ -536,6 +536,7 @@
   },
   "dependencies": {
     "@axetroy/walk": "^0.1.1",
+    "fix-path": "3.0.0",
     "fs-extra": "10.0.0",
     "git-url-parse": "11.6.0",
     "lodash": "4.17.21",

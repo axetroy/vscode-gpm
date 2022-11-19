@@ -1,6 +1,7 @@
 "use strict";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import fixPath from "fix-path";
 import * as fs from "fs-extra";
 import * as path from "path";
 import "reflect-metadata";
@@ -10,6 +11,8 @@ import { Output } from "./common/Output";
 import { Git } from "./core/Git";
 import { Gpm } from "./core/Gpm";
 import { Command, IFile, IOwner, IRepository, ISource } from "./type";
+
+fixPath();
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
