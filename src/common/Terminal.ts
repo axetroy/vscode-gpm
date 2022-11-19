@@ -17,24 +17,24 @@ export class Terminal {
   public async open(filepath: string): Promise<void> {
     let terminal: vscode.Terminal;
 
-    if (!this.terminals[filepath]) {
+    if (this.terminals[filepath]) {
+      terminal = this.terminals[filepath];
+      const exists = await processExists((await terminal.processId) || 0);
+      if (!exists) {
+        // if the terminal have exit or it have been close.
+        this.terminals[filepath] = undefined;
+        // reopen again
+        return this.open(filepath);
+      }
+    } else {
       terminal = vscode.window.createTerminal({
-        name: "[GPM]: " + path.basename(filepath),
+        name: `[GPM]: ${path.basename(filepath)}`,
         cwd: filepath,
         env: process.env,
       });
 
       this.context.subscriptions.push(terminal);
       this.terminals[filepath] = terminal;
-    } else {
-      terminal = this.terminals[filepath];
-      const exists = await processExists((await terminal.processId) || 0);
-      if (!exists) {
-        // if the terminal have exit or it have been close.
-        delete this.terminals[filepath];
-        // reopen again
-        return this.open(filepath);
-      }
     }
 
     if (terminal) {

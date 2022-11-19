@@ -1,15 +1,6 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import {
-  Command,
-  FileType,
-  IFile,
-  IOwner,
-  IRepository,
-  ISegmentation,
-  ISource,
-  IStar,
-} from "../type";
+import { Command, FileType, IFile, IOwner, IRepository, ISegmentation, ISource, IStar } from "../type";
 
 export class Resource {
   constructor(private context: vscode.ExtensionContext) {}
@@ -47,8 +38,7 @@ export class Resource {
   public createSource(
     sourceName: string,
     rootPath: string,
-    collapsibleState: vscode.TreeItemCollapsibleState = vscode
-      .TreeItemCollapsibleState.Collapsed
+    collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Collapsed,
   ): ISource {
     const item: ISource = {
       id: `${rootPath}/${sourceName}`,
@@ -66,33 +56,41 @@ export class Resource {
     };
     let icon = "";
     switch (sourceName) {
-      case "github.com":
+      case "github.com": {
         icon = "github.svg";
         break;
-      case "gitlab.com":
+      }
+      case "gitlab.com": {
         icon = "gitlab.svg";
         break;
-      case "coding.net":
+      }
+      case "coding.net": {
         icon = "coding.svg";
         break;
-      case "gitee.com":
+      }
+      case "gitee.com": {
         icon = "gitee.svg";
         break;
-      case "bitbucket.org":
+      }
+      case "bitbucket.org": {
         icon = "bitbucket.svg";
         break;
-      case "apache.org":
+      }
+      case "apache.org": {
         icon = "apache.svg";
         break;
-      case "googlesource.com":
+      }
+      case "googlesource.com": {
         icon = "google.svg";
         break;
+      }
       case "go4.org":
       case "golang":
       case "golang.org":
-      case "gopkg.in":
+      case "gopkg.in": {
         icon = "golang.svg";
         break;
+      }
       default:
         icon = "git.svg";
     }
@@ -103,8 +101,7 @@ export class Resource {
   public createOwner(
     source: ISource,
     ownerName: string,
-    collapsibleState: vscode.TreeItemCollapsibleState = vscode
-      .TreeItemCollapsibleState.Collapsed
+    collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Collapsed,
   ): IOwner {
     return {
       id: `${source.id}/${ownerName}`,
@@ -126,14 +123,11 @@ export class Resource {
     owner: IOwner,
     repositoryName: string,
     isFlattenOwner = false,
-    collapsibleState: vscode.TreeItemCollapsibleState = vscode
-      .TreeItemCollapsibleState.Collapsed
+    collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Collapsed,
   ): IRepository {
     return {
       id: `${owner.id}/${repositoryName}`,
-      label: isFlattenOwner
-        ? owner.owner + "/" + repositoryName
-        : repositoryName,
+      label: isFlattenOwner ? `${owner.owner}/${repositoryName}` : repositoryName,
       contextValue: FileType.Repository,
       collapsibleState,
       command: void 0,

@@ -5,14 +5,7 @@ import promiseMap from "p-map";
 import * as path from "path";
 import * as vscode from "vscode";
 import i18n from "../common/Localize";
-import {
-  FileType,
-  IFile,
-  IOwner,
-  IRepository,
-  ISegmentation,
-  ISource,
-} from "../type";
+import { FileType, IFile, IOwner, IRepository, ISegmentation, ISource } from "../type";
 import { flatten } from "../util/flatten";
 import { isVisiblePath } from "../util/is-visiblePath";
 import { Config } from "./Config";
@@ -23,23 +16,17 @@ const coresLen = os.cpus().length;
 
 export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   // tree view event
-  private privateOnDidChangeTreeData: vscode.EventEmitter<IFile | undefined> =
-    new vscode.EventEmitter<IFile | undefined>();
-  public readonly onDidChangeTreeData: vscode.Event<IFile | undefined> =
-    this.privateOnDidChangeTreeData.event;
+  private privateOnDidChangeTreeData: vscode.EventEmitter<IFile | undefined> = new vscode.EventEmitter<
+    IFile | undefined
+  >();
+  public readonly onDidChangeTreeData: vscode.Event<IFile | undefined> = this.privateOnDidChangeTreeData.event;
 
-  constructor(
-    private config: Config,
-    private resource: Resource,
-    public star: Star
-  ) {}
+  constructor(private config: Config, private resource: Resource, public star: Star) {}
 
   public traverse(): Promise<IRepository[]> {
     return (this.getChildren() as Promise<ISource[]>)
       .then((sources) => {
-        return Promise.all(
-          sources.map((source) => this.getChildren(source) as Promise<IOwner[]>)
-        );
+        return Promise.all(sources.map((source) => this.getChildren(source) as Promise<IOwner[]>));
       })
       .then((list) => {
         // if show project flattens
@@ -49,11 +36,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
           return list as any;
         }
         const owners: IOwner[] = flatten(list);
-        return Promise.all(
-          owners.map(
-            (owner) => this.getChildren(owner) as Promise<IRepository[]>
-          )
-        );
+        return Promise.all(owners.map((owner) => this.getChildren(owner) as Promise<IRepository[]>));
       })
       .then((list) => {
         const repositories: IRepository[] = (flatten(list) as IFile[])
@@ -101,9 +84,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
         const result = flatten(flatList);
 
-        return _.sortBy(result, (v) =>
-          _.lowerCase(typeof v.label === "string" ? v.label : v.label?.label)
-        );
+        return _.sortBy(result, (v) => _.lowerCase(typeof v.label === "string" ? v.label : v.label?.label));
       }
     }
 
@@ -139,11 +120,9 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         const create = i18n.localize("action.create");
         const ignore = i18n.localize("action.ignore");
         const action = await vscode.window.showInformationMessage(
-          i18n.localize("tip.message.gpmRootFolderNotExist", "项目不存在", [
-            GPM_ROOT_PATH,
-          ]),
+          i18n.localize("tip.message.gpmRootFolderNotExist", "项目不存在", [GPM_ROOT_PATH]),
           create,
-          ignore
+          ignore,
         );
 
         if (!action) {
@@ -151,17 +130,16 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
         }
 
         switch (action) {
-          case create:
+          case create: {
             await fs.ensureDir(GPM_ROOT_PATH);
             break;
+          }
           case ignore:
             continue loop;
         }
       }
 
-      const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(
-        isVisiblePath
-      );
+      const files: string[] = (await fs.readdir(GPM_ROOT_PATH)).filter(isVisiblePath);
 
       const mapper = async (file: string) => {
         const statInfo = await fs.stat(path.join(GPM_ROOT_PATH, file));
@@ -205,9 +183,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
   private async getOwner(element: ISource): Promise<IOwner[]> {
     const children: IOwner[] = [];
 
-    const files: string[] = (await fs.readdir(element.path)).filter(
-      isVisiblePath
-    );
+    const files: string[] = (await fs.readdir(element.path)).filter(isVisiblePath);
 
     const mapper = async (file: string) => {
       const statInfo = await fs.stat(path.join(element.path, file));
@@ -221,25 +197,16 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     return _.sortBy(children, (v) => _.lowerCase(v.owner));
   }
-  private async getRepository(
-    element: IOwner,
-    isFlattenOwner = false
-  ): Promise<IRepository[]> {
+  private async getRepository(element: IOwner, isFlattenOwner = false): Promise<IRepository[]> {
     const children: IRepository[] = [];
 
-    const files: string[] = (await fs.readdir(element.path)).filter(
-      isVisiblePath
-    );
+    const files: string[] = (await fs.readdir(element.path)).filter(isVisiblePath);
 
     const mapper = async (file: string) => {
       const statInfo = await fs.stat(path.join(element.path, file));
 
       if (statInfo.isDirectory()) {
-        const repository = this.resource.createRepository(
-          element,
-          file,
-          isFlattenOwner
-        );
+        const repository = this.resource.createRepository(element, file, isFlattenOwner);
 
         const staredRepository = this.star.find(repository);
 
@@ -276,11 +243,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<IFile> {
 
     dirList
       .map((dir) => this.resource.createFolder(path.join(element.path, dir)))
-      .concat(
-        fileList.map((filename) =>
-          this.resource.createFile(path.join((element as IFile).path, filename))
-        )
-      )
+      .concat(fileList.map((filename) => this.resource.createFile(path.join((element as IFile).path, filename))))
       .forEach((ele) => children.push(ele));
 
     return children;

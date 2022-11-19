@@ -29,7 +29,7 @@ export class Gpm {
     private resource: Resource,
     private git: Git,
     private terminal: Terminal,
-    private output: Output
+    private output: Output,
   ) {}
 
   /**
@@ -53,9 +53,7 @@ export class Gpm {
     const rootPaths = this.config.rootPath.map((r) => `${PREFIX}  ${r}`);
 
     if (!rootPaths.length) {
-      vscode.window.showErrorMessage(
-        i18n.localize("err.requireRootPath", "请至少设置一个 rootPath")
-      );
+      vscode.window.showErrorMessage(i18n.localize("err.requireRootPath", "请至少设置一个 rootPath"));
       return;
     }
 
@@ -63,10 +61,7 @@ export class Gpm {
     let baseDir =
       rootPaths.length > 1
         ? await vscode.window.showQuickPick(rootPaths, {
-            placeHolder: i18n.localize(
-              "tip.placeholder.selectRootPath",
-              "选择一个根目录"
-            ),
+            placeHolder: i18n.localize("tip.placeholder.selectRootPath", "选择一个根目录"),
             ignoreFocusOut: true,
           })
         : rootPaths.shift();
@@ -94,11 +89,11 @@ export class Gpm {
     const action: string | void = await vscode.window.showInformationMessage(
       i18n.localize("tip.message.cloned", "克隆成功", [res.owner, res.name]),
       open,
-      cancel
+      cancel,
     );
 
     switch (action as ProjectPostAddAction) {
-      case open:
+      case open: {
         await this.open({
           source: res.source,
           owner: res.owner,
@@ -108,6 +103,7 @@ export class Gpm {
           rootPath: "",
         });
         break;
+      }
       case cancel:
         break;
       default:
@@ -124,7 +120,7 @@ export class Gpm {
     const action = await vscode.window.showWarningMessage(
       i18n.localize("tip.message.pruneWarning", "移除警告"),
       Continue,
-      i18n.localize(PruneAction.Cancel)
+      i18n.localize(PruneAction.Cancel),
     );
 
     switch (action as PruneAction) {
@@ -134,14 +130,9 @@ export class Gpm {
         return;
     }
 
-    vscode.window.showInformationMessage(
-      i18n.localize("tip.message.pruneWait")
-    );
+    vscode.window.showInformationMessage(i18n.localize("tip.message.pruneWait"));
 
-    const statusbar = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Right,
-      100
-    );
+    const statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
     statusbar.text = "[GPM]: searching...";
     statusbar.show();
@@ -170,9 +161,7 @@ export class Gpm {
     statusbar.hide();
     statusbar.dispose();
 
-    vscode.window.showInformationMessage(
-      i18n.localize("tip.message.pruneReport", "报告", [num])
-    );
+    vscode.window.showInformationMessage(i18n.localize("tip.message.pruneReport", "报告", [num]));
     this.refresh();
   }
   /**
@@ -193,14 +182,14 @@ export class Gpm {
     const projectList = await fs.readdir(ownerPath);
 
     // if project is empty, remove owner folder
-    if (!projectList || !projectList.length) {
+    if (!(projectList?.length)) {
       await fs.remove(ownerPath);
     }
 
     const ownerList = await fs.readdir(sourcePath);
 
     // if owner is empty, remove source folder
-    if (!ownerList || !ownerList.length) {
+    if (!(ownerList?.length)) {
       await fs.remove(sourcePath);
     }
 
@@ -218,10 +207,7 @@ export class Gpm {
     for (const repository of repositories) {
       const stat = await fs.stat(path.join(owner.path, repository));
       if (stat.isDirectory()) {
-        const repositoryEntity = this.resource.createRepository(
-          owner,
-          repository
-        );
+        const repositoryEntity = this.resource.createRepository(owner, repository);
         await this.remove(repositoryEntity);
       }
     }
@@ -256,9 +242,7 @@ export class Gpm {
   public async cleanCache(): Promise<void> {
     try {
       await this.git.clean();
-      await vscode.window.showInformationMessage(
-        i18n.localize("tip.message.clearReport", "清理完毕")
-      );
+      await vscode.window.showInformationMessage(i18n.localize("tip.message.clearReport", "清理完毕"));
     } catch (err) {
       if (err instanceof Error) {
         await vscode.window.showErrorMessage(err.message);
@@ -283,7 +267,7 @@ export class Gpm {
       workspace,
       newWindow,
       currentWindow,
-      i18n.localize(OpenAction.Cancel)
+      i18n.localize(OpenAction.Cancel),
     );
 
     switch (action as OpenAction) {
@@ -306,11 +290,7 @@ export class Gpm {
    * @memberof Gpm
    */
   private async openFolder(filepath: string, ...res: unknown[]): Promise<void> {
-    await vscode.commands.executeCommand(
-      "vscode.openFolder",
-      vscode.Uri.file(filepath),
-      ...res
-    );
+    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(filepath), ...res);
   }
   /**
    * Open file in current window
@@ -339,7 +319,7 @@ export class Gpm {
    */
   public async selectRepository(
     repositories?: IRepository[],
-    options?: vscode.QuickPickOptions
+    options?: vscode.QuickPickOptions,
   ): Promise<IRepository | void> {
     if (!repositories) {
       repositories = await this.explorer.traverse();
@@ -358,10 +338,7 @@ export class Gpm {
       ...{
         matchOnDescription: false,
         matchOnDetail: false,
-        placeHolder: i18n.localize(
-          "tip.placeholder.selectProject",
-          "请选择一个项目"
-        ),
+        placeHolder: i18n.localize("tip.placeholder.selectProject", "请选择一个项目"),
         ignoreFocusOut: true,
       },
       ...(options || {}),
@@ -426,7 +403,7 @@ export class Gpm {
           i18n.localize("tip.message.doWhat", "你想干嘛?", [repositorySymbol]),
           open,
           remove,
-          i18n.localize(SearchAction.Cancel)
+          i18n.localize(SearchAction.Cancel),
         );
 
         switch (doAction as SearchAction) {
@@ -476,11 +453,9 @@ export class Gpm {
       // waiting for vscode api
     } else {
       vscode.workspace.updateWorkspaceFolders(
-        vscode.workspace.workspaceFolders
-          ? vscode.workspace.workspaceFolders.length
-          : 0,
+        vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0,
         null,
-        { uri, name }
+        { uri, name },
       );
     }
   }

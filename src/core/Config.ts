@@ -45,8 +45,8 @@ export class Config {
 
               return SKIP_ROOT_PATH;
             })
-            .replace(/\//g, path.sep)
-        )
+            .replace(/\//g, path.sep),
+        ),
       )
       .filter((v) => v.indexOf(SKIP_ROOT_PATH) < 0);
   }
@@ -71,11 +71,7 @@ export class Config {
       get: () => {
         return this.configuration.get(field);
       },
-      update: (
-        value: unknown,
-        configurationTarget: vscode.ConfigurationTarget = vscode
-          .ConfigurationTarget.Global
-      ) => {
+      update: (value: unknown, configurationTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global) => {
         return this.configuration.update(field, value, configurationTarget);
       },
     };

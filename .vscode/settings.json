@@ -6,5 +6,11 @@
   "search.exclude": {
     "out": true // set this to false to include "out" folder in search results
   },
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "[typescript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "rome.rome"
+  }
 }

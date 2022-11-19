@@ -23,7 +23,7 @@ export class Statusbar extends Writable {
     this.statusbar.dispose();
   }
   public _write(chunk: string | Buffer, encoding: string, cb: () => void): void {
-    this.show(chunk + "");
+    this.show(`${chunk}`);
     cb();
   }
 }

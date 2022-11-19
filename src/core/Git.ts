@@ -26,9 +26,7 @@ export class Git implements vscode.Disposable {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async getGitAPI(): Promise<any> {
     const extension = vscode.extensions.getExtension("vscode.git");
-    const err = new Error(
-      "Cannot get git APIs. try restart Visual Studio Code."
-    );
+    const err = new Error("Cannot get git APIs. try restart Visual Studio Code.");
 
     if (!extension) {
       throw err;
@@ -38,7 +36,7 @@ export class Git implements vscode.Disposable {
       await extension.activate();
     }
 
-    if (!extension.exports || !extension.exports.getAPI) {
+    if (!(extension.exports?.getAPI)) {
       throw err;
     }
 
@@ -61,10 +59,7 @@ export class Git implements vscode.Disposable {
    * Get a valid project name
    * @param repositoryPath
    */
-  private async getValidProjectName(
-    repositoryPath: string,
-    deep: number
-  ): Promise<string | void> {
+  private async getValidProjectName(repositoryPath: string, deep: number): Promise<string | void> {
     if (await fs.pathExists(repositoryPath)) {
       const overwrite = i18n.localize(ProjectExistAction.Overwrite);
       const rename = i18n.localize(ProjectExistAction.Rename);
@@ -72,19 +67,16 @@ export class Git implements vscode.Disposable {
         i18n.localize("tip.message.projectExist", "项目已存在"),
         overwrite,
         rename,
-        i18n.localize(ProjectExistAction.Cancel)
+        i18n.localize(ProjectExistAction.Cancel),
       );
 
       switch (actionName as ProjectExistAction) {
         case overwrite:
           return repositoryPath;
         case rename: {
-          const defaultNewName = path.basename(repositoryPath) + `(${deep})`;
+          const defaultNewName = `${path.basename(repositoryPath)}(${deep})`;
           const newName = await vscode.window.showInputBox({
-            prompt: i18n.localize(
-              "tip.placeholder.requireNewRepo",
-              "请输入新的项目名字"
-            ),
+            prompt: i18n.localize("tip.placeholder.requireNewRepo", "请输入新的项目名字"),
             value: defaultNewName,
             ignoreFocusOut: true,
           });
@@ -95,7 +87,7 @@ export class Git implements vscode.Disposable {
 
           return this.getValidProjectName(
             path.join(path.dirname(repositoryPath), newName),
-            defaultNewName === newName ? deep + 1 : 1
+            defaultNewName === newName ? deep + 1 : 1,
           );
         }
 
@@ -119,10 +111,8 @@ export class Git implements vscode.Disposable {
     this.output.writeln(`parse git info '${JSON.stringify(gitInfo, null, 2)}'`);
 
     // invalid git address
-    if (!gitInfo || !gitInfo.owner || !gitInfo.name) {
-      vscode.window.showErrorMessage(
-        i18n.localize("err.invalidGitAddress", "无效的 Git 地址")
-      );
+    if (!((gitInfo?.owner ) && gitInfo.name)) {
+      vscode.window.showErrorMessage(i18n.localize("err.invalidGitAddress", "无效的 Git 地址"));
       return;
     }
 
@@ -132,13 +122,8 @@ export class Git implements vscode.Disposable {
     this.output.writeln(`temp dir '${randomTemp}'`);
 
     const dist = await this.getValidProjectName(
-      path.join(
-        baseDir,
-        gitInfo.resource,
-        gitInfo.owner.replace(/\//gim, "."),
-        gitInfo.name
-      ),
-      1
+      path.join(baseDir, gitInfo.resource, gitInfo.owner.replace(/\//gim, "."), gitInfo.name),
+      1,
     );
 
     if (!dist) {
@@ -163,7 +148,7 @@ export class Git implements vscode.Disposable {
               parentPath: randomTemp,
               progress,
             },
-            cancelToken
+            cancelToken,
           ) as Promise<string>;
           // return this.gitClient.clone(
           //   address,
@@ -174,7 +159,7 @@ export class Git implements vscode.Disposable {
           //   },
           //   cancelToken
           // );
-        }
+        },
       );
 
       this.output.writeln(`cloned dir '${projectDir}'`);
@@ -221,21 +206,17 @@ export class Git implements vscode.Disposable {
         this.output.writeln(`exit code: ${err.exitCode}`);
         if (err.stdout) {
           shouldShowOutput = true;
-          this.output.writeln(
-            `=== stdout start ===\n${err.stdout}\n=== stdout end ===`
-          );
+          this.output.writeln(`=== stdout start ===\n${err.stdout}\n=== stdout end ===`);
         }
         if (err.stderr) {
           shouldShowOutput = true;
-          this.output.writeln(
-            `=== stderr start ===\n${err.stderr}\n=== stderr end ===`
-          );
+          this.output.writeln(`=== stderr start ===\n${err.stderr}\n=== stderr end ===`);
         }
       } else if (err instanceof Error) {
         isCancel = err.message === "Cancelled";
-        this.output.writeln(err.stack || err.message || err + "");
+        this.output.writeln(err.stack || err.message || `${err}`);
       } else {
-        this.output.writeln(err + "");
+        this.output.writeln(`${err}`);
       }
       if (isCancel) {
         shouldShowOutput = false;

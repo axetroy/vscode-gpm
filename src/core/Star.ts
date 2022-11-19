@@ -7,8 +7,7 @@ const storageKey = "@stars";
 const staredSuffix = "@stared";
 
 export class Star implements IStar {
-  private starList: IRepository[] =
-    this.context.globalState.get(storageKey) || [];
+  private starList: IRepository[] = this.context.globalState.get(storageKey) || [];
   public label: string = i18n.localize("ext.view.star", "你的收藏");
   public contextValue = FileType.Star;
   public collapsibleState = 2;
@@ -18,10 +17,7 @@ export class Star implements IStar {
   public type = FileType.Star;
   public path = ""; // empty path
 
-  constructor(
-    private context: vscode.ExtensionContext,
-    private resource: Resource
-  ) {}
+  constructor(private context: vscode.ExtensionContext, private resource: Resource) {}
 
   private findIndex(repository: IRepository): number {
     return this.starList.findIndex((r) => repository.path === r.path);
