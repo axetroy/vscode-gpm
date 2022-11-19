@@ -3,7 +3,7 @@ import processExists from "process-exists";
 import * as vscode from "vscode";
 
 export class Terminal {
-  private readonly terminals: { [path: string]: vscode.Terminal } = {};
+  private readonly terminals: { [path: string]: vscode.Terminal | void } = {};
   private readonly context: vscode.ExtensionContext;
 
   constructor(context: vscode.ExtensionContext) {
@@ -15,16 +15,19 @@ export class Terminal {
    * @param filepath
    */
   public async open(filepath: string): Promise<void> {
-    let terminal: vscode.Terminal;
+    let terminal: vscode.Terminal | void;
 
     if (this.terminals[filepath]) {
       terminal = this.terminals[filepath];
-      const exists = await processExists((await terminal.processId) || 0);
-      if (!exists) {
-        // if the terminal have exit or it have been close.
-        this.terminals[filepath] = undefined;
-        // reopen again
-        return this.open(filepath);
+
+      if (terminal) {
+        const exists = await processExists((await terminal.processId) || 0);
+        if (!exists) {
+          // if the terminal have exit or it have been close.
+          this.terminals[filepath] = undefined;
+          // reopen again
+          return this.open(filepath);
+        }
       }
     } else {
       terminal = vscode.window.createTerminal({
