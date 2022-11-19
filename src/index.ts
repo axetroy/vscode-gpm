@@ -4,7 +4,6 @@
 import fixPath from "fix-path";
 import * as fs from "fs-extra";
 import * as path from "path";
-import "reflect-metadata";
 import * as vscode from "vscode";
 import { Output } from "./common/Output";
 import { Terminal } from "./common/Terminal";
