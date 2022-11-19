@@ -2,6 +2,7 @@
 .vscode-test/**
 .github
 out/test
+out_tsc
 src/**
 .gitignore
 tsconfig.json
@@ -11,3 +12,4 @@ resources/screenshot/*
 .DS_Store
 renovate.json
 node_modules
+rome.json
